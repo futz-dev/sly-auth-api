@@ -8,6 +8,7 @@ plugins:
   - serverless-configuration
   - serverless-dynamodb-local
   - serverless-plugin-resource-tagging
+  - serverless-plugin-scripts
   - serverless-offline
 
 provider:
@@ -173,9 +174,6 @@ custom:
     prefix: ${file(serverless.config.js):serviceName}
   bundle:
     packager: yarn
-    copyFiles:
-      - from: './.scaffoldly/${opt:stage, "local"}'
-        to: './.scaffoldly'
   serverless-configuration:
     local:
       del:

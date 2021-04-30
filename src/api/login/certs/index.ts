@@ -2,6 +2,7 @@ import { handleError, handleSuccess } from '@scaffoldly/serverless-util';
 import { APIGatewayProxyEvent, APIGatewayProxyResult, Context } from 'aws-lambda';
 import { getPublicKey } from 'src/jwt';
 import { stringifyRedacted } from 'src/util';
+import { env } from '../../../env';
 
 import * as dotenv from 'dotenv';
 dotenv.config();
@@ -12,7 +13,7 @@ export const getV1 = async (
 ): Promise<APIGatewayProxyResult> => {
   console.log(`Event: ${stringifyRedacted(event)}`);
   console.log(`Context: ${JSON.stringify(context, null, 2)}`);
-
+  console.log('!!!! env', JSON.stringify(env.env_vars.SERVERLESS_API_DOMAIN));
   try {
     const publicKey = await getPublicKey();
     return handleSuccess(event, { keys: [publicKey] });
