@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "0.1.53",
+  "version": "0.1.54",
   "scripts": {
     "serverless": "SLS_DEBUG=* serverless",
     "prepare": "yarn serverless dynamodb install",
