@@ -8,7 +8,6 @@ plugins:
   - serverless-configuration
   - serverless-dynamodb-local
   - serverless-plugin-resource-tagging
-  - serverless-plugin-scripts
   - serverless-offline
 
 provider:
