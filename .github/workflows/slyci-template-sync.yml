@@ -45,6 +45,8 @@ jobs:
           git add ${{ env.VERSION_FILE }}
         working-directory: src
       - run: |
+          git config --local user.email "template-sync@scaffold.ly"
+          git config --local user.name "Scaffoldly Template Sync"
           git commit -m "Update to ${version}"
         working-directory: src
       - uses: ad-m/github-push-action@master
