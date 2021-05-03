@@ -53,9 +53,10 @@ jobs:
       - uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
-          commit-message: 'Update to ${{ env.NEW_VERSION }}'
           branch: '${{ github.repository }}/${{ env.OLD_VERSION }}'
           base: main
-          title: ${{ env.NEW_VERSION }}
+          title: '${{ env.NEW_VERSION }}: Sync ${{ env.OLD_VERSION }} from ${{ github.repository }}'
+          commit-message: 'Update to ${{ env.NEW_VERSION }}'
+          body: 'Automated sync of ${{ github.repository }}@${{ env.OLD_VERSION }}'
           assignees: cnuss
           reviewers: cnuss
