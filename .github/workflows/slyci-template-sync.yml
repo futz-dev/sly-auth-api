@@ -7,7 +7,7 @@ on:
 env:
   SCAFFOLDLY_GITHUB_TOKEN: ${{ secrets.SCAFFOLDLY_TEMPLATE_SYNC_GITHUB_TOKEN }}
   SCAFFOLDLY_TARGET_REPO: scaffoldly/sly-auth-api-template
-  VERSION_FILE: pacakge.json
+  VERSION_FILE: package.json
 jobs:
   create-pr:
     runs-on: ubuntu-latest
