@@ -6,10 +6,10 @@ on:
       - main
 env:
   SCAFFOLDLY_GITHUB_TOKEN: ${{ secrets.SCAFFOLDLY_TEMPLATE_SYNC_GITHUB_TOKEN }}
-  SCAFFOLDLY_TARGET_REPO: git@github.com:scaffoldly/sly-auth-api-template.git
+  SCAFFOLDLY_TARGET_REPO: scaffoldly/sly-auth-api-template
   VERSION_FILE: pacakge.json
 jobs:
-  deploy:
+  create-pr:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
