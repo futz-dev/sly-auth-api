@@ -1,0 +1,53 @@
+name: Scaffoldly Template Sync
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - main
+env:
+  SCAFFOLDLY_GITHUB_TOKEN: ${{ secrets.SCAFFOLDLY_TEMPLATE_SYNC_GITHUB_TOKEN }}
+  SCAFFOLDLY_TARGET_REPO: git@github.com:scaffoldly/sly-auth-api-template.git
+  VERSION_FILE: pacakge.json
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+        with:
+          persist-credentials: false
+          fetch-depth: 0
+          path: src
+      - uses: actions/checkout@v2
+        with:
+          token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
+          repository: ${{ env.SCAFFOLDLY_TARGET_REPO }}
+          persist-credentials: false
+          fetch-depth: 0
+          path: dst
+      - run: |
+          rm -fr .git
+          cp -R ../dst/.git .
+        working-directory: src
+      - run: |
+          export version=$(npx semver -i minor $(jq -r .version ${{ env.VERSION_FILE }}))
+          git checkout -b "${{ github.repository }}/${version}"
+          git add .
+        working-directory: src
+      - run: git restore -s@ -SW -- .scaffoldly
+        working-directory: src
+      - run: git restore -s@ -SW -- .github/workflows/slyci-*
+        working-directory: src
+      - run: |
+          export version=$(npx semver -i minor $(jq -r .version ${{ env.VERSION_FILE }}))
+          contents="$(jq -r --arg v $version '.version = $v' ${{ env.VERSION_FILE }})"
+          echo "${contents}" > ${{ env.VERSION_FILE }}
+          git add ${{ env.VERSION_FILE }}
+        working-directory: src
+      - run: |
+          git commit -m "Update to ${version}"
+        working-directory: src
+      - uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
+          branch: ${{ github.repository }}/${version}
+          directory: src
