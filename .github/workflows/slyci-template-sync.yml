@@ -8,9 +8,8 @@
 name: Scaffoldly Template Sync
 on:
   workflow_dispatch:
-  push:
-    branches:
-      - main
+  release:
+    types: [published]
 env:
   SCAFFOLDLY_GITHUB_TOKEN: ${{ secrets.SCAFFOLDLY_TEMPLATE_SYNC_GITHUB_TOKEN }}
   SCAFFOLDLY_TARGET_REPO: scaffoldly/sly-auth-api-template
