@@ -33,7 +33,7 @@ jobs:
           version=$(npx semver -i minor $(jq -r .version ${{ env.VERSION_FILE }}))
           git checkout -b "${{ github.repository }}/${version}"
           git add .
-          echo '::set-output name=VERSION::${version}'
+          echo '::set-output name=VERSION::$(echo ${version})'
         id: prepare
         working-directory: src
       - run: git restore -s@ -SW -- .scaffoldly
