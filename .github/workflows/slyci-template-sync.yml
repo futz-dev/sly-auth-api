@@ -23,7 +23,6 @@ jobs:
         with:
           persist-credentials: false
           fetch-depth: 0
-          path: src
       - id: prepare
         run: |
           old_version=$(jq -r .version ${{ env.VERSION_FILE }})
@@ -32,24 +31,20 @@ jobs:
           echo "New version is ${new_version}"
           echo "OLD_VERSION=${old_version}" >> $GITHUB_ENV
           echo "NEW_VERSION=${new_version}" >> $GITHUB_ENV
-        working-directory: src
       - uses: actions/checkout@v2
         with:
           token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
           repository: ${{ env.SCAFFOLDLY_TARGET_REPO }}
           persist-credentials: false
           fetch-depth: 0
-          path: dst
+          path: .scaffoldly/template
       - run: |
           rm -fr .git
-          cp -R ../dst/.git .
+          cp -R .scaffoldly/template/.git .
           git checkout -b "${{ github.repository }}/${{ env.OLD_VERSION }}"
           git add .
-        working-directory: src
-      - run: git restore -s@ -SW -- .scaffoldly
-        working-directory: src
-      - run: git restore -s@ -SW -- .github/workflows/slyci-*
-        working-directory: src
+          git restore -s@ -SW -- .scaffoldly
+          git restore -s@ -SW -- .github/workflows/slyci-*
       - run: |
           git config --local user.email "github-actions@scaffold.ly"
           git config --local user.name "Scaffoldly GitHub Actions"
@@ -57,14 +52,12 @@ jobs:
           echo "${contents}" > ${{ env.VERSION_FILE }}
           git add ${{ env.VERSION_FILE }}
           git commit -m "Update to ${{ env.NEW_VERSION }}"
-        working-directory: src
       - uses: ad-m/github-push-action@master
         with:
           github_token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
           repository: ${{ env.SCAFFOLDLY_TARGET_REPO }}
           branch: ${{ github.repository }}/${{ env.OLD_VERSION }}
           force: true
-          directory: src
       - uses: repo-sync/pull-request@v2
         with:
           source_branch: '${{ github.repository }}/${{ env.OLD_VERSION }}'
