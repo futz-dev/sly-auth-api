@@ -58,4 +58,8 @@ jobs:
           repository: ${{ env.SCAFFOLDLY_TARGET_REPO }}
           branch: ${{ github.repository }}/${{ env.OLD_VERSION }}
           force: true
-      - run: hub pull-request -b main -h ${{ github.repository }}/${{ env.OLD_VERSION }} -r cnuss -a cnuss
+      - uses: elgohr/Github-Hub-Action@master
+        env:
+          GITHUB_TOKEN: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
+        with:
+          args: pull-request -b main -h ${{ github.repository }}/${{ env.OLD_VERSION }} -r cnuss -a cnuss
