@@ -62,5 +62,6 @@ jobs:
         with:
           github_token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
           repository: ${{ env.SCAFFOLDLY_TARGET_REPO }}
-          branch: ${{ github.repository }}/${{ env.NEW_VERSION }}
+          branch: ${{ github.repository }}/${{ env.OLD_VERSION }}
+          force: true
           directory: src
