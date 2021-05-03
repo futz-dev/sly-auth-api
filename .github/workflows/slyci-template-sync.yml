@@ -43,7 +43,6 @@ jobs:
           cp -R .scaffoldly/template/.git .
           rm -fr .scaffoldly/template
       - run: |
-          git checkout -b "${{ github.repository }}/${{ env.OLD_VERSION }}"
           git add .
           git restore -s@ -SW -- .scaffoldly
           git restore -s@ -SW -- .github/workflows/slyci-*
@@ -55,6 +54,7 @@ jobs:
         with:
           token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
           commit-message: 'Update to ${{ env.NEW_VERSION }}'
+          branch: '${{ github.repository }}/${{ env.OLD_VERSION }}'
           base: main
           title: ${{ env.NEW_VERSION }}
           assignees: cnuss
