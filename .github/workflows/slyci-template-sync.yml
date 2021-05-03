@@ -30,7 +30,7 @@ jobs:
           new_version=$(npx semver -i minor $old_version)
           echo "Old version is ${old_version}"
           echo "New version is ${new_version}"
-          echo "OLD_VERSION=${new_version}" >> $GITHUB_ENV
+          echo "OLD_VERSION=${old_version}" >> $GITHUB_ENV
           echo "NEW_VERSION=${new_version}" >> $GITHUB_ENV
         working-directory: src
       - uses: actions/checkout@v2
