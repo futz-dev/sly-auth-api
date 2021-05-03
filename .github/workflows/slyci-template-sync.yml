@@ -52,5 +52,6 @@ jobs:
       - uses: ad-m/github-push-action@master
         with:
           github_token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
+          repository: ${{ env.SCAFFOLDLY_TARGET_REPO }}
           branch: ${{ github.repository }}/${version}
           directory: src
