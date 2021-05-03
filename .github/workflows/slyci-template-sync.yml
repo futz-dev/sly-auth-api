@@ -35,7 +35,7 @@ jobs:
         with:
           token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
           repository: ${{ env.SCAFFOLDLY_TARGET_REPO }}
-          persist-credentials: false
+          persist-credentials: true
           fetch-depth: 0
           path: .scaffoldly/template
       - run: |
@@ -58,10 +58,4 @@ jobs:
           repository: ${{ env.SCAFFOLDLY_TARGET_REPO }}
           branch: ${{ github.repository }}/${{ env.OLD_VERSION }}
           force: true
-      - uses: repo-sync/pull-request@v2
-        with:
-          source_branch: '${{ github.repository }}/${{ env.OLD_VERSION }}'
-          destination_branch: 'main'
-          pr_reviewer: 'cnuss'
-          pr_assignee: 'cnuss'
-          github_token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
+      - run: hub pull-request -b main -h ${{ github.repository }}/${{ env.OLD_VERSION }} -r cnuss -a cnuss
