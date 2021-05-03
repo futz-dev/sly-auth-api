@@ -46,20 +46,15 @@ jobs:
           git restore -s@ -SW -- .scaffoldly
           git restore -s@ -SW -- .github/workflows/slyci-*
       - run: |
-          git config --local user.email "github-actions@scaffold.ly"
-          git config --local user.name "Scaffoldly GitHub Actions"
           contents="$(jq -r --arg v ${{ env.NEW_VERSION }} '.version = $v' ${{ env.VERSION_FILE }})"
           echo "${contents}" > ${{ env.VERSION_FILE }}
           git add ${{ env.VERSION_FILE }}
-          git commit -m "Update to ${{ env.NEW_VERSION }}"
-      - uses: ad-m/github-push-action@master
+      - uses: peter-evans/create-pull-request@v3
         with:
-          github_token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
-          repository: ${{ env.SCAFFOLDLY_TARGET_REPO }}
+          token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
+          commit-message: 'Update to ${{ env.NEW_VERSION }}'
           branch: ${{ github.repository }}/${{ env.OLD_VERSION }}
-          force: true
-      - uses: elgohr/Github-Hub-Action@master
-        env:
-          GITHUB_TOKEN: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
-        with:
-          args: pull-request -b main -h ${{ github.repository }}/${{ env.OLD_VERSION }} -r cnuss -a cnuss
+          base: main
+          title: ${{ env.NEW_VERSION }}
+          assignees: cnuss
+          reviewers: cnuss
