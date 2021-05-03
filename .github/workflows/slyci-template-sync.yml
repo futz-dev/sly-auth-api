@@ -41,6 +41,8 @@ jobs:
       - run: |
           rm -fr .git
           cp -R .scaffoldly/template/.git .
+          rm -fr .scaffoldly/template
+      - run: |
           git checkout -b "${{ github.repository }}/${{ env.OLD_VERSION }}"
           git add .
           git restore -s@ -SW -- .scaffoldly
