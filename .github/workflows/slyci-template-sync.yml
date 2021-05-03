@@ -30,28 +30,29 @@ jobs:
         working-directory: src
       - run: |
           ls -al
-          export version=$(npx semver -i minor $(jq -r .version ${{ env.VERSION_FILE }}))
+          version=$(npx semver -i minor $(jq -r .version ${{ env.VERSION_FILE }}))
           git checkout -b "${{ github.repository }}/${version}"
           git add .
+          echo '::set-output name=VERSION::${version}'
+        id: prepare
         working-directory: src
       - run: git restore -s@ -SW -- .scaffoldly
         working-directory: src
       - run: git restore -s@ -SW -- .github/workflows/slyci-*
         working-directory: src
       - run: |
-          export version=$(npx semver -i minor $(jq -r .version ${{ env.VERSION_FILE }}))
-          contents="$(jq -r --arg v $version '.version = $v' ${{ env.VERSION_FILE }})"
+          contents="$(jq -r --arg v ${{ steps.prepare.outputs.VERSION }} '.version = $v' ${{ env.VERSION_FILE }})"
           echo "${contents}" > ${{ env.VERSION_FILE }}
           git add ${{ env.VERSION_FILE }}
         working-directory: src
       - run: |
           git config --local user.email "template-sync@scaffold.ly"
           git config --local user.name "Scaffoldly Template Sync"
-          git commit -m "Update to ${version}"
+          git commit -m "Update to ${{ steps.prepare.outputs.VERSION }}"
         working-directory: src
       - uses: ad-m/github-push-action@master
         with:
           github_token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
           repository: ${{ env.SCAFFOLDLY_TARGET_REPO }}
-          branch: ${{ github.repository }}/${version}
+          branch: ${{ github.repository }}/${{ steps.prepare.outputs.VERSION }}
           directory: src
