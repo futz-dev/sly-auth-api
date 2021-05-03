@@ -45,7 +45,7 @@ jobs:
       - run: |
           rm -fr .git
           cp -R ../dst/.git .
-          git checkout -b "${{ github.repository }}/${old_version}"
+          git checkout -b "${{ github.repository }}/${{ env.OLD_VERSION }}"
           git add .
         working-directory: src
       - run: git restore -s@ -SW -- .scaffoldly
