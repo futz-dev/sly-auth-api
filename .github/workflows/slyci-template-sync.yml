@@ -26,8 +26,6 @@ jobs:
           path: src
       - id: prepare
         run: |
-          git config --local user.email "github-actions@scaffold.ly"
-          git config --local user.name "Scaffoldly GitHub Actions"
           old_version=$(jq -r .version ${{ env.VERSION_FILE }})
           new_version=$(npx semver -i minor $old_version)
           echo "Old version is ${old_version}"
@@ -53,6 +51,8 @@ jobs:
       - run: git restore -s@ -SW -- .github/workflows/slyci-*
         working-directory: src
       - run: |
+          git config --local user.email "github-actions@scaffold.ly"
+          git config --local user.name "Scaffoldly GitHub Actions"
           contents="$(jq -r --arg v ${{ env.NEW_VERSION }} '.version = $v' ${{ env.VERSION_FILE }})"
           echo "${contents}" > ${{ env.VERSION_FILE }}
           git add ${{ env.VERSION_FILE }}
