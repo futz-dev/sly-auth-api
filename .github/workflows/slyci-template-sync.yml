@@ -30,7 +30,7 @@ jobs:
         working-directory: src
       - run: |
           new_version=$(npx semver -i minor $(jq -r .version ${{ env.VERSION_FILE }}))
-          git checkout -b "${{ github.repository }}/${version}"
+          git checkout -b "${{ github.repository }}/${new_version}"
           git add .
           echo 'NEW_VERSION="$new_version" >> $GITHUB_ENV
         id: prepare
