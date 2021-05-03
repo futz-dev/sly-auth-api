@@ -29,6 +29,7 @@ jobs:
           cp -R ../dst/.git .
         working-directory: src
       - run: |
+          ls -al
           export version=$(npx semver -i minor $(jq -r .version ${{ env.VERSION_FILE }}))
           git checkout -b "${{ github.repository }}/${version}"
           git add .
