@@ -33,7 +33,7 @@ jobs:
           echo "New Version is ${new_version}"
           git checkout -b "${{ github.repository }}/${new_version}"
           git add .
-          echo "NEW_VERSION=\"${new_version}\"" >> $GITHUB_ENV
+          echo "NEW_VERSION=${new_version}" >> $GITHUB_ENV
         id: prepare
         working-directory: src
       - run: git restore -s@ -SW -- .scaffoldly
