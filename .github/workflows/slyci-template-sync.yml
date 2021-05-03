@@ -65,3 +65,10 @@ jobs:
           branch: ${{ github.repository }}/${{ env.OLD_VERSION }}
           force: true
           directory: src
+      - uses: repo-sync/pull-request@v2
+        with:
+          source_branch: '${{ github.repository }}/${{ env.OLD_VERSION }}'
+          destination_branch: 'main'
+          pr_reviewer: 'cnuss'
+          pr_assignee: 'cnuss'
+          github_token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
