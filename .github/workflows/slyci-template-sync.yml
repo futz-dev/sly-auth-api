@@ -47,6 +47,7 @@ jobs:
           rm -fr .scaffoldly/template
       - run: |
           git add .
+          git status
           git restore -s@ -SW -- .scaffoldly
           git restore -s@ -SW -- .github/workflows/slyci-*
       - run: |
