@@ -38,6 +38,7 @@ jobs:
         with:
           token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
           repository: ${{ env.SCAFFOLDLY_TARGET_REPO }}
+          ref: main
           persist-credentials: false
           fetch-depth: 0
           path: .scaffoldly/template
@@ -65,13 +66,13 @@ jobs:
           assignees: cnuss
           reviewers: cnuss
   bump-version:
-    needs: create-pr
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
+          ref: main
           persist-credentials: false
           fetch-depth: 0
           path: .scaffoldly/main
