@@ -84,6 +84,8 @@ jobs:
       - run: |
           current_version=$(jq -r .version ${{ env.VERSION_FILE }})
           desired_version=$(npx semver $current_version $new_version | tail -1)
+          echo "Current version is ${current_version}"
+          echo "Desired version is ${desired_version}"
           echo "CURRENT_VERSION=${current_version}" >> $GITHUB_ENV
           echo "DESIRED_VERSION=${desired_version}" >> $GITHUB_ENV
         working-directory: .scaffoldly/main
