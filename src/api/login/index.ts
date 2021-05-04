@@ -17,11 +17,12 @@ export const optionsV1 = async (
   console.log(`Event: ${stringifyRedacted(event)}`);
   console.log(`Context: ${JSON.stringify(context, null, 2)}`);
 
-  return handleSuccess(
-    event,
-    {},
-    { headers: { 'Access-Control-Allow-Methods': 'GET,POST,DELETE' } }
-  );
+  const headers = { 'Access-Control-Allow-Methods': 'GET,POST,DELETE' };
+  if (event.headers['X-Auth-Refresh']) {
+    headers['X-Auth-Refresh'] = event.headers['X-Auth-Refresh'];
+  }
+
+  return handleSuccess(event, {}, { headers });
 };
 
 export const getV1 = async (
