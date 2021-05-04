@@ -17,6 +17,9 @@ env:
 jobs:
   prepare:
     runs-on: ubuntu-latest
+    outputs:
+      OLD_VERSION: ${{ steps.prepare.outputs.OLD_VERSION }}
+      NEW_VERSION: ${{ steps.prepare.outputs.NEW_VERSION }}
     steps:
       - uses: actions/checkout@v2
         with:
@@ -57,17 +60,17 @@ jobs:
           git status
           git diff --staged
       - run: |
-          contents="$(jq -r --arg v ${{ steps.prepare.outputs.NEW_VERSION }} '.version = $v' ${{ env.VERSION_FILE }})"
+          contents="$(jq -r --arg v ${{ needs.prepare.outputs.NEW_VERSION }} '.version = $v' ${{ env.VERSION_FILE }})"
           echo "${contents}" > ${{ env.VERSION_FILE }}
           git add ${{ env.VERSION_FILE }}
       - uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
-          branch: '${{ github.repository }}/${{ steps.prepare.outputs.OLD_VERSION }}'
+          branch: '${{ github.repository }}/${{ needs.prepare.outputs.OLD_VERSION }}'
           base: main
-          title: '${{ steps.prepare.outputs.NEW_VERSION }}: Sync ${{ steps.prepare.outputs.OLD_VERSION }} from ${{ github.repository }}'
-          commit-message: 'Update to ${{ steps.prepare.outputs.NEW_VERSION }}'
-          body: 'Automated sync of ${{ github.repository }}@${{ steps.prepare.outputs.OLD_VERSION }}'
+          title: '${{ needs.prepare.outputs.NEW_VERSION }}: Sync ${{ needs.prepare.outputs.OLD_VERSION }} from ${{ github.repository }}'
+          commit-message: 'Update to ${{ needs.prepare.outputs.NEW_VERSION }}'
+          body: 'Automated sync of ${{ github.repository }}@${{ needs.prepare.outputs.OLD_VERSION }}'
           assignees: cnuss
           reviewers: cnuss
   bump-version:
@@ -84,7 +87,7 @@ jobs:
           path: .scaffoldly/main
       - run: |
           current_version=$(jq -r .version ${{ env.VERSION_FILE }})
-          desired_version=$(npx semver $current_version $new_version | tail -1)
+          desired_version=$(npx semver $current_version ${{ needs.prepare.outputs.NEW_VERSION }} | tail -1)
           echo "Current version is ${current_version}"
           echo "Desired version is ${desired_version}"
           echo "CURRENT_VERSION=${current_version}" >> $GITHUB_ENV
