@@ -71,8 +71,7 @@ jobs:
           title: '${{ needs.prepare.outputs.NEW_VERSION }}: Sync ${{ needs.prepare.outputs.OLD_VERSION }} from ${{ github.repository }}'
           commit-message: 'Update to ${{ needs.prepare.outputs.NEW_VERSION }}'
           body: 'Automated sync of ${{ github.repository }}@${{ needs.prepare.outputs.OLD_VERSION }}'
-          assignees: cnuss
-          reviewers: cnuss
+          assignees: cnuss # TODO: Codeowners
   bump-version:
     needs: prepare
     runs-on: ubuntu-latest
