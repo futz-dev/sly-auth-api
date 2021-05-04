@@ -104,7 +104,7 @@ export const createToken = async (
   const key = JWK.asKey(keys.privateKey.jwk);
   const token = JWT.sign(response.payload, key, {
     audience: generateAudience(login.id),
-    expiresIn: '60 minute',
+    expiresIn: '10 minute', // TODO Set to 60 minutes
     header: {
       typ: 'JWT',
     },
