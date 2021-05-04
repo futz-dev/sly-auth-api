@@ -28,8 +28,8 @@ jobs:
           new_version=$(npx semver -i minor $old_version)
           echo "Old version is ${old_version}"
           echo "New version is ${new_version}"
-          echo "OLD_VERSION=${old_version}" >> $GITHUB_ENV
-          echo "NEW_VERSION=${new_version}" >> $GITHUB_ENV
+          echo "::set-output name=OLD_VERSION::${old_version}"
+          echo "::set-output name=NEW_VERSION::${new_version}"
   create-pr:
     needs: prepare
     runs-on: ubuntu-latest
@@ -52,21 +52,22 @@ jobs:
           rm -fr .scaffoldly/template
       - run: |
           git add .
-          git status
           git restore -s@ -SW -- .scaffoldly
           git restore -s@ -SW -- .github/workflows/slyci-*
+          git status
+          git diff --staged
       - run: |
-          contents="$(jq -r --arg v ${{ env.NEW_VERSION }} '.version = $v' ${{ env.VERSION_FILE }})"
+          contents="$(jq -r --arg v ${{ steps.prepare.outputs.NEW_VERSION }} '.version = $v' ${{ env.VERSION_FILE }})"
           echo "${contents}" > ${{ env.VERSION_FILE }}
           git add ${{ env.VERSION_FILE }}
       - uses: peter-evans/create-pull-request@v3
         with:
           token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
-          branch: '${{ github.repository }}/${{ env.OLD_VERSION }}'
+          branch: '${{ github.repository }}/${{ steps.prepare.outputs.OLD_VERSION }}'
           base: main
-          title: '${{ env.NEW_VERSION }}: Sync ${{ env.OLD_VERSION }} from ${{ github.repository }}'
-          commit-message: 'Update to ${{ env.NEW_VERSION }}'
-          body: 'Automated sync of ${{ github.repository }}@${{ env.OLD_VERSION }}'
+          title: '${{ steps.prepare.outputs.NEW_VERSION }}: Sync ${{ steps.prepare.outputs.OLD_VERSION }} from ${{ github.repository }}'
+          commit-message: 'Update to ${{ steps.prepare.outputs.NEW_VERSION }}'
+          body: 'Automated sync of ${{ github.repository }}@${{ steps.prepare.outputs.OLD_VERSION }}'
           assignees: cnuss
           reviewers: cnuss
   bump-version:
