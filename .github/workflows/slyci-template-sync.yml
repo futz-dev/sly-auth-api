@@ -79,7 +79,7 @@ jobs:
           desired_version=$(npx semver $current_version $new_version | tail -1)
           echo "CURRENT_VERSION=${current_version}" >> $GITHUB_ENV
           echo "DESIRED_VERSION=${desired_version}" >> $GITHUB_ENV
-        working-directory: ./scaffoldly/main
+        working-directory: .scaffoldly/main
       - if: ${{ env.CURRENT_VERSION < env.DESIRED_VERSION }}
         run: |
           git config --local user.email "github-action@users.noreply.github.com"
@@ -88,11 +88,11 @@ jobs:
           echo "${contents}" > ${{ env.VERSION_FILE }}
           git add ${{ env.VERSION_FILE }}
           git commit -m "CI: Bump to ${{ env.DESIRED_VERSION }}"
-        working-directory: ./scaffoldly/main
+        working-directory: .scaffoldly/main
       - if: ${{ env.CURRENT_VERSION < env.DESIRED_VERSION }}
         uses: ad-m/github-push-action@master
         with:
           github_token: ${{ secrets.GITHUB_TOKEN }}
           repository: ${{ github.repository }}
           branch: main
-          directory: './scaffoldly/main'
+          directory: '.scaffoldly/main'
