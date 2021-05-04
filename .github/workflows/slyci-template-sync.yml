@@ -36,6 +36,10 @@ jobs:
     steps:
       - uses: actions/checkout@v2
         with:
+          persist-credentials: false
+          fetch-depth: 0
+      - uses: actions/checkout@v2
+        with:
           token: ${{ env.SCAFFOLDLY_GITHUB_TOKEN }}
           repository: ${{ env.SCAFFOLDLY_TARGET_REPO }}
           ref: main
