@@ -17,13 +17,7 @@ export const optionsV1 = async (
   console.log(`Event: ${stringifyRedacted(event)}`);
   console.log(`Context: ${JSON.stringify(context, null, 2)}`);
 
-  const headers = { 'Access-Control-Allow-Methods': 'GET,POST,DELETE' };
-  if (event.headers['access-control-request-headers']) {
-    const headers = event.headers['access-control-request-headers'].split(',');
-    if (headers.indexOf('x-auth-refresh') !== -1) {
-      headers['x-auth-refresh'] = 'true';
-    }
-  }
+  const headers = { 'Access-Control-Allow-Methods': 'GET,POST,DELETE', 'X-Auth-Refresh': 'true' };
 
   return handleSuccess(event, {}, { headers });
 };
