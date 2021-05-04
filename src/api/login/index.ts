@@ -18,8 +18,11 @@ export const optionsV1 = async (
   console.log(`Context: ${JSON.stringify(context, null, 2)}`);
 
   const headers = { 'Access-Control-Allow-Methods': 'GET,POST,DELETE' };
-  if (event.headers['X-Auth-Refresh']) {
-    headers['X-Auth-Refresh'] = event.headers['X-Auth-Refresh'];
+  if (event.headers['access-control-request-headers']) {
+    const headers = event.headers['access-control-request-headers'].split(',');
+    if (headers.indexOf('x-auth-refresh') !== -1) {
+      headers['x-auth-refresh'] = 'true';
+    }
   }
 
   return handleSuccess(event, {}, { headers });
@@ -80,8 +83,8 @@ export const postV1 = async (
     const refresh = await createRefreshToken(login.id, login.sk, event);
 
     const headers = {};
-    if (event.headers['X-Auth-Refresh']) {
-      headers['X-Auth-Refresh'] = event.headers['X-Auth-Refresh'];
+    if (event.headers['x-auth-refresh']) {
+      headers['x-auth-refresh'] = event.headers['x-auth-refresh'];
     }
 
     const ret = handleSuccess(event, await createToken(login, event), {
