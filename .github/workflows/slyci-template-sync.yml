@@ -3,13 +3,13 @@
 # as a pull request, so we can internally develop templates and have them
 # pushed back to the original template
 
-# TODO: Keep the version in this file in ahead of the template
-
 name: Scaffoldly Template Sync
 on:
   workflow_dispatch:
-  release:
-    types: [published]
+  workflow_run:
+    workflows: ['Live Deploy']
+    types:
+      - completed
 env:
   SCAFFOLDLY_GITHUB_TOKEN: ${{ secrets.SCAFFOLDLY_TEMPLATE_SYNC_GITHUB_TOKEN }}
   SCAFFOLDLY_TARGET_REPO: scaffoldly/sly-auth-api-template
