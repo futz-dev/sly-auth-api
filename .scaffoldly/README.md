@@ -22,6 +22,9 @@ For more info: https://docs.scaffold.ly/infrastructure/configuration-files
 "example-sls-rest-api":
   "live": "https://sly.futz.dev/example"
   "nonlive": "https://sly-dev.futz.dev/example"
+"jokes-sls-rest-api":
+  "live": "https://sly.futz.dev/jokes"
+  "nonlive": "https://sly-dev.futz.dev/jokes"
 "sly-auth-api":
   "live": "https://sly.futz.dev/auth"
   "nonlive": "https://sly-dev.futz.dev/auth"
