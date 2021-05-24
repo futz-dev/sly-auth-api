@@ -1,6 +1,7 @@
 import { STAGE, SERVICE_NAME, Joi, Table } from '@scaffoldly/serverless-util';
 import { ACCOUNTS_TABLE } from './constants';
 
+// eslint-disable-next-line import/prefer-default-export
 export const accountsTable = new Table(
   ACCOUNTS_TABLE,
   SERVICE_NAME,
@@ -11,5 +12,5 @@ export const accountsTable = new Table(
     detail: Joi.any(), // TODO: Define schema
   },
   'id',
-  'sk'
+  'sk',
 );

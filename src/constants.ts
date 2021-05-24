@@ -14,4 +14,7 @@ export const SENSITIVE_KEYS = [
   'authtoken',
   'idtoken',
 ];
-export const AUTH_PREFIXES = ['Bearer', 'jwt'];
+export const AUTH_PREFIXES = ['Bearer', 'jwt', 'Token'];
+
+export const HEADER_X_AUTH_REFRESH = 'x-auth-refresh';
+export const HEADER_SET_COOKIE = 'Set-Cookie';

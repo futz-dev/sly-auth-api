@@ -11,11 +11,12 @@ import { accountsTable } from 'src/db';
 import * as dotenv from 'dotenv';
 import { AuthorizedEvent, GetIdentity } from '@scaffoldly/serverless-util/dist/auth';
 import { PrimaryAccount } from 'src/types';
+
 dotenv.config();
 
 export const postV1 = async (
   event: AuthorizedEvent,
-  context: Context
+  context: Context,
 ): Promise<APIGatewayProxyResult> => {
   console.log(`Event: ${JSON.stringify(event, null, 2)}`);
   console.log(`Context: ${JSON.stringify(context, null, 2)}`);
@@ -35,7 +36,7 @@ export const postV1 = async (
           ...optParams,
         },
       },
-      { overwrite: false }
+      { overwrite: false },
     );
 
     console.log('Created account', row);
@@ -48,7 +49,7 @@ export const postV1 = async (
 
 export const patchByIdV1 = async (
   event: AuthorizedEvent,
-  context: Context
+  context: Context,
 ): Promise<APIGatewayProxyResult> => {
   console.log(`Event: ${JSON.stringify(event, null, 2)}`);
   console.log(`Context: ${JSON.stringify(context, null, 2)}`);
@@ -93,7 +94,7 @@ export const patchByIdV1 = async (
 
 export const getByIdV1 = async (
   event: AuthorizedEvent,
-  context: Context
+  context: Context,
 ): Promise<APIGatewayProxyResult> => {
   console.log(`Event: ${JSON.stringify(event, null, 2)}`);
   console.log(`Context: ${JSON.stringify(context, null, 2)}`);

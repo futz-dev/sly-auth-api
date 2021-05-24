@@ -1,11 +1,12 @@
 import * as twofactor from 'node-2fa';
 import { accountsTable } from 'src/db';
 import { AWS, HttpError } from '@scaffoldly/serverless-util';
-import { env } from '../env';
-import * as totpTemplate from '../templates/totp.json';
 import { STAGE } from 'src/constants';
 import * as _ from 'lodash';
-import { Totp, VerificationMethod } from 'src/types';
+import { VerificationMethod } from 'src/interfaces/Totp';
+import { TotpRow } from 'src/interfaces/models';
+import * as totpTemplate from '../templates/totp.json';
+import { env } from '../env';
 
 const ses = new AWS.SES();
 
@@ -39,7 +40,7 @@ export const fetchTemplate = async (): Promise<string> => {
 export const sendTotp = async (id: string): Promise<VerificationMethod> => {
   console.log('Fetching TOTP configuration for id:', id);
 
-  let { attrs: totp }: { attrs: Totp } = (await accountsTable.model.get(id, 'totp', {})) || {};
+  let { attrs: totp }: { attrs: TotpRow } = (await accountsTable.model.get(id, 'totp', {})) || {};
 
   if (!totp) {
     console.log(`Generating OTP for ${id}`);
@@ -50,8 +51,17 @@ export const sendTotp = async (id: string): Promise<VerificationMethod> => {
     // TODO: Encrypt secret/qr/url
     // TODO: Recovery Codes
     ({ attrs: totp } = await accountsTable.model.create(
-      { id, sk: 'totp', detail: { secret, uri, verified: false, authenticator: false } },
-      { overwrite: false }
+      {
+        id,
+        sk: 'totp',
+        detail: {
+          secret,
+          uri,
+          verified: false,
+          authenticator: false,
+        },
+      },
+      { overwrite: false },
     ));
   }
 
@@ -59,8 +69,8 @@ export const sendTotp = async (id: string): Promise<VerificationMethod> => {
   console.log(`OTP status for ${id}: verified: ${verified} authenticator: ${authenticator}`);
 
   if (!verified || !authenticator) {
-    //TODO: SMS's
-    //TODO: Prob should be a standalone email service
+    // TODO: SMS's
+    // TODO: Prob should be a standalone email service
     console.log(`Sending OTP via email to ${id}`);
 
     const { token } = twofactor.generateToken(totp.detail.secret);
@@ -88,7 +98,8 @@ export const sendTotp = async (id: string): Promise<VerificationMethod> => {
 
 export const verifyTotp = async (email: string, code: string): Promise<boolean> => {
   console.log('Fetching TOTP configuration for id:', email);
-  const { attrs: totp }: { attrs: Totp } = (await accountsTable.model.get(email, 'totp', {})) || {};
+  const { attrs: totp }: { attrs: TotpRow } =
+    (await accountsTable.model.get(email, 'totp', {})) || {};
 
   if (!totp) {
     throw new HttpError(403, 'TOTP is not configured');

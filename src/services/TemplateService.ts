@@ -1,0 +1,38 @@
+import { STAGE, AWS } from '@scaffoldly/serverless-util';
+
+import { templates } from 'src/templates';
+import _ from 'lodash';
+
+export default class TemplateService {
+  ses: AWS.SES;
+
+  constructor() {
+    this.ses = new AWS.SES();
+  }
+
+  fetchTemplate = async (name: string): Promise<string> => {
+    const templateName = `${name}-${STAGE}`;
+    const template = templates[name];
+    const source = {
+      TemplateName: templateName,
+      ...template,
+    };
+
+    let templateResponse: AWS.SES.GetTemplateResponse;
+    try {
+      templateResponse = await this.ses.getTemplate({ TemplateName: templateName }).promise();
+    } catch (e) {
+      console.log('Creating template', templateName);
+      await this.ses.createTemplate({ Template: source }).promise();
+      templateResponse = await this.ses.getTemplate({ TemplateName: templateName }).promise();
+    }
+
+    if (!_.isEqual(templateResponse.Template, source)) {
+      console.log('Updating template', templateName);
+      await this.ses.updateTemplate({ Template: source }).promise();
+    }
+
+    console.log('Using template', templateResponse.Template.TemplateName);
+    return templateResponse.Template.TemplateName;
+  };
+}

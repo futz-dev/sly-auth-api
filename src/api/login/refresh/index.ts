@@ -4,12 +4,14 @@ import { accountsTable } from 'src/db';
 import { createRefreshToken, createToken, fetchRefreshRecord } from 'src/jwt';
 
 import * as dotenv from 'dotenv';
-import { Login } from 'src/types';
+import { LoginRow } from 'src/interfaces/models';
+
 dotenv.config();
 
+// eslint-disable-next-line import/prefer-default-export
 export const postV1 = async (
   event: APIGatewayProxyEvent,
-  context: Context
+  context: Context,
 ): Promise<APIGatewayProxyResult> => {
   console.log(`Event: ${JSON.stringify(event, null, 2)}`);
   console.log(`Context: ${JSON.stringify(context, null, 2)}`);
@@ -17,14 +19,14 @@ export const postV1 = async (
   try {
     const refreshRecord = await fetchRefreshRecord(event);
     if (!refreshRecord) {
-      console.warn(`Unable to find refresh record`);
+      console.warn('Unable to find refresh record');
       return handleError(event, 'Unable to find/match refresh record', { statusCode: 403 });
     }
 
     const { id, detail } = refreshRecord;
     const { sk } = detail;
 
-    const { attrs: login }: { attrs: Login } = (await accountsTable.model.get(id, sk, {})) || {};
+    const { attrs: login }: { attrs: LoginRow } = (await accountsTable.model.get(id, sk, {})) || {};
 
     if (!login) {
       console.warn(`Unable to find existing login with ${id} ${sk}`);
@@ -42,7 +44,7 @@ export const postV1 = async (
       login.id,
       login.sk,
       newEvent,
-      refreshRecord.detail.token
+      refreshRecord.detail.token,
     );
     const ret = handleSuccess(event, await createToken(login, newEvent), {
       headers: { 'x-auth-refresh': 'true' },

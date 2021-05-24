@@ -1,8 +1,9 @@
 import { HttpError, optionalParameters, requiredParameters } from '@scaffoldly/serverless-util';
 import * as Google from 'google-auth-library';
 import { env } from './env';
+import { LoginDetail, VerificationResultBase } from './interfaces/Login';
+import { LoginRequest } from './interfaces/requests';
 import { sendTotp, verifyTotp } from './totp';
-import { LoginDetail, VerificationResultBase } from './types';
 
 const verifyGoogleToken = async (token: string): Promise<VerificationResultBase> => {
   const client = new Google.OAuth2Client({ clientId: env.env_vars.GOOGLE_CLIENT_ID });
@@ -43,7 +44,8 @@ const verifyEmail = async (email: string, code: string): Promise<VerificationRes
   return { verified: false, verificationMethod };
 };
 
-export const verifyLogin = async (body: string): Promise<LoginDetail> => {
+// eslint-disable-next-line import/prefer-default-export
+export const verifyLogin = async (body: string): Promise<LoginDetail<LoginRequest>> => {
   const { provider } = requiredParameters(body, ['provider']);
 
   // Cleanse/normalize the email address
@@ -69,7 +71,7 @@ export const verifyLogin = async (body: string): Promise<LoginDetail> => {
         ...result,
         id: email,
         provider,
-        payload: { email },
+        // payload,
       };
     }
     default: {

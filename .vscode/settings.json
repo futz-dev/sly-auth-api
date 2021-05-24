@@ -1,3 +1,15 @@
 {
-  "editor.formatOnSave": true
+  "editor.formatOnSave": true,
+  "editor.codeActionsOnSave": {
+    "source.fixAll.eslint": true
+  },
+  "filewatcher.commands": [
+    {
+      "match": "\\.ts*",
+      "isAsync": true,
+      "cmd": "cd ${workspaceRoot} && yarn spec-and-routes",
+      "event": "onFileChange"
+    }
+  ],
+  "typescript.preferences.importModuleSpecifier": "relative"
 }

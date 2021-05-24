@@ -1,35 +1,28 @@
 import { GetSecret, SetSecret } from '@scaffoldly/serverless-util';
 import axios from 'axios';
 import { Buffer } from 'buffer';
-import * as moment from 'moment';
+import moment from 'moment';
 import { v4 as uuidv4 } from 'uuid';
+import { JWT, JWK, JWKS, JWKECKey } from 'jose';
+import { APIGatewayAuthorizerEvent, APIGatewayProxyEvent } from 'aws-lambda';
 import { AUTH_PREFIXES, JWT_REFRESH_TOKEN_MAX_AGE, REFRESH_COOKIE_PREFIX } from './constants';
 import { accountsTable } from './db';
 import { env } from './env';
 
-const JWKS_SECRET_NAME = 'jwks';
-
-import { JWT, JWK, JWKS, JWKECKey } from 'jose';
-import {
-  DecodedJwtPayload,
-  GeneratedKeys,
-  JwtPayload,
-  Login,
-  Refresh,
-  TokenResponse,
-  VerifyTokenResponse,
-} from './types';
-import { APIGatewayAuthorizerEvent, APIGatewayProxyEvent } from 'aws-lambda';
 import { cleanseObject } from './util';
+import { LoginRow, RefreshRow } from './interfaces/models';
+import { GeneratedKeys, JwtPayload, DecodedJwtPayload } from './interfaces/Jwt';
+import { AuthorizeResponse, TokenResponse } from './interfaces/responses';
+
+const JWKS_SECRET_NAME = 'jwks';
 
 // eslint-disable-next-line @typescript-eslint/no-var-requires
 const Cookies = require('cookies');
 
 const jwksCache = {};
 
-const generateAudience = (id: string) => {
-  return `urn:auth:${env.env_vars.SERVERLESS_API_DOMAIN.split('.').reverse().join('.')}:${id}`;
-};
+const generateAudience = (id: string) =>
+  `urn:auth:${env.env_vars.SERVERLESS_API_DOMAIN.split('.').reverse().join('.')}:${id}`;
 
 export const generateKeys = (issuer: string): GeneratedKeys => {
   const kid = uuidv4();
@@ -70,7 +63,7 @@ export const getPublicKey = async (): Promise<JWKECKey> => {
   return keys.publicKey.jwk;
 };
 
-export const createEmptyToken = (login: Login, event: APIGatewayProxyEvent): TokenResponse => {
+export const createEmptyToken = (login: LoginRow, event: APIGatewayProxyEvent): TokenResponse => {
   const { headers } = event;
   let { path } = event;
   const { Host } = headers;
@@ -83,7 +76,7 @@ export const createEmptyToken = (login: Login, event: APIGatewayProxyEvent): Tok
     id: login.id,
     sk: login.sk,
     refreshUrl: `${ssl ? 'https' : 'http'}://${Host}${path}/refresh`,
-    verifyUrl: `${ssl ? 'https' : 'http'}://${Host}${path}/verify`,
+    authorizeUrl: `${ssl ? 'https' : 'http'}://${Host}${path}/authorize`,
     certsUrl: `${ssl ? 'https' : 'http'}://${Host}${path}/certs`,
   };
 
@@ -95,8 +88,8 @@ export const createEmptyToken = (login: Login, event: APIGatewayProxyEvent): Tok
 };
 
 export const createToken = async (
-  login: Login,
-  event: APIGatewayProxyEvent
+  login: LoginRow,
+  event: APIGatewayProxyEvent,
 ): Promise<TokenResponse> => {
   const response = createEmptyToken(login, event);
 
@@ -121,8 +114,8 @@ export const createRefreshToken = async (
   id: string,
   sk: string,
   event: APIGatewayProxyEvent,
-  token = uuidv4()
-): Promise<Refresh> => {
+  token = uuidv4(),
+): Promise<RefreshRow> => {
   const { headers } = event;
   const { Host } = headers;
 
@@ -138,7 +131,7 @@ export const createRefreshToken = async (
 
   console.log('New cookie', cookie);
 
-  const { attrs: refresh }: { attrs: Refresh } = await accountsTable.model.create(
+  const { attrs: refresh }: { attrs: RefreshRow } = await accountsTable.model.create(
     {
       id,
       sk: `jwt_refresh_${sk}`,
@@ -149,7 +142,7 @@ export const createRefreshToken = async (
         header: cookie.toHeader(),
       },
     },
-    { overwrite: true }
+    { overwrite: true },
   );
 
   return refresh;
@@ -315,7 +308,7 @@ export const verifyJwt = async (jwt: string): Promise<DecodedJwtPayload> => {
   const issuerUrl = new URL(iss);
   if (issuerUrl.hostname.indexOf(issuer) === -1) {
     throw new Error(
-      `Issuer mismatch. Got: ${decoded.iss}; Expected hostname to contain: ${issuer}`
+      `Issuer mismatch. Got: ${decoded.iss}; Expected hostname to contain: ${issuer}`,
     );
   }
 
@@ -333,9 +326,7 @@ export const verifyJwt = async (jwt: string): Promise<DecodedJwtPayload> => {
   return verified as DecodedJwtPayload;
 };
 
-export const verifyToken = async (
-  event: APIGatewayAuthorizerEvent
-): Promise<VerifyTokenResponse> => {
+export const verifyToken = async (event: APIGatewayAuthorizerEvent): Promise<AuthorizeResponse> => {
   const response = {
     principal: undefined,
     authorized: false,
@@ -373,7 +364,7 @@ export const verifyToken = async (
   return response;
 };
 
-export const fetchRefreshRecord = async (event: APIGatewayProxyEvent): Promise<Refresh> => {
+export const fetchRefreshRecord = async (event: APIGatewayProxyEvent): Promise<RefreshRow> => {
   if (!event) {
     console.warn('Unable to refresh: event is empty');
     return null;
@@ -403,7 +394,7 @@ export const fetchRefreshRecord = async (event: APIGatewayProxyEvent): Promise<R
   }
 
   // Lookup refresh token using decoded.id and 'jwt_refresh"
-  const { attrs: record }: { attrs: Refresh } =
+  const { attrs: record }: { attrs: RefreshRow } =
     (await accountsTable.model.get(decoded.id, `jwt_refresh_${decoded.sk}`, {})) || {};
 
   if (!record) {
@@ -421,7 +412,7 @@ export const fetchRefreshRecord = async (event: APIGatewayProxyEvent): Promise<R
   // Compare sly_jrt and decoded.sk value with result from DB
   if (record.detail.token !== cookie.value) {
     console.warn(
-      `Token mismatch. Expected ${record.detail.token}, got ${cookie.value} from cookie ${cookie.name}`
+      `Token mismatch. Expected ${record.detail.token}, got ${cookie.value} from cookie ${cookie.name}`,
     );
     return null;
   }

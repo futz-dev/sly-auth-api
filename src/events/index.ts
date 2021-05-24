@@ -3,11 +3,13 @@ import { verifyToken } from 'src/jwt';
 import { stringifyRedacted } from 'src/util';
 
 import * as dotenv from 'dotenv';
+
 dotenv.config();
 
+// eslint-disable-next-line import/prefer-default-export
 export const authorizeV1 = async (
   event: APIGatewayAuthorizerEvent,
-  context: Context
+  context: Context,
 ): Promise<APIGatewayAuthorizerResult> => {
   console.log(`Event: ${stringifyRedacted(event)}`);
   console.log(`Context: ${JSON.stringify(context, null, 2)}`);
@@ -25,7 +27,7 @@ export const authorizeV1 = async (
   // TODO: Check resource path
 
   const response = {
-    principalId: verified.principal,
+    principalId: verified.identity,
     policyDocument: {
       Version: '2012-10-17',
       Statement: [
