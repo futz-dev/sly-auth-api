@@ -162,11 +162,14 @@ export default class LoginService {
       throw new HttpError(400, 'Unknown provider');
     }
 
-    const loginRow: LoginRow = await this.accountsModel.create({
-      id: loginDetail.id,
-      sk: `login_${loginDetail.provider}_${loginDetail.id}`,
-      detail: loginDetail,
-    });
+    const loginRow: LoginRow = await this.accountsModel.create(
+      {
+        id: loginDetail.id,
+        sk: `login_${loginDetail.provider}_${loginDetail.id}`,
+        detail: loginDetail,
+      },
+      { overwrite: true },
+    );
 
     return loginRow;
   };
