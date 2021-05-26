@@ -7,6 +7,8 @@ import { DecodedJwtPayload, HttpRequest } from './interfaces';
 export async function authorize(
   request: HttpRequest,
   securityName: string,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  scopes?: string[],
 ): Promise<DecodedJwtPayload> {
   if (securityName !== 'jwt') {
     throw new Error(`Unsupported Security Name: ${securityName}`);
