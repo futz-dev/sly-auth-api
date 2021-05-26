@@ -39,6 +39,8 @@ export default class JwtService {
     request: HttpRequest,
     customPath?: string,
   ): TokenResponse => {
+    console.log('!!!! emptyToken Debug', JSON.stringify(request));
+
     const { headers } = request;
     let { path } = customPath ? { path: customPath } : request;
     const { Host } = headers;

@@ -4,12 +4,12 @@
   "license": "UNLICENSED",
   "scripts": {
     "prepare": "yarn serverless dynamodb install",
-    "postinstall": "yarn dotenv && yarn spec-and-routes",
+    "postinstall": "yarn openapi && yarn dotenv",
     "start": "yarn serverless offline start",
-    "deploy": "yarn serverless deploy",
+    "deploy": "yarn openapi && yarn serverless deploy",
     "serverless": "SLS_DEBUG=* serverless",
     "dotenv": "dotenv -e .scaffoldly/.env -c $NODE_ENV -- ngx-scripts env service_urls env_vars --parse-json --out src/env.ts",
-    "spec-and-routes": "yarn run tsoa spec-and-routes",
+    "openapi": "yarn run tsoa spec-and-routes",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },
   "module": "",

@@ -7,7 +7,7 @@
     {
       "match": "\\.ts*",
       "isAsync": true,
-      "cmd": "cd ${workspaceRoot} && yarn spec-and-routes",
+      "cmd": "cd ${workspaceRoot} && yarn openapi",
       "event": "onFileChange"
     }
   ],

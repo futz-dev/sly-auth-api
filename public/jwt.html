@@ -3,6 +3,9 @@
 
 <head>
   <meta charset="utf-8">
+  <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+  <meta http-equiv="Pragma" content="no-cache" />
+  <meta http-equiv="Expires" content="0" />
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.3.1/css/bootstrap.min.css"
     integrity="sha384-ggOyR0iXCbMQv3Xipma34MD+dH/1fQ784/j6cY/iJTQUOhcWr7x9JvoRxT2MZw1T" crossorigin="anonymous">
@@ -38,6 +41,7 @@
         .done((response) => {
           console.log("Success!", JSON.stringify(response));
           $('#responseBody').html(JSON.stringify(response, null, 2));
+          handleResponse(response);
         })
         .fail((err) => {
           console.log("Login Failure", JSON.stringify(err));
@@ -47,6 +51,8 @@
 
     function handleResponse(response) {
       if (response.verified) {
+        $('#emailFormGroup').show();
+        $('#codeFormGroup').hide();
         return;
       }
       $('#emailFormGroup').hide();
@@ -70,7 +76,7 @@
   <div class="container">
     <form id="jwt">
       <div class="row">
-        <div class="col-8 offset-2">
+        <div class="col-8 offset-2 pt-5">
           <h1>JWT Token Generator</h1>
           <p>This form is a helper page to do <code>POST</code> requests to <code>api/v1/jwt</code> for JWT Token
             Generation
@@ -82,16 +88,15 @@
               placeholder="me@example.com">
             <small id="emailHelp" class="form-text text-muted">Enter an email address.</small>
           </div>
+          <div id="codeFormGroup" class="form-group" style="display: none;">
+            <label for="code">Email Verification Code</label>
+            <input type="number" class="form-control" id="code" aria-describedby="codeHelp" placeholder="123456">
+            <small id="codeHelp" class="form-text text-muted">Enter the verification sent to your email.</small>
+          </div>
           <button type="submit" class="btn btn-primary">Submit</button>
         </div>
-        <div id="codeFormGroup" class="form-group" style="display: none;">
-          <label for="code">Email Verification Code</label>
-          <input type="number" class="form-control" id="code" aria-describedby="codeHelp" placeholder="123456">
-          <small id="codeHelp" class="form-text text-muted">Enter the verification sent to your email.</small>
-        </div>
       </div>
-      <div class="col-8 offset-2" id="response" style="display: none;">
-        <hr />
+      <div class="col-8 offset-2 pt-3" id="response" style="display: none;">
         <h2>Backend Response</h2>
         <div class="alert alert-secondary text-wrap mw-100" role="alert">
           <pre><code id="responseBody"></code></pre>
