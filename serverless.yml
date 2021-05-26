@@ -33,6 +33,7 @@ functions:
   lambda-handler:
     role: arn:${env:AWS_PARTITION}:iam::${env:AWS_ACCOUNT_ID}:role/${self:service}-${opt:stage, "local"}
     handler: src/lambda.handler
+    timeout: 30
     events:
       - http:
           path: /
