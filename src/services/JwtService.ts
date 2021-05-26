@@ -2,14 +2,9 @@ import { GetSecret, SetSecret } from '@scaffoldly/serverless-util';
 import { env } from 'src/env';
 import { v4 as uuidv4 } from 'uuid';
 import { JWT, JWK, JWKECKey, JWKS } from 'jose';
-import { DecodedJwtPayload, GeneratedKeys, JwtPayload } from 'src/interfaces/Jwt';
+import { GeneratedKeys, Jwk } from 'src/interfaces/Jwt';
 import { LoginRow, RefreshRow } from 'src/interfaces/models';
-import {
-  ExpressRequest,
-  extractAuthorization,
-  extractToken,
-  HttpRequest,
-} from 'src/serverless-util/http';
+import { extractAuthorization, extractToken } from 'src/serverless-util';
 import { cleanseObject } from 'src/util';
 import Cookies from 'cookies';
 import { JWT_REFRESH_TOKEN_MAX_AGE, REFRESH_COOKIE_PREFIX } from 'src/constants';
@@ -17,6 +12,7 @@ import AccountsModel from 'src/models/AccountsModel';
 import moment, { Moment } from 'moment';
 import { TokenResponse } from 'src/interfaces/responses';
 import axios from 'axios';
+import { DecodedJwtPayload, HttpRequest, JwtPayload } from '../serverless-util';
 
 const JWKS_SECRET_NAME = 'jwks';
 const DOMAIN = env.env_vars.SERVERLESS_API_DOMAIN.split('.').reverse().join('.');
@@ -26,11 +22,14 @@ const jwksCache: { [url: string]: { keys: JWKS.KeyStore; expires: Moment } } = {
 export default class JwtService {
   accountsModel: AccountsModel;
 
+  domain: string;
+
   constructor() {
     this.accountsModel = new AccountsModel();
+    this.domain = DOMAIN;
   }
 
-  getPublicKey = async (): Promise<JWKECKey> => {
+  getPublicKey = async (): Promise<Jwk> => {
     const keys = await this.getOrCreateKeys();
     return keys.publicKey.jwk;
   };
@@ -87,7 +86,7 @@ export default class JwtService {
     const response = this.createEmptyToken(loginRow, request, customPath);
 
     const keys = await this.getOrCreateKeys();
-    const key = JWK.asKey(keys.privateKey.jwk);
+    const key = JWK.asKey(keys.privateKey.jwk as JWKECKey);
     const token = JWT.sign(response.payload, key, {
       audience: this.generateAudience(loginRow.id),
       expiresIn: '60 minute',
@@ -105,7 +104,7 @@ export default class JwtService {
 
   createRefreshToken = async (
     loginRow: LoginRow,
-    request: ExpressRequest,
+    request: HttpRequest,
     token = uuidv4(),
   ): Promise<RefreshRow> => {
     const { headers } = request;
@@ -281,11 +280,11 @@ export default class JwtService {
       issuer,
       publicKey: {
         pem: key.toPEM(false),
-        jwk: key.toJWK(false),
+        jwk: key.toJWK(false) as Jwk,
       },
       privateKey: {
         pem: key.toPEM(true),
-        jwk: key.toJWK(true),
+        jwk: key.toJWK(true) as Jwk,
       },
     };
   };
@@ -307,15 +306,15 @@ export default class JwtService {
       console.warn('Unable to find domain in audience');
     }
 
-    if (domain === DOMAIN) {
+    if (domain === this.domain) {
       return true;
     }
 
-    console.warn(`Domain mismatch. Got ${domain}, expected ${DOMAIN}`);
+    console.warn(`Domain mismatch. Got ${domain}, expected ${this.domain}`);
     return false;
   };
 
-  private generateAudience = (id: string) => `urn:auth:${DOMAIN}:${id}`;
+  public generateAudience = (id: string): string => `urn:auth:${this.domain}:${id}`;
 
   private extractRefreshCookie = (request: HttpRequest, sk: string) => {
     const cookie = {

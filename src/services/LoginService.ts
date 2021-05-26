@@ -5,16 +5,13 @@ import { LoginDetail, VerificationResultBase } from 'src/interfaces/Login';
 import { LoginRow } from 'src/interfaces/models';
 import { AuthorizeRequest, LoginRequest } from 'src/interfaces/requests';
 import AccountsModel from 'src/models/AccountsModel';
-import { HEADER_SET_COOKIE, HEADER_X_AUTH_REFRESH } from '../constants';
-import { DecodedJwtPayload } from '../interfaces/Jwt';
 import {
   AuthorizeResponse,
   TokenResponseHeaders,
   TokenResponseWithHeaders,
 } from '../interfaces/responses';
-import { extractToken, HttpRequest } from '../serverless-util/http';
+import { DecodedJwtPayload, HttpRequest, extractToken } from '../serverless-util';
 import JwtService from './JwtService';
-
 import TotpService from './TotpService';
 
 export default class LoginService {
@@ -34,18 +31,21 @@ export default class LoginService {
     const loginRow = await this.verifyLogin(login);
 
     if (!loginRow.detail.verified) {
-      return { tokenResponse: this.jwtService.createEmptyToken(loginRow, request), headers: {} };
+      return {
+        tokenResponse: this.jwtService.createEmptyToken(loginRow, request),
+        headers: {},
+      };
     }
 
     const refreshRow = await this.jwtService.createRefreshToken(loginRow, request);
     const token = await this.jwtService.createToken(loginRow, request);
 
     const headers: TokenResponseHeaders = {
-      [HEADER_SET_COOKIE]: refreshRow.detail.header,
+      'set-cookie': refreshRow.detail.header,
     };
 
     if (request.headers['x-auth-refresh']) {
-      headers[HEADER_X_AUTH_REFRESH] = request.headers['x-auth-refresh'] as string;
+      headers['x-auth-refresh'] = request.headers['x-auth-refresh'] as string;
     }
 
     return { tokenResponse: token, headers };
@@ -82,7 +82,7 @@ export default class LoginService {
     const tokenResponse = await this.jwtService.createToken(loginRow, request, path);
     const headers: TokenResponseHeaders = {
       'x-auth-refresh': 'true',
-      'Set-Cookie': refreshRow.detail.header,
+      'set-cookie': refreshRow.detail.header,
     };
 
     return { tokenResponse, headers };
@@ -90,20 +90,20 @@ export default class LoginService {
 
   authorize = async (authorize: AuthorizeRequest): Promise<AuthorizeResponse> => {
     const response: AuthorizeResponse = {
-      identity: undefined,
+      id: undefined,
       authorized: false,
       payload: undefined,
-      error: undefined,
+      detail: undefined,
     };
 
     if (!authorize || !authorize.token || !authorize.host || !authorize.path) {
-      response.error = new Error('Missing token, host or path from authorize request');
+      response.detail = 'Missing token, host or path from authorize request';
       return response;
     }
 
     const token = extractToken(authorize.token);
     if (!token) {
-      response.error = new Error('Unable to extract token');
+      response.detail = 'Unable to extract token';
       return response;
     }
 
@@ -111,7 +111,7 @@ export default class LoginService {
     try {
       payload = await this.jwtService.verifyJwt(token);
     } catch (e) {
-      response.error = e;
+      response.detail = e.message || e.name || 'Unexpected error verifying JWT';
       return response;
     }
 
@@ -125,7 +125,7 @@ export default class LoginService {
     // TODO Check URI with scopes
     // TODO Cache
 
-    response.identity = payload.aud;
+    response.id = payload.id;
     response.authorized = true;
     response.payload = payload;
 
@@ -141,7 +141,7 @@ export default class LoginService {
       const result = await this.verifyGoogleToken(login.idToken);
       loginDetail = {
         ...result,
-        id: email,
+        id: this.jwtService.generateAudience(email),
         provider: login.provider,
         payload: login,
       };
@@ -151,7 +151,7 @@ export default class LoginService {
       const result = await this.verifyEmail(email, login.code);
       loginDetail = {
         ...result,
-        id: email,
+        id: this.jwtService.generateAudience(email),
         provider: login.provider,
         payload: login,
       };

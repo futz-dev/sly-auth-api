@@ -1,11 +1,12 @@
-import { JWKECKey } from 'jose';
-import { HEADER_SET_COOKIE, HEADER_X_AUTH_REFRESH } from 'src/constants';
-import { DecodedJwtPayload, JwtPayload } from './Jwt';
+import { DecodedJwtPayload, JwtPayload } from '../serverless-util';
+import { AccountDetail } from './Account';
+import { Jwk } from './Jwt';
 import { LoginDetail } from './Login';
+import { AccountRow } from './models';
 import { Provider, ProviderDetail } from './Provider';
 
 export interface JWKSResponse {
-  keys: JWKECKey[];
+  keys: Jwk[];
 }
 
 export type ProviderResponse = {
@@ -16,10 +17,9 @@ export interface TokenResponse extends LoginDetail<JwtPayload> {
   token: string;
 }
 
-export interface TokenResponseHeaders {
-  [HEADER_X_AUTH_REFRESH]?: string;
-  [HEADER_SET_COOKIE]?: string;
-}
+export type Header = 'set-cookie' | 'x-auth-refresh';
+
+export type TokenResponseHeaders = { [header in Header]?: string };
 
 export type TokenResponseWithHeaders = {
   tokenResponse: TokenResponse;
@@ -28,7 +28,13 @@ export type TokenResponseWithHeaders = {
 
 export interface AuthorizeResponse {
   authorized: boolean;
-  identity?: string;
+  id?: string;
   payload?: DecodedJwtPayload;
-  error?: Error;
+  detail?: string;
+}
+
+export interface AccountResponse extends AccountRow {
+  id: string;
+  sk: string;
+  detail: AccountDetail;
 }

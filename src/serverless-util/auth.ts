@@ -1,7 +1,7 @@
 import axios from 'axios';
 import { JWT } from 'jose';
-import { DecodedJwtPayload } from '../interfaces/Jwt';
-import { extractAuthorization, HttpRequest } from './http';
+import { extractAuthorization } from './http';
+import { DecodedJwtPayload, HttpRequest } from './interfaces';
 
 export async function authorize(
   request: HttpRequest,

@@ -4,7 +4,7 @@
   "license": "UNLICENSED",
   "scripts": {
     "prepare": "yarn serverless dynamodb install",
-    "postinstall": "yarn dotenv",
+    "postinstall": "yarn dotenv && yarn spec-and-routes",
     "start": "yarn serverless offline start",
     "deploy": "yarn serverless deploy",
     "serverless": "SLS_DEBUG=* serverless",
@@ -17,6 +17,7 @@
     "@ngx-rocket/scripts": "^5.1.0",
     "@types/aws-lambda": "^8.10.72",
     "@types/body-parser": "^1.19.0",
+    "@types/cookies": "^0.7.6",
     "@types/cors": "^2.8.10",
     "@types/dotenv": "^8.2.0",
     "@types/express": "^4.17.11",
@@ -49,7 +50,6 @@
   },
   "dependencies": {
     "@scaffoldly/serverless-util": "^2.0.25",
-    "@types/cookies": "^0.7.6",
     "@vendia/serverless-express": "^4.3.7",
     "axios": "^0.21.1",
     "cookies": "^0.8.0",

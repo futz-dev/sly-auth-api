@@ -1,3 +1,4 @@
+import { AccountDetail } from './Account';
 import { RefreshDetail } from './Jwt';
 import { LoginDetail } from './Login';
 import { LoginRequest } from './requests';
@@ -15,3 +16,4 @@ export interface AccountsRow<T> extends AccountsRowBase {
 export type TotpRow = AccountsRow<TotpDetail>;
 export type LoginRow = AccountsRow<LoginDetail<LoginRequest>>;
 export type RefreshRow = AccountsRow<RefreshDetail>;
+export type AccountRow = AccountsRow<AccountDetail>;

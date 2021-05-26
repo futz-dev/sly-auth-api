@@ -11,5 +11,8 @@
       "event": "onFileChange"
     }
   ],
-  "typescript.preferences.importModuleSpecifier": "relative"
+  "typescript.preferences.importModuleSpecifier": "relative",
+  "[html]": {
+    "editor.defaultFormatter": "vscode.html-language-features"
+  }
 }

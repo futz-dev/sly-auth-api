@@ -21,6 +21,12 @@ export default class AccountsModel {
     );
   }
 
+  // eslint-disable-next-line @typescript-eslint/explicit-module-boundary-types
+  get model() {
+    // TODO: Workaround until dynamo library is better typed
+    return this.table.model;
+  }
+
   // TODO: Operations from dynamodb type
   create = async <T>(row: T, options = { overwrite: false }): Promise<T> => {
     const { attrs: t }: { attrs: T } = (await this.table.model.create(row, options)) || {};

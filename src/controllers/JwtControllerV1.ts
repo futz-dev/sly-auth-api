@@ -9,6 +9,7 @@ import {
   TsoaResponse,
   Response,
   Security,
+  Path,
 } from 'tsoa';
 import { env } from '../env';
 import { LoginRequest, AuthorizeRequest } from '../interfaces/requests';
@@ -17,36 +18,42 @@ import {
   JWKSResponse,
   ProviderResponse,
   TokenResponse,
-  TokenResponseHeaders,
 } from '../interfaces/responses';
-import { HttpRequest } from '../serverless-util/http';
+import { ErrorResponse, HttpRequest, HttpRequestWithUser } from '../serverless-util';
+import AccountService from '../services/AccountService';
 import JwtService from '../services/JwtService';
 import LoginService from '../services/LoginService';
 import ProviderService from '../services/ProviderService';
 
-// TODO Lob off /auth
-@Route(`/api/v1/oauth2`)
-export class Oauth2ControllerV1 extends Controller {
+@Route(`/api/v1/jwt`)
+export class JwtControllerV1 extends Controller {
+  envVars = env.env_vars;
+
   loginService: LoginService;
 
   jwtService: JwtService;
 
   providerService: ProviderService;
 
+  accountService: AccountService;
+
   constructor() {
     super();
     this.loginService = new LoginService();
     this.jwtService = new JwtService();
     this.providerService = new ProviderService();
+    this.accountService = new AccountService();
   }
 
   @Post()
-  // 401, 500
-  @Response<TokenResponse, TokenResponseHeaders>(200)
+  @Response<ErrorResponse>('4XX')
+  @Response<ErrorResponse>('5XX')
+  @Response<TokenResponse, { 'set-cookie'?: string }>(200)
   public async login(
     @Body() login: LoginRequest,
     @Request() request: HttpRequest,
-    @Res() res: TsoaResponse<200, TokenResponse, TokenResponseHeaders>,
+    @Res()
+    res: TsoaResponse<200, TokenResponse, { 'set-cookie'?: string }>,
   ): Promise<TokenResponse> {
     const { tokenResponse, headers } = await this.loginService.login(login, request);
     const response = res(200, tokenResponse, headers);
@@ -55,9 +62,13 @@ export class Oauth2ControllerV1 extends Controller {
 
   @Post('refresh')
   @Security('jwt')
+  @Response<ErrorResponse>('4XX')
+  @Response<ErrorResponse>('5XX')
+  @Response<TokenResponse, { 'set-cookie'?: string; 'x-auth-refresh'?: string }>(200)
   public async refresh(
     @Request() request: HttpRequest,
-    @Res() res: TsoaResponse<200, TokenResponse, TokenResponseHeaders>,
+    @Res()
+    res: TsoaResponse<200, TokenResponse, { 'set-cookie'?: string; 'x-auth-refresh'?: string }>,
   ): Promise<TokenResponse> {
     const { tokenResponse, headers } = await this.loginService.refresh(request);
     const response = res(200, tokenResponse, headers);
@@ -77,20 +88,28 @@ export class Oauth2ControllerV1 extends Controller {
   }
 
   @Get('providers')
-  public async getProviders(): Promise<ProviderResponse> {
+  public getProviders(): ProviderResponse {
     // TODO: Move the ProviderDetail generation into ProviderService
     const response: ProviderResponse = {
-      APPLE: env.env_vars.APPLE_CLIENT_ID
-        ? { name: 'Apple', clientId: env.env_vars.APPLE_CLIENT_ID, enabled: true }
+      GOOGLE: this.envVars.GOOGLE_CLIENT_ID
+        ? { name: 'Google', clientId: this.envVars.GOOGLE_CLIENT_ID, enabled: true }
         : { enabled: false },
-      GOOGLE: env.env_vars.GOOGLE_CLIENT_ID
-        ? { name: 'Google', clientId: env.env_vars.GOOGLE_CLIENT_ID, enabled: true }
-        : { enabled: false },
-      EMAIL: (await this.providerService.isDomainVerified(env.env_vars.MAIL_DOMAIN))
-        ? { name: 'Email', clientId: env.env_vars.MAIL_DOMAIN, enabled: true }
+      EMAIL: this.envVars.MAIL_DOMAIN
+        ? { name: 'Email', clientId: this.envVars.MAIL_DOMAIN, enabled: true }
         : { enabled: false },
     };
 
     return response;
+  }
+
+  @Get('{id}/providers')
+  @Security('jwt')
+  @Response<ErrorResponse>('4XX')
+  @Response<ErrorResponse>('5XX')
+  public getProvidersById(
+    @Path('id') id: string,
+    @Request() request: HttpRequestWithUser,
+  ): Promise<ProviderResponse> {
+    return this.accountService.getProviders(id, request.user);
   }
 }

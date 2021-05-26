@@ -6,11 +6,137 @@
 		"requestBodies": {},
 		"responses": {},
 		"schemas": {
+			"AccountDetail": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"company": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"email"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AccountsRow_AccountDetail_": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"sk": {
+						"type": "string"
+					},
+					"detail": {
+						"$ref": "#/components/schemas/AccountDetail"
+					}
+				},
+				"required": [
+					"id",
+					"sk",
+					"detail"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AccountResponse": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"sk": {
+						"type": "string"
+					},
+					"detail": {
+						"$ref": "#/components/schemas/AccountDetail"
+					}
+				},
+				"required": [
+					"id",
+					"sk",
+					"detail"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ErrorResponseTracking": {
+				"properties": {
+					"method": {
+						"type": "string"
+					},
+					"path": {
+						"type": "string"
+					},
+					"version": {
+						"type": "string"
+					},
+					"source": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"method",
+					"path",
+					"version",
+					"source"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ErrorResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"traceId": {
+						"type": "string"
+					},
+					"tracking": {
+						"$ref": "#/components/schemas/ErrorResponseTracking"
+					},
+					"context": {
+						"properties": {},
+						"additionalProperties": {},
+						"type": "object"
+					}
+				},
+				"required": [
+					"message",
+					"traceId",
+					"tracking"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AccountRequest": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"company": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"email"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
 			"Provider": {
 				"type": "string",
 				"enum": [
 					"GOOGLE",
-					"APPLE",
 					"EMAIL"
 				]
 			},
@@ -78,15 +204,6 @@
 					"provider",
 					"token"
 				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"TokenResponseHeaders": {
-				"properties": {
-					"undefined": {
-						"type": "string"
-					}
-				},
 				"type": "object",
 				"additionalProperties": false
 			},
@@ -211,28 +328,19 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Error": {
-				"properties": {
-					"stack": {
-						"type": "string"
-					}
-				},
-				"type": "object",
-				"additionalProperties": false
-			},
 			"AuthorizeResponse": {
 				"properties": {
 					"authorized": {
 						"type": "boolean"
 					},
-					"identity": {
+					"id": {
 						"type": "string"
 					},
 					"payload": {
 						"$ref": "#/components/schemas/DecodedJwtPayload"
 					},
-					"error": {
-						"$ref": "#/components/schemas/Error"
+					"detail": {
+						"type": "string"
 					}
 				},
 				"required": [
@@ -278,63 +386,8 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"ECCurve": {
-				"type": "string",
-				"enum": [
-					"P-256",
-					"secp256k1",
-					"P-384",
-					"P-521"
-				]
-			},
-			"use": {
-				"type": "string",
-				"enum": [
-					"sig",
-					"enc"
-				]
-			},
-			"keyOperation": {
-				"type": "string",
-				"enum": [
-					"sign",
-					"verify",
-					"encrypt",
-					"decrypt",
-					"wrapKey",
-					"unwrapKey",
-					"deriveKey"
-				]
-			},
-			"JWKECKey": {
+			"Jwk": {
 				"properties": {
-					"alg": {
-						"type": "string"
-					},
-					"use": {
-						"$ref": "#/components/schemas/use"
-					},
-					"kid": {
-						"type": "string"
-					},
-					"key_ops": {
-						"items": {
-							"$ref": "#/components/schemas/keyOperation"
-						},
-						"type": "array"
-					},
-					"x5c": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
-					"x5t": {
-						"type": "string"
-					},
-					"x5t#S256": {
-						"type": "string"
-					},
 					"kty": {
 						"type": "string",
 						"enum": [
@@ -343,10 +396,11 @@
 						"nullable": false
 					},
 					"crv": {
-						"$ref": "#/components/schemas/ECCurve"
-					},
-					"x": {
-						"type": "string"
+						"type": "string",
+						"enum": [
+							"P-256"
+						],
+						"nullable": false
 					},
 					"y": {
 						"type": "string"
@@ -358,7 +412,6 @@
 				"required": [
 					"kty",
 					"crv",
-					"x",
 					"y"
 				],
 				"type": "object",
@@ -368,7 +421,7 @@
 				"properties": {
 					"keys": {
 						"items": {
-							"$ref": "#/components/schemas/JWKECKey"
+							"$ref": "#/components/schemas/Jwk"
 						},
 						"type": "array"
 					}
@@ -399,13 +452,10 @@
 			},
 			"ProviderResponse": {
 				"properties": {
-					"EMAIL": {
-						"$ref": "#/components/schemas/ProviderDetail"
-					},
 					"GOOGLE": {
 						"$ref": "#/components/schemas/ProviderDetail"
 					},
-					"APPLE": {
+					"EMAIL": {
 						"$ref": "#/components/schemas/ProviderDetail"
 					}
 				},
@@ -414,15 +464,9 @@
 		},
 		"securitySchemes": {
 			"jwt": {
-				"type": "oauth2",
-				"flows": {
-					"implicit": {
-						"authorizationUrl": "http://localhost:3000/api/v1",
-						"tokenUrl": "https://todo",
-						"refreshUrl": "https://todo",
-						"scopes": {}
-					}
-				}
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
 			}
 		}
 	},
@@ -436,7 +480,204 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/api/v1/oauth2": {
+		"/api/v1/account": {
+			"get": {
+				"operationId": "GetAccount",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AccountResponse"
+								}
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateAccount",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AccountResponse"
+								}
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AccountRequest"
+							}
+						}
+					}
+				}
+			},
+			"patch": {
+				"operationId": "UpdateAccount",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AccountResponse"
+								}
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AccountRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/account/{id}": {
+			"get": {
+				"operationId": "GetAccountById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AccountResponse"
+								}
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/v1/jwt": {
 			"post": {
 				"operationId": "Login",
 				"responses": {
@@ -450,9 +691,30 @@
 							}
 						},
 						"headers": {
-							"TokenResponseHeaders": {
+							"set-cookie": {
 								"schema": {
-									"$ref": "#/components/schemas/TokenResponseHeaders"
+									"type": "string"
+								},
+								"required": false
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
 								}
 							}
 						}
@@ -472,7 +734,7 @@
 				}
 			}
 		},
-		"/api/v1/oauth2/refresh": {
+		"/api/v1/jwt/refresh": {
 			"post": {
 				"operationId": "Refresh",
 				"responses": {
@@ -486,9 +748,36 @@
 							}
 						},
 						"headers": {
-							"TokenResponseHeaders": {
+							"x-auth-refresh": {
 								"schema": {
-									"$ref": "#/components/schemas/TokenResponseHeaders"
+									"type": "string"
+								},
+								"required": false
+							},
+							"set-cookie": {
+								"schema": {
+									"type": "string"
+								},
+								"required": false
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
 								}
 							}
 						}
@@ -502,7 +791,7 @@
 				"parameters": []
 			}
 		},
-		"/api/v1/oauth2/authorize": {
+		"/api/v1/jwt/authorize": {
 			"post": {
 				"operationId": "Authorize",
 				"responses": {
@@ -531,7 +820,7 @@
 				}
 			}
 		},
-		"/api/v1/oauth2/certs": {
+		"/api/v1/jwt/certs": {
 			"get": {
 				"operationId": "GetCerts",
 				"responses": {
@@ -550,7 +839,7 @@
 				"parameters": []
 			}
 		},
-		"/api/v1/oauth2/providers": {
+		"/api/v1/jwt/providers": {
 			"get": {
 				"operationId": "GetProviders",
 				"responses": {
@@ -567,6 +856,58 @@
 				},
 				"security": [],
 				"parameters": []
+			}
+		},
+		"/api/v1/jwt/{id}/providers": {
+			"get": {
+				"operationId": "GetProvidersById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProviderResponse"
+								}
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
 			}
 		}
 	},

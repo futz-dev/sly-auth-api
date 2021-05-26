@@ -1,11 +1,12 @@
 import { Provider } from './Provider';
 
-export interface LoginRequestBase<T extends Provider> {
-  provider: T;
+export interface LoginRequestBase {
+  provider: Provider;
   email: string;
 }
 
-export interface GoogleLoginRequest extends LoginRequestBase<'GOOGLE'> {
+export interface GoogleLoginRequest extends LoginRequestBase {
+  provider: 'GOOGLE';
   name?: string;
   id: string;
   idToken: string;
@@ -13,7 +14,8 @@ export interface GoogleLoginRequest extends LoginRequestBase<'GOOGLE'> {
   photoUrl?: string;
 }
 
-export interface EmailLoginRequest extends LoginRequestBase<'EMAIL'> {
+export interface EmailLoginRequest extends LoginRequestBase {
+  provider: 'EMAIL';
   code?: string;
 }
 
@@ -25,4 +27,10 @@ export interface AuthorizeRequest {
   method: 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH';
   host: string;
   path: string;
+}
+
+export interface AccountRequest {
+  name: string;
+  email: string;
+  company?: string;
 }

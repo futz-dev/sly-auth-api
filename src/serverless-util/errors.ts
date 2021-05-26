@@ -1,22 +1,10 @@
+/* eslint-disable @typescript-eslint/dot-notation */
 import { ValidateError } from 'tsoa';
 import { NextFunction, Request, Response } from 'express';
 import { HttpError } from '@scaffoldly/serverless-util';
+import { ErrorResponse, ErrorResponseTracking } from './interfaces';
 
 const XRAY_ENV_TRACE_ID = '_X_AMZN_TRACE_ID';
-
-export interface ErrorResponseTracking {
-  method: string;
-  path: string;
-  version: string;
-  source: string;
-}
-
-export interface ErrorResponse {
-  message: string;
-  traceId: string;
-  tracking: ErrorResponseTracking;
-  context?: { [key: string]: unknown };
-}
 
 export function errorHandler(version: string) {
   return (err: Error, req: Request, res: Response, next: NextFunction): Response | void => {
@@ -43,6 +31,8 @@ export function errorHandler(version: string) {
       httpError = err;
     } else if (err instanceof ValidateError) {
       httpError = new HttpError(422, 'Validation Failed', { fields: err.fields });
+    } else if (err['statusCode']) {
+      httpError = new HttpError(err['statusCode'], err.message || err.name, err);
     } else {
       httpError = new HttpError(500, err.message || 'Internal Server Error', err);
     }

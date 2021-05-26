@@ -1,17 +1,5 @@
-import express from 'express';
 import { AUTH_PREFIXES } from '../constants';
-
-export type ExpressRequest = express.Request;
-export type ExpressResponse = express.Response;
-
-// Generic type to support multiple server types (Express, etc)
-export type HttpRequestBase = {
-  headers: Record<string, string>;
-  path: string;
-  hostname: string;
-};
-
-export type HttpRequest = HttpRequestBase & express.Request;
+import { HttpRequest } from './interfaces';
 
 export const extractAuthorization = (request: HttpRequest): string => {
   if (!request) {

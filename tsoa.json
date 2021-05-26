@@ -7,15 +7,9 @@
     "specVersion": 3,
     "securityDefinitions": {
       "jwt": {
-        "type": "oauth2",
-        "flows": {
-          "implicit": {
-            "authorizationUrl": "http://localhost:3000/api/v1",
-            "tokenUrl": "https://todo",
-            "refreshUrl": "https://todo",
-            "scopes": {}
-          }
-        }
+        "type": "http",
+        "scheme": "bearer",
+        "bearerFormat": "JWT"
       }
     }
   },

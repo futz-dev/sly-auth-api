@@ -3,16 +3,80 @@
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 import { Controller, ValidationService, FieldErrors, ValidateError, TsoaRoute, HttpStatusCodeLiteral, TsoaResponse } from '@tsoa/runtime';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-import { Oauth2ControllerV1 } from './controllers/Oauth2ControllerV1';
+import { AccountControllerV1 } from './controllers/AccountControllerV1';
+// WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+import { JwtControllerV1 } from './controllers/JwtControllerV1';
 import { expressAuthentication } from './auth';
 import * as express from 'express';
 
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
+    "AccountDetail": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "email": {"dataType":"string","required":true},
+            "company": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AccountsRow_AccountDetail_": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"string","required":true},
+            "sk": {"dataType":"string","required":true},
+            "detail": {"ref":"AccountDetail","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AccountResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "id": {"dataType":"string","required":true},
+            "sk": {"dataType":"string","required":true},
+            "detail": {"ref":"AccountDetail","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ErrorResponseTracking": {
+        "dataType": "refObject",
+        "properties": {
+            "method": {"dataType":"string","required":true},
+            "path": {"dataType":"string","required":true},
+            "version": {"dataType":"string","required":true},
+            "source": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "ErrorResponse": {
+        "dataType": "refObject",
+        "properties": {
+            "message": {"dataType":"string","required":true},
+            "traceId": {"dataType":"string","required":true},
+            "tracking": {"ref":"ErrorResponseTracking","required":true},
+            "context": {"dataType":"nestedObjectLiteral","nestedProperties":{},"additionalProperties":{"dataType":"any"}},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "AccountRequest": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "email": {"dataType":"string","required":true},
+            "company": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Provider": {
         "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["GOOGLE"]},{"dataType":"enum","enums":["APPLE"]},{"dataType":"enum","enums":["EMAIL"]}],"validators":{}},
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["GOOGLE"]},{"dataType":"enum","enums":["EMAIL"]}],"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "JwtPayload": {
@@ -41,14 +105,6 @@ const models: TsoaRoute.Models = {
             "provider": {"ref":"Provider","required":true},
             "payload": {"ref":"JwtPayload"},
             "token": {"dataType":"string","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "TokenResponseHeaders": {
-        "dataType": "refObject",
-        "properties": {
-            "undefined": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -99,21 +155,13 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Error": {
-        "dataType": "refObject",
-        "properties": {
-            "stack": {"dataType":"string"},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "AuthorizeResponse": {
         "dataType": "refObject",
         "properties": {
             "authorized": {"dataType":"boolean","required":true},
-            "identity": {"dataType":"string"},
+            "id": {"dataType":"string"},
             "payload": {"ref":"DecodedJwtPayload"},
-            "error": {"ref":"Error"},
+            "detail": {"dataType":"string"},
         },
         "additionalProperties": false,
     },
@@ -130,34 +178,11 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "ECCurve": {
-        "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["P-256"]},{"dataType":"enum","enums":["secp256k1"]},{"dataType":"enum","enums":["P-384"]},{"dataType":"enum","enums":["P-521"]}],"validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "use": {
-        "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["sig"]},{"dataType":"enum","enums":["enc"]}],"validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "keyOperation": {
-        "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["sign"]},{"dataType":"enum","enums":["verify"]},{"dataType":"enum","enums":["encrypt"]},{"dataType":"enum","enums":["decrypt"]},{"dataType":"enum","enums":["wrapKey"]},{"dataType":"enum","enums":["unwrapKey"]},{"dataType":"enum","enums":["deriveKey"]}],"validators":{}},
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "JWKECKey": {
+    "Jwk": {
         "dataType": "refObject",
         "properties": {
-            "alg": {"dataType":"string"},
-            "use": {"ref":"use"},
-            "kid": {"dataType":"string"},
-            "key_ops": {"dataType":"array","array":{"dataType":"refAlias","ref":"keyOperation"}},
-            "x5c": {"dataType":"array","array":{"dataType":"string"}},
-            "x5t": {"dataType":"string"},
-            "x5t#S256": {"dataType":"string"},
             "kty": {"dataType":"enum","enums":["EC"],"required":true},
-            "crv": {"ref":"ECCurve","required":true},
-            "x": {"dataType":"string","required":true},
+            "crv": {"dataType":"enum","enums":["P-256"],"required":true},
             "y": {"dataType":"string","required":true},
             "d": {"dataType":"string"},
         },
@@ -167,7 +192,7 @@ const models: TsoaRoute.Models = {
     "JWKSResponse": {
         "dataType": "refObject",
         "properties": {
-            "keys": {"dataType":"array","array":{"dataType":"refObject","ref":"JWKECKey"},"required":true},
+            "keys": {"dataType":"array","array":{"dataType":"refObject","ref":"Jwk"},"required":true},
         },
         "additionalProperties": false,
     },
@@ -184,7 +209,7 @@ const models: TsoaRoute.Models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ProviderResponse": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"EMAIL":{"ref":"ProviderDetail"},"GOOGLE":{"ref":"ProviderDetail"},"APPLE":{"ref":"ProviderDetail"}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"GOOGLE":{"ref":"ProviderDetail"},"EMAIL":{"ref":"ProviderDetail"}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 };
@@ -197,8 +222,103 @@ export function RegisterRoutes(app: express.Router) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
-        app.post('/api/v1/oauth2',
-            function Oauth2ControllerV1_login(request: any, response: any, next: any) {
+        app.get('/api/v1/account',
+            authenticateMiddleware([{"jwt":[]}]),
+            function AccountControllerV1_getAccount(request: any, response: any, next: any) {
+            const args = {
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new AccountControllerV1();
+
+
+            const promise = controller.getAccount.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/api/v1/account/:id',
+            authenticateMiddleware([{"jwt":[]}]),
+            function AccountControllerV1_getAccountById(request: any, response: any, next: any) {
+            const args = {
+                    id: {"in":"path","name":"id","required":true,"dataType":"string"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new AccountControllerV1();
+
+
+            const promise = controller.getAccountById.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/api/v1/account',
+            authenticateMiddleware([{"jwt":[]}]),
+            function AccountControllerV1_createAccount(request: any, response: any, next: any) {
+            const args = {
+                    accountRequest: {"in":"body","name":"accountRequest","required":true,"ref":"AccountRequest"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new AccountControllerV1();
+
+
+            const promise = controller.createAccount.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.patch('/api/v1/account',
+            authenticateMiddleware([{"jwt":[]}]),
+            function AccountControllerV1_updateAccount(request: any, response: any, next: any) {
+            const args = {
+                    accountRequest: {"in":"body","name":"accountRequest","required":true,"ref":"AccountRequest"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new AccountControllerV1();
+
+
+            const promise = controller.updateAccount.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/api/v1/jwt',
+            function JwtControllerV1_login(request: any, response: any, next: any) {
             const args = {
                     login: {"in":"body","name":"login","required":true,"ref":"LoginRequest"},
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
@@ -214,16 +334,16 @@ export function RegisterRoutes(app: express.Router) {
                 return next(err);
             }
 
-            const controller = new Oauth2ControllerV1();
+            const controller = new JwtControllerV1();
 
 
             const promise = controller.login.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/v1/oauth2/refresh',
+        app.post('/api/v1/jwt/refresh',
             authenticateMiddleware([{"jwt":[]}]),
-            function Oauth2ControllerV1_refresh(request: any, response: any, next: any) {
+            function JwtControllerV1_refresh(request: any, response: any, next: any) {
             const args = {
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     res: {"in":"res","name":"200","required":true,"ref":"TokenResponse"},
@@ -238,15 +358,15 @@ export function RegisterRoutes(app: express.Router) {
                 return next(err);
             }
 
-            const controller = new Oauth2ControllerV1();
+            const controller = new JwtControllerV1();
 
 
             const promise = controller.refresh.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/v1/oauth2/authorize',
-            function Oauth2ControllerV1_authorize(request: any, response: any, next: any) {
+        app.post('/api/v1/jwt/authorize',
+            function JwtControllerV1_authorize(request: any, response: any, next: any) {
             const args = {
                     authorize: {"in":"body","name":"authorize","required":true,"ref":"AuthorizeRequest"},
             };
@@ -260,15 +380,15 @@ export function RegisterRoutes(app: express.Router) {
                 return next(err);
             }
 
-            const controller = new Oauth2ControllerV1();
+            const controller = new JwtControllerV1();
 
 
             const promise = controller.authorize.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/v1/oauth2/certs',
-            function Oauth2ControllerV1_getCerts(request: any, response: any, next: any) {
+        app.get('/api/v1/jwt/certs',
+            function JwtControllerV1_getCerts(request: any, response: any, next: any) {
             const args = {
             };
 
@@ -281,15 +401,15 @@ export function RegisterRoutes(app: express.Router) {
                 return next(err);
             }
 
-            const controller = new Oauth2ControllerV1();
+            const controller = new JwtControllerV1();
 
 
             const promise = controller.getCerts.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/v1/oauth2/providers',
-            function Oauth2ControllerV1_getProviders(request: any, response: any, next: any) {
+        app.get('/api/v1/jwt/providers',
+            function JwtControllerV1_getProviders(request: any, response: any, next: any) {
             const args = {
             };
 
@@ -302,10 +422,34 @@ export function RegisterRoutes(app: express.Router) {
                 return next(err);
             }
 
-            const controller = new Oauth2ControllerV1();
+            const controller = new JwtControllerV1();
 
 
             const promise = controller.getProviders.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.get('/api/v1/jwt/:id/providers',
+            authenticateMiddleware([{"jwt":[]}]),
+            function JwtControllerV1_getProvidersById(request: any, response: any, next: any) {
+            const args = {
+                    id: {"in":"path","name":"id","required":true,"dataType":"string"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new JwtControllerV1();
+
+
+            const promise = controller.getProvidersById.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

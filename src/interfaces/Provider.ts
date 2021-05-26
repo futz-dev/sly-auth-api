@@ -1,4 +1,4 @@
-export type Provider = 'GOOGLE' | 'APPLE' | 'EMAIL';
+export type Provider = 'GOOGLE' | 'EMAIL';
 
 export interface ProviderDetail {
   enabled: boolean;
