@@ -96,8 +96,8 @@ export default class LoginService {
       detail: undefined,
     };
 
-    if (!authorize || !authorize.token || !authorize.host || !authorize.path) {
-      response.detail = 'Missing token, host or path from authorize request';
+    if (!authorize || !authorize.token) {
+      response.detail = 'Missing token from authorize request';
       return response;
     }
 
@@ -114,16 +114,6 @@ export default class LoginService {
       response.detail = e.message || e.name || 'Unexpected error verifying JWT';
       return response;
     }
-
-    // TODO Scopes Defined in bootstrap
-    // for (let scope of scopes) {
-    //   if (!decoded.scopes.includes(scope)) {
-    //     reject(new Error("JWT does not contain required scope."));
-    //   }
-    // }
-
-    // TODO Check URI with scopes
-    // TODO Cache
 
     response.id = payload.id;
     response.authorized = true;

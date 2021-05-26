@@ -353,35 +353,10 @@
 				"properties": {
 					"token": {
 						"type": "string"
-					},
-					"scopes": {
-						"items": {
-							"type": "string"
-						},
-						"type": "array"
-					},
-					"method": {
-						"type": "string",
-						"enum": [
-							"GET",
-							"PUT",
-							"POST",
-							"DELETE",
-							"PATCH"
-						]
-					},
-					"host": {
-						"type": "string"
-					},
-					"path": {
-						"type": "string"
 					}
 				},
 				"required": [
-					"token",
-					"method",
-					"host",
-					"path"
+					"token"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -472,7 +447,7 @@
 	},
 	"info": {
 		"title": "api",
-		"version": "1.6.1-10",
+		"version": "1.6.1-11",
 		"license": {
 			"name": "UNLICENSED"
 		},

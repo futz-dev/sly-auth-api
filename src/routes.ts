@@ -170,10 +170,6 @@ const models: TsoaRoute.Models = {
         "dataType": "refObject",
         "properties": {
             "token": {"dataType":"string","required":true},
-            "scopes": {"dataType":"array","array":{"dataType":"string"}},
-            "method": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["GET"]},{"dataType":"enum","enums":["PUT"]},{"dataType":"enum","enums":["POST"]},{"dataType":"enum","enums":["DELETE"]},{"dataType":"enum","enums":["PATCH"]}],"required":true},
-            "host": {"dataType":"string","required":true},
-            "path": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },

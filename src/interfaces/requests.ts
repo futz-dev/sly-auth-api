@@ -23,10 +23,6 @@ export type LoginRequest = EmailLoginRequest | GoogleLoginRequest;
 
 export interface AuthorizeRequest {
   token: string;
-  scopes?: string[];
-  method: 'GET' | 'PUT' | 'POST' | 'DELETE' | 'PATCH';
-  host: string;
-  path: string;
 }
 
 export interface AccountRequest {

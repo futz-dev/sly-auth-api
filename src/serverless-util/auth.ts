@@ -1,20 +1,25 @@
+import { HttpError } from '@scaffoldly/serverless-util';
 import axios from 'axios';
 import { JWT } from 'jose';
-import { extractAuthorization } from './http';
+import { extractAuthorization, extractToken } from './http';
 import { DecodedJwtPayload, HttpRequest } from './interfaces';
 
 export async function authorize(
   request: HttpRequest,
   securityName: string,
-  scopes?: string[],
 ): Promise<DecodedJwtPayload> {
   if (securityName !== 'jwt') {
     throw new Error(`Unsupported Security Name: ${securityName}`);
   }
 
-  const token = extractAuthorization(request);
+  const authorization = extractAuthorization(request);
+  if (!authorization) {
+    throw new HttpError(401, 'Missing authorization header');
+  }
+
+  const token = extractToken(authorization);
   if (!token) {
-    throw new Error('Missing token');
+    throw new Error('Unable to extract token');
   }
 
   const decoded = JWT.decode(token) as DecodedJwtPayload;
@@ -31,10 +36,6 @@ export async function authorize(
 
   const { data } = await axios.post(authorizeUrl, {
     token,
-    scopes,
-    method: request.method,
-    host: request.hostname,
-    path: request.path,
   });
 
   // TODO: Response caching
