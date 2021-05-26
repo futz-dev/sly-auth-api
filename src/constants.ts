@@ -4,14 +4,4 @@ export const ACCOUNTS_TABLE = 'accounts';
 
 export const REFRESH_COOKIE_PREFIX = '__Secure-sly_jrt_';
 
-export const SENSITIVE_KEYS = [
-  'password',
-  'key',
-  'x-api-key',
-  'api-key',
-  'token',
-  'secret',
-  'authtoken',
-  'idtoken',
-];
-export const AUTH_PREFIXES = ['Bearer', 'jwt'];
+export const AUTH_PREFIXES = ['Bearer', 'jwt', 'Token'];

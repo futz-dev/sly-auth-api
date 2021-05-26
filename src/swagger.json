@@ -1,0 +1,919 @@
+{
+	"components": {
+		"examples": {},
+		"headers": {},
+		"parameters": {},
+		"requestBodies": {},
+		"responses": {},
+		"schemas": {
+			"AccountDetail": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"company": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"email"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AccountsRow_AccountDetail_": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"sk": {
+						"type": "string"
+					},
+					"detail": {
+						"$ref": "#/components/schemas/AccountDetail"
+					}
+				},
+				"required": [
+					"id",
+					"sk",
+					"detail"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AccountResponse": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"sk": {
+						"type": "string"
+					},
+					"detail": {
+						"$ref": "#/components/schemas/AccountDetail"
+					}
+				},
+				"required": [
+					"id",
+					"sk",
+					"detail"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ErrorResponseTracking": {
+				"properties": {
+					"method": {
+						"type": "string"
+					},
+					"path": {
+						"type": "string"
+					},
+					"version": {
+						"type": "string"
+					},
+					"source": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"method",
+					"path",
+					"version",
+					"source"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ErrorResponse": {
+				"properties": {
+					"message": {
+						"type": "string"
+					},
+					"traceId": {
+						"type": "string"
+					},
+					"tracking": {
+						"$ref": "#/components/schemas/ErrorResponseTracking"
+					},
+					"context": {
+						"properties": {},
+						"additionalProperties": {},
+						"type": "object"
+					}
+				},
+				"required": [
+					"message",
+					"traceId",
+					"tracking"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AccountRequest": {
+				"properties": {
+					"name": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"company": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"name",
+					"email"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Provider": {
+				"type": "string",
+				"enum": [
+					"GOOGLE",
+					"EMAIL"
+				]
+			},
+			"JwtPayload": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"sk": {
+						"type": "string"
+					},
+					"refreshUrl": {
+						"type": "string"
+					},
+					"authorizeUrl": {
+						"type": "string"
+					},
+					"certsUrl": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"id",
+					"sk",
+					"refreshUrl",
+					"authorizeUrl",
+					"certsUrl"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"VerificationMethod": {
+				"type": "string",
+				"enum": [
+					"EMAIL",
+					"AUTHENTICATOR",
+					"NONE"
+				]
+			},
+			"TokenResponse": {
+				"properties": {
+					"verified": {
+						"type": "boolean"
+					},
+					"verificationMethod": {
+						"$ref": "#/components/schemas/VerificationMethod"
+					},
+					"id": {
+						"type": "string"
+					},
+					"provider": {
+						"$ref": "#/components/schemas/Provider"
+					},
+					"payload": {
+						"$ref": "#/components/schemas/JwtPayload"
+					},
+					"token": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"verified",
+					"verificationMethod",
+					"id",
+					"provider",
+					"token"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"EmailLoginRequest": {
+				"properties": {
+					"provider": {
+						"type": "string",
+						"enum": [
+							"EMAIL"
+						],
+						"nullable": false
+					},
+					"email": {
+						"type": "string"
+					},
+					"code": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"provider",
+					"email"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GoogleLoginRequest": {
+				"properties": {
+					"provider": {
+						"type": "string",
+						"enum": [
+							"GOOGLE"
+						],
+						"nullable": false
+					},
+					"email": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string"
+					},
+					"idToken": {
+						"type": "string"
+					},
+					"authToken": {
+						"type": "string"
+					},
+					"photoUrl": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"provider",
+					"email",
+					"id",
+					"idToken",
+					"authToken"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"LoginRequest": {
+				"anyOf": [
+					{
+						"$ref": "#/components/schemas/EmailLoginRequest"
+					},
+					{
+						"$ref": "#/components/schemas/GoogleLoginRequest"
+					}
+				]
+			},
+			"DecodedJwtPayload": {
+				"properties": {
+					"id": {
+						"type": "string"
+					},
+					"sk": {
+						"type": "string"
+					},
+					"refreshUrl": {
+						"type": "string"
+					},
+					"authorizeUrl": {
+						"type": "string"
+					},
+					"certsUrl": {
+						"type": "string"
+					},
+					"sub": {
+						"type": "string"
+					},
+					"aud": {
+						"type": "string"
+					},
+					"iss": {
+						"type": "string"
+					},
+					"iat": {
+						"type": "number",
+						"format": "double"
+					},
+					"exp": {
+						"type": "number",
+						"format": "double"
+					}
+				},
+				"required": [
+					"id",
+					"sk",
+					"refreshUrl",
+					"authorizeUrl",
+					"certsUrl",
+					"sub",
+					"aud",
+					"iss",
+					"iat",
+					"exp"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AuthorizeResponse": {
+				"properties": {
+					"authorized": {
+						"type": "boolean"
+					},
+					"id": {
+						"type": "string"
+					},
+					"payload": {
+						"$ref": "#/components/schemas/DecodedJwtPayload"
+					},
+					"detail": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"authorized"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"AuthorizeRequest": {
+				"properties": {
+					"token": {
+						"type": "string"
+					},
+					"scopes": {
+						"items": {
+							"type": "string"
+						},
+						"type": "array"
+					},
+					"method": {
+						"type": "string",
+						"enum": [
+							"GET",
+							"PUT",
+							"POST",
+							"DELETE",
+							"PATCH"
+						]
+					},
+					"host": {
+						"type": "string"
+					},
+					"path": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"token",
+					"method",
+					"host",
+					"path"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Jwk": {
+				"properties": {
+					"kty": {
+						"type": "string",
+						"enum": [
+							"EC"
+						],
+						"nullable": false
+					},
+					"crv": {
+						"type": "string",
+						"enum": [
+							"P-256"
+						],
+						"nullable": false
+					},
+					"y": {
+						"type": "string"
+					},
+					"d": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"kty",
+					"crv",
+					"y"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"JWKSResponse": {
+				"properties": {
+					"keys": {
+						"items": {
+							"$ref": "#/components/schemas/Jwk"
+						},
+						"type": "array"
+					}
+				},
+				"required": [
+					"keys"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ProviderDetail": {
+				"properties": {
+					"enabled": {
+						"type": "boolean"
+					},
+					"name": {
+						"type": "string"
+					},
+					"clientId": {
+						"type": "string"
+					}
+				},
+				"required": [
+					"enabled"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"ProviderResponse": {
+				"properties": {
+					"GOOGLE": {
+						"$ref": "#/components/schemas/ProviderDetail"
+					},
+					"EMAIL": {
+						"$ref": "#/components/schemas/ProviderDetail"
+					}
+				},
+				"type": "object"
+			}
+		},
+		"securitySchemes": {
+			"jwt": {
+				"type": "http",
+				"scheme": "bearer",
+				"bearerFormat": "JWT"
+			}
+		}
+	},
+	"info": {
+		"title": "api",
+		"version": "1.5.1-0",
+		"license": {
+			"name": "UNLICENSED"
+		},
+		"contact": {}
+	},
+	"openapi": "3.0.0",
+	"paths": {
+		"/api/v1/account": {
+			"get": {
+				"operationId": "GetAccount",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AccountResponse"
+								}
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			},
+			"post": {
+				"operationId": "CreateAccount",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AccountResponse"
+								}
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AccountRequest"
+							}
+						}
+					}
+				}
+			},
+			"patch": {
+				"operationId": "UpdateAccount",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AccountResponse"
+								}
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AccountRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/account/{id}": {
+			"get": {
+				"operationId": "GetAccountById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AccountResponse"
+								}
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		},
+		"/api/v1/jwt": {
+			"post": {
+				"operationId": "Login",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TokenResponse"
+								}
+							}
+						},
+						"headers": {
+							"set-cookie": {
+								"schema": {
+									"type": "string"
+								},
+								"required": false
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/LoginRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/jwt/refresh": {
+			"post": {
+				"operationId": "Refresh",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TokenResponse"
+								}
+							}
+						},
+						"headers": {
+							"x-auth-refresh": {
+								"schema": {
+									"type": "string"
+								},
+								"required": false
+							},
+							"set-cookie": {
+								"schema": {
+									"type": "string"
+								},
+								"required": false
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": []
+			}
+		},
+		"/api/v1/jwt/authorize": {
+			"post": {
+				"operationId": "Authorize",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/AuthorizeResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/AuthorizeRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/jwt/certs": {
+			"get": {
+				"operationId": "GetCerts",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/JWKSResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/api/v1/jwt/providers": {
+			"get": {
+				"operationId": "GetProviders",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProviderResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [],
+				"parameters": []
+			}
+		},
+		"/api/v1/jwt/{id}/providers": {
+			"get": {
+				"operationId": "GetProvidersById",
+				"responses": {
+					"200": {
+						"description": "Ok",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ProviderResponse"
+								}
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"security": [
+					{
+						"jwt": []
+					}
+				],
+				"parameters": [
+					{
+						"in": "path",
+						"name": "id",
+						"required": true,
+						"schema": {
+							"type": "string"
+						}
+					}
+				]
+			}
+		}
+	},
+	"servers": [
+		{
+			"url": "/"
+		}
+	]
+}
