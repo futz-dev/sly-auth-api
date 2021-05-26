@@ -210,7 +210,7 @@ export default class LoginService {
   ): Promise<VerificationResultBase> => {
     if (code) {
       const verified = await this.totpService.verifyTotp(id, email, code);
-      return { verified, verificationMethod: 'NONE' };
+      return { verified, verificationMethod: 'EMAIL' };
     }
 
     const verificationMethod = await this.totpService.sendTotp(id, email);

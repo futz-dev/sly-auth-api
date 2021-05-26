@@ -29,7 +29,9 @@
         email: $('#email').val(),
         code: $('#code').val() || undefined
       }
-      $('#response').show();
+      $('#tokenFormGroup').hide("slow");
+      $('#emailFormGroup').hide("slow");
+      $('#response').show("slow");
       $('#responseBody').html(`Loading...`);
       $.ajax({
         url: url,
@@ -46,15 +48,20 @@
         .fail((err) => {
           console.log("Login Failure", JSON.stringify(err));
           $('#responseBody').html(JSON.stringify(err.responseJSON, null, 2));
+          $('#emailFormGroup').show("slow");
         });
     }
 
     function handleResponse(response) {
-      if (response.verified) {
-        $('#codeFormGroup').hide("fast", () => { $('#emailFormGroup').show(); });
+      if (response.token) {
+        $('#codeFormGroup').hide("slow", () => {
+          $('#token').val(response.token)
+          $('#tokenFormGroup').show("slow");
+        });
         return;
+      } else {
+        $('#codeFormGroup').show("slow");
       }
-      $('#emailFormGroup').hide("fast", () => { $('#codeFormGroup').show(); });
     }
 
     $(document).ready(function () {
@@ -85,19 +92,31 @@
             <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp"
               placeholder="me@example.com">
             <small id="emailHelp" class="form-text text-muted">Enter an email address.</small>
+            <div class="form-group pt-3">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
           </div>
           <div id="codeFormGroup" class="form-group" style="display: none;">
             <label for="code">Email Verification Code</label>
             <input type="number" class="form-control" id="code" aria-describedby="codeHelp" placeholder="123456">
             <small id="codeHelp" class="form-text text-muted">Enter the verification sent to your email.</small>
+            <div class="form-group pt-3">
+              <button type="submit" class="btn btn-primary">Submit</button>
+            </div>
           </div>
-          <button type="submit" class="btn btn-primary">Submit</button>
-        </div>
-      </div>
-      <div class="col-8 offset-2 pt-3" id="response" style="display: none;">
-        <h2>Backend Response</h2>
-        <div class="alert alert-secondary text-wrap mw-100" role="alert">
-          <pre><code id="responseBody"></code></pre>
+          <div id="tokenFormGroup" class="input-group">
+            <div class="input-group-prepend">
+              <span class="input-group-text">Bearer</span>
+            </div>
+            <textarea id="token" class="form-control" style="min-height: 125px;" aria-label="Bearer Token"
+              readonly></textarea>
+          </div>
+          <div id="response" class="pt-3" style="display: none;">
+            <h2>Backend Response</h2>
+            <div class="alert alert-secondary text-wrap mw-100" role="alert">
+              <pre><code id="responseBody"></code></pre>
+            </div>
+          </div>
         </div>
       </div>
     </form>
