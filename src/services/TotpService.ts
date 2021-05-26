@@ -19,7 +19,7 @@ export default class TotpService {
     this.templateService = new TemplateService();
   }
 
-  sendTotp = async (id: string): Promise<VerificationMethod> => {
+  sendTotp = async (id: string, email: string): Promise<VerificationMethod> => {
     console.log('Fetching TOTP configuration for id:', id);
 
     let totp: TotpRow = await this.accountsModel.get({ id, sk: 'totp' });
@@ -27,7 +27,7 @@ export default class TotpService {
     if (!totp) {
       console.log(`Generating OTP for ${id}`);
       const { secret } = twofactor.generateSecret({
-        account: id,
+        account: email,
         name: env.env_vars.APPLICATION_FRIENDLY_NAME,
       });
       // TODO: Encrypt secret/qr/url
@@ -48,14 +48,14 @@ export default class TotpService {
     if (!verified || !authenticator) {
       // TODO: SMS's
       // TODO: Prob should be a standalone email service
-      console.log(`Sending OTP via email to ${id}`);
+      console.log(`Sending OTP via email to ${email}`);
 
       const { token } = twofactor.generateToken(totp.detail.secret);
 
       const result = await this.ses
         .sendTemplatedEmail({
           Source: `no-reply@${env.env_vars.MAIL_DOMAIN}`,
-          Destination: { ToAddresses: [id] },
+          Destination: { ToAddresses: [email] },
           Template: await this.templateService.fetchTemplate('totp'),
           TemplateData: JSON.stringify({
             Organization: env.env_vars.APPLICATION_FRIENDLY_NAME,
@@ -73,9 +73,9 @@ export default class TotpService {
     return 'AUTHENTICATOR';
   };
 
-  verifyTotp = async (email: string, code: string): Promise<boolean> => {
+  verifyTotp = async (id: string, email: string, code: string): Promise<boolean> => {
     console.log('Fetching TOTP configuration for id:', email);
-    const totp: TotpRow = await this.accountsModel.get({ id: email, sk: 'totp' });
+    const totp: TotpRow = await this.accountsModel.get({ id, sk: 'totp' });
 
     if (!totp) {
       throw new HttpError(403, 'TOTP is not configured');

@@ -23,6 +23,7 @@ export function errorHandler(version: string) {
       `[Error] [${traceId}] [${err.name || Object.getPrototypeOf(err)}] Message: ${
         err.message
       } Tracking: ${JSON.stringify(tracking)}`,
+      err,
     );
 
     let httpError: HttpError;

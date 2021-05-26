@@ -136,22 +136,23 @@ export default class LoginService {
     const email = login.email.trim().toLowerCase();
 
     let loginDetail: LoginDetail<LoginRequest>;
+    const id = this.jwtService.generateAudience(email);
 
     if (login.provider === 'GOOGLE') {
       const result = await this.verifyGoogleToken(login.idToken);
       loginDetail = {
         ...result,
-        id: this.jwtService.generateAudience(email),
+        id,
         provider: login.provider,
         payload: login,
       };
     }
 
     if (login.provider === 'EMAIL') {
-      const result = await this.verifyEmail(email, login.code);
+      const result = await this.verifyEmail(id, email, login.code);
       loginDetail = {
         ...result,
-        id: this.jwtService.generateAudience(email),
+        id,
         provider: login.provider,
         payload: login,
       };
@@ -199,13 +200,17 @@ export default class LoginService {
     return { verified: true, verificationMethod: 'NONE' };
   };
 
-  private verifyEmail = async (email: string, code: string): Promise<VerificationResultBase> => {
+  private verifyEmail = async (
+    id: string,
+    email: string,
+    code: string,
+  ): Promise<VerificationResultBase> => {
     if (code) {
-      const verified = await this.totpService.verifyTotp(email, code);
+      const verified = await this.totpService.verifyTotp(id, email, code);
       return { verified, verificationMethod: 'NONE' };
     }
 
-    const verificationMethod = await this.totpService.sendTotp(email);
+    const verificationMethod = await this.totpService.sendTotp(id, email);
     return { verified: false, verificationMethod };
   };
 }
