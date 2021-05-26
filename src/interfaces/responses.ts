@@ -17,6 +17,11 @@ export interface TokenResponse extends LoginDetail<JwtPayload> {
   token: string;
 }
 
+export interface LoginDetailResponse {
+  payload: DecodedJwtPayload;
+  providers: ProviderResponse;
+}
+
 export type Header = 'set-cookie' | 'x-auth-refresh';
 
 export type TokenResponseHeaders = { [header in Header]?: string };

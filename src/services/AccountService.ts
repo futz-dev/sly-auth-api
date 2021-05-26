@@ -46,7 +46,7 @@ export default class AccountService {
   }
 
   async getAccountById(id: string, user: DecodedJwtPayload): Promise<AccountResponse> {
-    if (id !== user.id || id !== 'me') {
+    if (id !== user.id && id !== 'me') {
       throw new HttpError(403, 'Forbidden');
     }
 
@@ -56,7 +56,7 @@ export default class AccountService {
   }
 
   async getProviders(id: string, user: DecodedJwtPayload): Promise<ProviderResponse> {
-    if (id !== user.id || id !== 'me') {
+    if (id !== user.id && id !== 'me') {
       throw new HttpError(403, 'Forbidden');
     }
 
@@ -69,7 +69,7 @@ export default class AccountService {
 
     return result.Items.reduce(
       (response, item) => {
-        response[item.attrs.detail.provider] = { enabled: true };
+        response[item.attrs.detail.provider] = { enabled: true, name: item.attrs.sk };
         return response;
       },
       { EMAIL: { enabled: false }, GOOGLE: { enabled: false } } as ProviderResponse,

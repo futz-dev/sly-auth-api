@@ -13,12 +13,12 @@ export class AccountControllerV1 extends Controller {
     this.accountService = new AccountService();
   }
 
-  @Get()
+  @Get('me')
   @Response<ErrorResponse>('4XX')
   @Response<ErrorResponse>('5XX')
   @Security('jwt')
-  public async getAccount(@Request() request: HttpRequestWithUser): Promise<AccountResponse> {
-    return this.accountService.getAccount(request.user);
+  public async getMyAccount(@Request() request: HttpRequestWithUser): Promise<AccountResponse> {
+    return this.getAccountById('me', request);
   }
 
   @Get('{id}')
@@ -51,6 +51,6 @@ export class AccountControllerV1 extends Controller {
     @Body() accountRequest: AccountRequest,
     @Request() request: HttpRequestWithUser,
   ): Promise<AccountResponse> {
-    return this.accountService.createAccount(accountRequest, request.user);
+    return this.accountService.updateAccount(accountRequest, request.user);
   }
 }

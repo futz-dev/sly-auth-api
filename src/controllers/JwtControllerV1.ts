@@ -9,13 +9,13 @@ import {
   TsoaResponse,
   Response,
   Security,
-  Path,
 } from 'tsoa';
 import { env } from '../env';
 import { LoginRequest, AuthorizeRequest } from '../interfaces/requests';
 import {
   AuthorizeResponse,
   JWKSResponse,
+  LoginDetailResponse,
   ProviderResponse,
   TokenResponse,
 } from '../interfaces/responses';
@@ -60,6 +60,20 @@ export class JwtControllerV1 extends Controller {
     return response;
   }
 
+  @Get('me')
+  @Security('jwt')
+  @Response<ErrorResponse>('4XX')
+  @Response<ErrorResponse>('5XX')
+  public async getLoginDetail(
+    @Request() request: HttpRequestWithUser,
+  ): Promise<LoginDetailResponse> {
+    const response: LoginDetailResponse = {
+      payload: request.user,
+      providers: await this.accountService.getProviders('me', request.user),
+    };
+    return response;
+  }
+
   @Post('refresh')
   @Security('jwt')
   @Response<ErrorResponse>('4XX')
@@ -100,16 +114,5 @@ export class JwtControllerV1 extends Controller {
     };
 
     return response;
-  }
-
-  @Get('{id}/providers')
-  @Security('jwt')
-  @Response<ErrorResponse>('4XX')
-  @Response<ErrorResponse>('5XX')
-  public getProvidersById(
-    @Path('id') id: string,
-    @Request() request: HttpRequestWithUser,
-  ): Promise<ProviderResponse> {
-    return this.accountService.getProviders(id, request.user);
   }
 }
