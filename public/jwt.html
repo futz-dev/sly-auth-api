@@ -37,12 +37,20 @@
       })
         .done((response) => {
           console.log("Success!", JSON.stringify(response));
-          $('#responseBody').html(JSON.stringify(response.responseJSON, null, 2));
+          $('#responseBody').html(JSON.stringify(response, null, 2));
         })
         .fail((err) => {
           console.log("Login Failure", JSON.stringify(err));
           $('#responseBody').html(JSON.stringify(err.responseJSON, null, 2));
         });
+    }
+
+    function handleResponse(response) {
+      if (response.verified) {
+        return;
+      }
+      $('#emailFormGroup').hide();
+      $('#codeFormGroup').show();
     }
 
     $(document).ready(function () {
@@ -68,7 +76,7 @@
             Generation
           </p>
           <hr />
-          <div class="form-group">
+          <div class="form-group" id="emailFormGroup">
             <label for="email">Email address</label>
             <input name="email" type="email" class="form-control" id="email" aria-describedby="emailHelp"
               placeholder="me@example.com">
@@ -77,8 +85,8 @@
           <button type="submit" class="btn btn-primary">Submit</button>
         </div>
         <div id="codeFormGroup" class="form-group" style="display: none;">
-          <label for="email">Verification Code</label>
-          <input type="email" class="form-control" id="code" aria-describedby="codeHelp" placeholder="000000">
+          <label for="code">Email Verification Code</label>
+          <input type="number" class="form-control" id="code" aria-describedby="codeHelp" placeholder="123456">
           <small id="codeHelp" class="form-text text-muted">Enter the verification sent to your email.</small>
         </div>
       </div>
