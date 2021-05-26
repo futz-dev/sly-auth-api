@@ -222,7 +222,7 @@ export function RegisterRoutes(app: express.Router) {
     //  NOTE: If you do not see routes for all of your controllers in this file, then you might not have informed tsoa of where to look
     //      Please look into the "controllerPathGlobs" config option described in the readme: https://github.com/lukeautry/tsoa
     // ###########################################################################################################
-        app.get('/api/v1/account',
+        app.get('/auth/api/v1/account',
             authenticateMiddleware([{"jwt":[]}]),
             function AccountControllerV1_getAccount(request: any, response: any, next: any) {
             const args = {
@@ -245,7 +245,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/v1/account/:id',
+        app.get('/auth/api/v1/account/:id',
             authenticateMiddleware([{"jwt":[]}]),
             function AccountControllerV1_getAccountById(request: any, response: any, next: any) {
             const args = {
@@ -269,7 +269,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/v1/account',
+        app.post('/auth/api/v1/account',
             authenticateMiddleware([{"jwt":[]}]),
             function AccountControllerV1_createAccount(request: any, response: any, next: any) {
             const args = {
@@ -293,7 +293,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.patch('/api/v1/account',
+        app.patch('/auth/api/v1/account',
             authenticateMiddleware([{"jwt":[]}]),
             function AccountControllerV1_updateAccount(request: any, response: any, next: any) {
             const args = {
@@ -317,7 +317,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/v1/jwt',
+        app.post('/auth/api/v1/jwt',
             function JwtControllerV1_login(request: any, response: any, next: any) {
             const args = {
                     login: {"in":"body","name":"login","required":true,"ref":"LoginRequest"},
@@ -341,7 +341,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/v1/jwt/refresh',
+        app.post('/auth/api/v1/jwt/refresh',
             authenticateMiddleware([{"jwt":[]}]),
             function JwtControllerV1_refresh(request: any, response: any, next: any) {
             const args = {
@@ -365,7 +365,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/v1/jwt/authorize',
+        app.post('/auth/api/v1/jwt/authorize',
             function JwtControllerV1_authorize(request: any, response: any, next: any) {
             const args = {
                     authorize: {"in":"body","name":"authorize","required":true,"ref":"AuthorizeRequest"},
@@ -387,7 +387,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/v1/jwt/certs',
+        app.get('/auth/api/v1/jwt/certs',
             function JwtControllerV1_getCerts(request: any, response: any, next: any) {
             const args = {
             };
@@ -408,7 +408,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/v1/jwt/providers',
+        app.get('/auth/api/v1/jwt/providers',
             function JwtControllerV1_getProviders(request: any, response: any, next: any) {
             const args = {
             };
@@ -429,7 +429,7 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.get('/api/v1/jwt/:id/providers',
+        app.get('/auth/api/v1/jwt/:id/providers',
             authenticateMiddleware([{"jwt":[]}]),
             function JwtControllerV1_getProvidersById(request: any, response: any, next: any) {
             const args = {

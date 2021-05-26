@@ -16,11 +16,11 @@ RegisterRoutes(app);
 
 app.use(errorHandler(packageJson.version));
 
-app.get('/openapi.json', (_req: express.Request, res: express.Response) => {
+app.get('/auth/openapi.json', (_req: express.Request, res: express.Response) => {
   // eslint-disable-next-line @typescript-eslint/dot-notation
   res.send(JSON.stringify(swaggerJson['default']));
 });
-app.get('/jwt.html', (_req: express.Request, res: express.Response) => {
+app.get('/auth/jwt.html', (_req: express.Request, res: express.Response) => {
   const file = readFileSync('./public/jwt.html');
   res.type('html');
   res.send(file);

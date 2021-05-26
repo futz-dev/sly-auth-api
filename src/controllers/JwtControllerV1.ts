@@ -25,7 +25,7 @@ import JwtService from '../services/JwtService';
 import LoginService from '../services/LoginService';
 import ProviderService from '../services/ProviderService';
 
-@Route(`/api/v1/jwt`)
+@Route(`/auth/api/v1/jwt`)
 export class JwtControllerV1 extends Controller {
   envVars = env.env_vars;
 

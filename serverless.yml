@@ -76,7 +76,7 @@ custom:
   serverless-offline:
     useChildProcesses: false
     noPrependStageInUrl: true
-    prefix: ''
+    prefix: ${file(serverless.config.js):serviceName}
   bundle:
     packager: yarn
     externals:

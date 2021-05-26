@@ -4,7 +4,7 @@ import { AccountResponse } from '../interfaces/responses';
 import { ErrorResponse, HttpRequestWithUser } from '../serverless-util';
 import AccountService from '../services/AccountService';
 
-@Route(`/api/v1/account`)
+@Route(`/auth/api/v1/account`)
 export class AccountControllerV1 extends Controller {
   accountService: AccountService;
 
