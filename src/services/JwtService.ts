@@ -39,13 +39,10 @@ export default class JwtService {
     request: HttpRequest,
     customPath?: string,
   ): TokenResponse => {
-    console.log('!!!! request headers', request.headers);
-    console.log('!!!! request path', request.path);
-
     const { headers } = request;
     let { path } = customPath ? { path: customPath } : request;
-    const { Host } = headers;
-    const ssl = headers['X-Forwarded-Proto'] === 'https';
+    const { host } = headers;
+    const ssl = headers['x-forwarded-proto'] === 'https';
 
     path = path.replace(/\/refresh$/gim, '');
 
@@ -53,9 +50,9 @@ export default class JwtService {
       ...cleanseObject(loginRow.detail.payload),
       id: loginRow.id,
       sk: loginRow.sk,
-      refreshUrl: `${ssl ? 'https' : 'http'}://${Host}${path}/refresh`,
-      authorizeUrl: `${ssl ? 'https' : 'http'}://${Host}${path}/authorize`,
-      certsUrl: `${ssl ? 'https' : 'http'}://${Host}${path}/certs`,
+      refreshUrl: `${ssl ? 'https' : 'http'}://${host}${path}/refresh`,
+      authorizeUrl: `${ssl ? 'https' : 'http'}://${host}${path}/authorize`,
+      certsUrl: `${ssl ? 'https' : 'http'}://${host}${path}/certs`,
     };
 
     return {

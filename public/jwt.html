@@ -51,12 +51,10 @@
 
     function handleResponse(response) {
       if (response.verified) {
-        $('#emailFormGroup').show();
-        $('#codeFormGroup').hide();
+        $('#codeFormGroup').hide("fast", () => { $('#emailFormGroup').show(); });
         return;
       }
-      $('#emailFormGroup').hide();
-      $('#codeFormGroup').show();
+      $('#emailFormGroup').hide("fast", () => { $('#codeFormGroup').show(); });
     }
 
     $(document).ready(function () {
