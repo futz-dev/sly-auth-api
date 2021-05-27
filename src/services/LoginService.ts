@@ -144,7 +144,7 @@ export default class LoginService {
         ...result,
         id,
         provider: login.provider,
-        payload: login,
+        payload: { ...login, code: undefined }, // Remove code from the response
       };
     }
 

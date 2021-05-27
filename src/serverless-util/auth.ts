@@ -71,8 +71,6 @@ export async function authorize(
     token,
   });
 
-  // TODO: Response caching
-
   console.log(`Authorization response`, data);
 
   const { authorized, payload, error } = data;

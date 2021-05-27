@@ -22,7 +22,7 @@
     crossorigin="anonymous"></script>
 
   <script>
-    function submit() {
+    function login() {
       const url = 'api/v1/jwt'
       const data = {
         provider: 'EMAIL',
@@ -52,6 +52,30 @@
         });
     }
 
+    function refresh() {
+      $('#response').show("slow");
+      $('#responseBody').html(`Loading...`);
+      $.ajax({
+        url: 'api/v1/jwt/refresh',
+        type: 'POST',
+        contentType: "application/json",
+        dataType: "json",
+        headers: {
+          'Authorization': `Bearer ${$('#token').val()}`,
+          'X-Auth-Refresh': 'true'
+        }
+      })
+        .done((response) => {
+          console.log("Success!", JSON.stringify(response));
+          $('#responseBody').html(JSON.stringify(response, null, 2));
+          $('#token').val(response.token)
+        })
+        .fail((err) => {
+          console.log("Refresh Failure", JSON.stringify(err));
+          $('#responseBody').html(JSON.stringify(err.responseJSON, null, 2));
+        });
+    }
+
     function handleResponse(response) {
       if (response.token) {
         $('#codeFormGroup').hide("slow", () => {
@@ -64,16 +88,9 @@
       }
     }
 
-    $(document).ready(function () {
+    $(document).ready(() => {
       console.log("Ready!");
-      const url = new URL(window.location);
-      $('#jwt').submit(function () {
-        submit();
-        return false;
-      });
     });
-
-
   </script>
 </head>
 
@@ -83,7 +100,8 @@
       <div class="row">
         <div class="col-8 offset-2 pt-5">
           <h1>JWT Token Generator</h1>
-          <p>This form is a helper page to do <code>POST</code> requests to <code>api/v1/jwt</code> for JWT Token
+          <p>This form is a helper page to do <code>POST</code> requests to <code>api/v1/jwt</code> on
+            <code>sly-auth-api</code> for JWT Token
             Generation
           </p>
           <hr />
@@ -93,7 +111,7 @@
               placeholder="me@example.com">
             <small id="emailHelp" class="form-text text-muted">Enter an email address.</small>
             <div class="form-group pt-3">
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <span class="btn btn-primary" onclick="login()">Login</span>
             </div>
           </div>
           <div id="codeFormGroup" class="form-group" style="display: none;">
@@ -101,15 +119,20 @@
             <input type="number" class="form-control" id="code" aria-describedby="codeHelp" placeholder="123456">
             <small id="codeHelp" class="form-text text-muted">Enter the verification sent to your email.</small>
             <div class="form-group pt-3">
-              <button type="submit" class="btn btn-primary">Submit</button>
+              <span class="btn btn-primary" onclick="login()">Login</span>
             </div>
           </div>
-          <div id="tokenFormGroup" class="input-group" style="display: none;">
-            <div class="input-group-prepend">
-              <span class="input-group-text">Bearer</span>
+          <div id="tokenFormGroup" style="display: none;">
+            <div class="input-group">
+              <div class="input-group-prepend">
+                <span class="input-group-text">Bearer</span>
+              </div>
+              <textarea id="token" class="form-control" style="min-height: 125px;" aria-label="Bearer Token"
+                readonly></textarea>
             </div>
-            <textarea id="token" class="form-control" style="min-height: 125px;" aria-label="Bearer Token"
-              readonly></textarea>
+            <div class="form-group pt-3">
+              <span class="btn btn-primary" onclick="refresh()">Refresh</span>
+            </div>
           </div>
           <div id="response" class="pt-3" style="display: none;">
             <h2>Backend Response</h2>
