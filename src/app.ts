@@ -11,7 +11,17 @@ const app = express();
 app.disable('x-powered-by');
 
 app.use(express.json());
-morganBody(app, { noColors: true }); // Request and response logging
+morganBody(app, {
+  noColors: true,
+  immediateReqLog: true,
+  prettify: false,
+  stream: {
+    write(data: any) {
+      console.log(data);
+      return false;
+    },
+  },
+});
 
 app.use(corsHandler({ headers: ['x-auth-refresh'] }));
 
