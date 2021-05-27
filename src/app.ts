@@ -1,4 +1,5 @@
 import express from 'express';
+import morganBody from 'morgan-body';
 import * as packageJson from 'package.json';
 import { readFileSync } from 'fs';
 import { RegisterRoutes } from './routes';
@@ -10,6 +11,8 @@ const app = express();
 app.disable('x-powered-by');
 
 app.use(express.json());
+morganBody(app, { noColors: true }); // Request and response logging
+
 app.use(corsHandler({ headers: ['x-auth-refresh'] }));
 
 RegisterRoutes(app);
