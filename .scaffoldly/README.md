@@ -16,15 +16,27 @@ For more info: https://docs.scaffold.ly/infrastructure/configuration-files
 
 ```
 
-## Stage URLs
+## Services
 
 ```yaml
-"example-sls-rest-api":
-  "live": "https://sly.futz.dev/example"
-  "nonlive": "https://sly-dev.futz.dev/example"
-"sly-auth-api":
-  "live": "https://sly.futz.dev/auth"
-  "nonlive": "https://sly-dev.futz.dev/auth"
+"auth":
+  "live":
+    "base_url": "https://sly.futz.dev/auth"
+    "repo_name": "sly-auth-api"
+    "service_name": "auth"
+  "nonlive":
+    "base_url": "https://sly-dev.futz.dev/auth"
+    "repo_name": "sly-auth-api"
+    "service_name": "auth"
+"example":
+  "live":
+    "base_url": "https://sly.futz.dev/example"
+    "repo_name": "example-sls-rest-api"
+    "service_name": "example"
+  "nonlive":
+    "base_url": "https://sly-dev.futz.dev/example"
+    "repo_name": "example-sls-rest-api"
+    "service_name": "example"
 
 ```
 
