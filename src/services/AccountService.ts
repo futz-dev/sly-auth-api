@@ -23,7 +23,7 @@ export default class AccountService {
   }
 
   async updateAccount(request: AccountRequest, user: DecodedJwtPayload): Promise<AccountResponse> {
-    let accountRow: AccountRow = await this.accountsModel.get({ id: user.id, sk: user.sk });
+    let accountRow: AccountRow = await this.accountsModel.get({ id: user.id, sk: 'primary' });
     if (!accountRow) {
       throw new HttpError(404, 'Not found');
     }
@@ -37,7 +37,7 @@ export default class AccountService {
   }
 
   async getAccount(user: DecodedJwtPayload): Promise<AccountResponse> {
-    const accountRow: AccountRow = await this.accountsModel.get({ id: user.id, sk: user.sk });
+    const accountRow: AccountRow = await this.accountsModel.get({ id: user.id, sk: 'primary' });
     if (!accountRow) {
       throw new HttpError(404, 'Not found');
     }
