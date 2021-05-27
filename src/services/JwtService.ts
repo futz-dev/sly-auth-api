@@ -317,32 +317,32 @@ export default class JwtService {
   public generateAudience = (id: string): string => `urn:auth:${this.domain}:${id}`;
 
   private extractRefreshCookie = (request: HttpRequest, sk: string) => {
-    const cookie = {
+    const refreshCookie = {
       name: `${REFRESH_COOKIE_PREFIX}${sk}`,
       value: null,
     };
 
     if (!request) {
       console.warn('Missing request');
-      return cookie;
+      return refreshCookie;
     }
 
     const { headers } = request;
     if (!headers) {
       console.warn('Missing headers');
-      return cookie;
+      return refreshCookie;
     }
 
-    const { Cookie } = headers as Record<string, string>;
-    if (!Cookie) {
+    const { cookie } = headers as Record<string, string>;
+    if (!cookie) {
       console.warn('Missing Cookie header');
-      return cookie;
+      return refreshCookie;
     }
 
-    const cookies = Cookie.split(';');
+    const cookies = cookie.split(';');
     if (!cookies || cookies.length === 0) {
       console.warn('No cookies');
-      return cookie;
+      return refreshCookie;
     }
 
     return cookies.reduce((acc, item) => {
@@ -361,6 +361,6 @@ export default class JwtService {
       }
 
       return acc;
-    }, cookie);
+    }, refreshCookie);
   };
 }
