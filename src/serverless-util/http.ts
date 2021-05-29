@@ -1,7 +1,7 @@
 import { AUTH_PREFIXES } from '../constants';
 import { HttpRequest } from './interfaces';
 
-export const extractAuthorization = (request: HttpRequest): string => {
+export const extractAuthorization = (request: HttpRequest): string | null => {
   if (!request) {
     console.warn('Unable to extract authorization header: Request is null');
     return null;
@@ -27,7 +27,7 @@ export const extractAuthorization = (request: HttpRequest): string => {
   return null;
 };
 
-export const extractToken = (authorization: string): string => {
+export const extractToken = (authorization: string): string | null => {
   if (!authorization) {
     console.warn('Missing authorization header');
     return null;

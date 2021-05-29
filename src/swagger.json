@@ -194,7 +194,8 @@
 						"$ref": "#/components/schemas/JwtPayload"
 					},
 					"token": {
-						"type": "string"
+						"type": "string",
+						"nullable": true
 					}
 				},
 				"required": [
@@ -202,6 +203,7 @@
 					"verificationMethod",
 					"id",
 					"provider",
+					"payload",
 					"token"
 				],
 				"type": "object",
@@ -463,7 +465,7 @@
 	},
 	"info": {
 		"title": "api",
-		"version": "1.6.1-21",
+		"version": "1.6.1-22",
 		"license": {
 			"name": "UNLICENSED"
 		},

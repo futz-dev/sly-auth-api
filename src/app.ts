@@ -1,27 +1,19 @@
 import express from 'express';
-import morganBody from 'morgan-body';
-import * as packageJson from 'package.json';
 import { readFileSync } from 'fs';
+import packageJson from 'package.json';
 import { RegisterRoutes } from './routes';
-import * as swaggerJson from './swagger.json';
-import { corsHandler, errorHandler } from './serverless-util';
 
-const app = express();
+import {
+  corsHandler,
+  errorHandler,
+  createApp,
+  registerDocs,
+  registerVersion,
+} from './serverless-util';
 
-app.disable('x-powered-by');
+import swaggerJson from './swagger.json';
 
-app.use(express.json());
-morganBody(app, {
-  noColors: true,
-  immediateReqLog: true,
-  prettify: false,
-  stream: {
-    write(data: any) {
-      console.log(data);
-      return false;
-    },
-  },
-});
+const app = createApp();
 
 app.use(corsHandler({ headers: ['x-auth-refresh'] }));
 
@@ -29,10 +21,9 @@ RegisterRoutes(app);
 
 app.use(errorHandler(packageJson.version));
 
-app.get('/auth/openapi.json', (_req: express.Request, res: express.Response) => {
-  // eslint-disable-next-line @typescript-eslint/dot-notation
-  res.send(JSON.stringify(swaggerJson['default']));
-});
+registerDocs(app, swaggerJson);
+registerVersion(app, packageJson.version);
+
 app.get('/auth/jwt.html', (_req: express.Request, res: express.Response) => {
   const file = readFileSync('./public/jwt.html');
   res.type('html');

@@ -9,5 +9,5 @@ export interface VerificationResultBase {
 export interface LoginDetail<T> extends VerificationResultBase {
   id: string;
   provider: Provider;
-  payload?: T;
+  payload: T;
 }

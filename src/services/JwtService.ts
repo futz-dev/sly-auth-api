@@ -137,7 +137,7 @@ export default class JwtService {
     return refreshRow;
   };
 
-  fetchRefreshRow = async (request: HttpRequest): Promise<RefreshRow> => {
+  fetchRefreshRow = async (request: HttpRequest): Promise<RefreshRow | null> => {
     const authorization = extractAuthorization(request);
 
     if (!authorization) {
@@ -319,7 +319,7 @@ export default class JwtService {
   private extractRefreshCookie = (request: HttpRequest, sk: string) => {
     const refreshCookie = {
       name: `${REFRESH_COOKIE_PREFIX}${sk}`,
-      value: null,
+      value: null as string | null,
     };
 
     if (!request) {

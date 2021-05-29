@@ -125,27 +125,32 @@ export default class LoginService {
   private verifyLogin = async (login: LoginRequest): Promise<LoginRow> => {
     const email = login.email.trim().toLowerCase();
 
-    let loginDetail: LoginDetail<LoginRequest>;
+    let loginDetail: LoginDetail<LoginRequest> | undefined;
     const id = this.jwtService.generateAudience(email);
 
-    if (login.provider === 'GOOGLE') {
-      const result = await this.verifyGoogleToken(login.idToken);
-      loginDetail = {
-        ...result,
-        id,
-        provider: login.provider,
-        payload: login,
-      };
-    }
-
-    if (login.provider === 'EMAIL') {
-      const result = await this.verifyEmail(id, email, login.code);
-      loginDetail = {
-        ...result,
-        id,
-        provider: login.provider,
-        payload: { ...login, code: undefined }, // Remove code from the response
-      };
+    switch (login.provider) {
+      case 'GOOGLE': {
+        const result = await this.verifyGoogleToken(login.idToken);
+        loginDetail = {
+          ...result,
+          id,
+          provider: login.provider,
+          payload: login,
+        };
+        break;
+      }
+      case 'EMAIL': {
+        const result = await this.verifyEmail(id, email, login.code);
+        loginDetail = {
+          ...result,
+          id,
+          provider: login.provider,
+          payload: { ...login, code: undefined }, // Remove code from the response
+        };
+        break;
+      }
+      default:
+        loginDetail = undefined;
     }
 
     if (!loginDetail) {
@@ -196,7 +201,7 @@ export default class LoginService {
   private verifyEmail = async (
     id: string,
     email: string,
-    code: string,
+    code?: string,
   ): Promise<VerificationResultBase> => {
     if (code) {
       const verified = await this.totpService.verifyTotp(id, email, code);

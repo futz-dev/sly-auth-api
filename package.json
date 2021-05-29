@@ -5,6 +5,7 @@
   "scripts": {
     "prepare": "yarn serverless dynamodb install",
     "postinstall": "yarn openapi && yarn dotenv",
+    "build": "yarn run tsc",
     "start": "yarn serverless offline start",
     "deploy": "yarn openapi && yarn serverless deploy",
     "serverless": "SLS_DEBUG=* serverless",
@@ -24,6 +25,7 @@
     "@types/mime-types": "^2.1.0",
     "@types/moment": "^2.13.0",
     "@types/node": "12",
+    "@types/notp": "^2.0.0",
     "@types/swagger-ui-express": "^4.1.2",
     "@types/uuid": "^8.3.0",
     "@typescript-eslint/eslint-plugin": "^4.4.1",

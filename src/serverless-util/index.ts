@@ -1,5 +1,4 @@
 export * from './auth';
-export * from './cors';
-export * from './errors';
+export * from './express';
 export * from './http';
 export * from './interfaces';

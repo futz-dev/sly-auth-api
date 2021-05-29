@@ -32,6 +32,10 @@ export default class TemplateService {
       await this.ses.updateTemplate({ Template: source }).promise();
     }
 
+    if (!templateResponse.Template) {
+      throw new Error(`Unable to find template: ${name}`);
+    }
+
     console.log('Using template', templateResponse.Template.TemplateName);
     return templateResponse.Template.TemplateName;
   };

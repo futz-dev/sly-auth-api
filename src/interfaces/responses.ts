@@ -14,7 +14,7 @@ export type ProviderResponse = {
 };
 
 export interface TokenResponse extends LoginDetail<JwtPayload> {
-  token: string;
+  token: string | null;
 }
 
 export interface LoginDetailResponse {

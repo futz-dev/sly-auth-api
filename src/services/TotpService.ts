@@ -50,7 +50,7 @@ export default class TotpService {
       // TODO: Prob should be a standalone email service
       console.log(`Sending OTP via email to ${email}`);
 
-      const { token } = twofactor.generateToken(totp.detail.secret);
+      const { token } = twofactor.generateToken(totp.detail.secret) || {};
 
       const result = await this.ses
         .sendTemplatedEmail({
