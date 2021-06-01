@@ -1,4 +1,5 @@
 {
+  "compileOnSave": true,
   "compilerOptions": {
     /* Basic Options */
     "incremental": true,
@@ -6,6 +7,7 @@
     "module": "ES6",
     "outDir": ".build/",
     "sourceMap": true,
+    "watch": true,
 
     /* Strict Type-Checking Options */
     "strict": true,

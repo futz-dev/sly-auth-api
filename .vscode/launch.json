@@ -7,12 +7,10 @@
     {
       "type": "node",
       "request": "launch",
-      "name": "Serverless Lambda Offline",
+      "name": "Local Debug",
       "program": "${workspaceRoot}/node_modules/serverless/bin/serverless",
       "args": ["offline", "start", "--noTimeout"],
-      "outFiles": ["${workspaceFolder}/.webpack/src/lambda.js"],
-      "protocol": "inspector",
-      "runtimeExecutable": "node",
+      "outFiles": ["${workspaceFolder}/.webpack/**/*.js"],
       "sourceMaps": true
     }
   ]
