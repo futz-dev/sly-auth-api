@@ -95,7 +95,7 @@ export default class TotpService {
 
     console.log('Email/OTP has been successfully verified');
     totp.attrs.detail.verified = true;
-    await this.totps.model.update(totp);
+    await this.totps.model.update(totp.attrs);
 
     return true;
   };

@@ -48,7 +48,6 @@
         .fail((err) => {
           console.log("Login Failure", JSON.stringify(err));
           $('#responseBody').html(JSON.stringify(err.responseJSON, null, 2));
-          $('#emailFormGroup').show("slow");
         });
     }
 
