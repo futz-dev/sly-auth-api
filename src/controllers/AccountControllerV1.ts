@@ -1,10 +1,23 @@
-import { Body, Controller, Get, Patch, Path, Post, Request, Response, Route, Security } from 'tsoa';
+import {
+  Body,
+  Controller,
+  Get,
+  Patch,
+  Path,
+  Post,
+  Request,
+  Response,
+  Route,
+  Security,
+  Tags,
+} from 'tsoa';
 import { ErrorResponse, HttpRequestWithUser } from '@scaffoldly/serverless-util';
 import { AccountRequest } from '../interfaces/requests';
 import { AccountResponse } from '../interfaces/responses';
 import AccountService from '../services/AccountService';
 
 @Route(`/api/v1/account`)
+@Tags('Account')
 export class AccountControllerV1 extends Controller {
   accountService: AccountService;
 

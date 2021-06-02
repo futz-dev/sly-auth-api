@@ -464,12 +464,9 @@
 		}
 	},
 	"info": {
-		"title": "api",
-		"version": "1.6.1-26",
-		"license": {
-			"name": "UNLICENSED"
-		},
-		"contact": {}
+		"title": "sly-auth-api",
+		"version": "1.6.1-27",
+		"description": "To generate a JWT token, go to the <a href=\"https://sly-dev.futz.dev/auth/jwt.html\" target=\"_blank\">JWT Token Generator</a>"
 	},
 	"openapi": "3.0.0",
 	"paths": {
@@ -508,6 +505,9 @@
 						}
 					}
 				},
+				"tags": [
+					"Account"
+				],
 				"security": [
 					{
 						"jwt": []
@@ -551,6 +551,9 @@
 						}
 					}
 				},
+				"tags": [
+					"Account"
+				],
 				"security": [
 					{
 						"jwt": []
@@ -603,6 +606,9 @@
 						}
 					}
 				},
+				"tags": [
+					"Account"
+				],
 				"security": [
 					{
 						"jwt": []
@@ -654,6 +660,9 @@
 						}
 					}
 				},
+				"tags": [
+					"Account"
+				],
 				"security": [
 					{
 						"jwt": []
@@ -715,6 +724,9 @@
 						}
 					}
 				},
+				"tags": [
+					"JWT"
+				],
 				"security": [],
 				"parameters": [],
 				"requestBody": {
@@ -764,6 +776,9 @@
 						}
 					}
 				},
+				"tags": [
+					"JWT"
+				],
 				"security": [
 					{
 						"jwt": []
@@ -821,6 +836,9 @@
 						}
 					}
 				},
+				"tags": [
+					"JWT"
+				],
 				"security": [
 					{
 						"jwt": []
@@ -844,6 +862,9 @@
 						}
 					}
 				},
+				"tags": [
+					"JWT"
+				],
 				"security": [],
 				"parameters": [],
 				"requestBody": {
@@ -873,6 +894,9 @@
 						}
 					}
 				},
+				"tags": [
+					"JWT"
+				],
 				"security": [],
 				"parameters": []
 			}
@@ -892,6 +916,9 @@
 						}
 					}
 				},
+				"tags": [
+					"JWT"
+				],
 				"security": [],
 				"parameters": []
 			}
@@ -899,7 +926,7 @@
 	},
 	"servers": [
 		{
-			"url": "/"
+			"url": "/auth"
 		}
 	]
 }

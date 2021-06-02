@@ -9,6 +9,7 @@ import {
   Response,
   Route,
   Security,
+  Tags,
   TsoaResponse,
 } from 'tsoa';
 import { env } from '../env';
@@ -26,6 +27,7 @@ import LoginService from '../services/LoginService';
 import ProviderService from '../services/ProviderService';
 
 @Route(`/api/v1/jwt`)
+@Tags('JWT')
 export class JwtControllerV1 extends Controller {
   envVars = env.env_vars;
 

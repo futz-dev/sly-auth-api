@@ -1,8 +1,17 @@
-import { generateRoutes, generateSpec } from 'tsoa';
+/* eslint-disable @typescript-eslint/no-var-requires */
+const { generateRoutes, generateSpec } = require('tsoa');
+const envVars = require('./.scaffoldly/env-vars.json');
+const packageJson = require('./package.json');
 
 (async () => {
   await generateSpec({
-    basePath: 'todo',
+    basePath: `/${envVars.SERVICE_NAME}`,
+    name: envVars.APPLICATION_NAME,
+    version: packageJson.version,
+    description: `To generate a JWT token, go to the <a href="https://${envVars.SERVERLESS_API_DOMAIN}/auth/jwt.html" target="_blank">JWT Token Generator</a>`,
+    entryFile: 'src/app.ts',
+    noImplicitAdditionalProperties: 'throw-on-extras',
+    controllerPathGlobs: ['src/**/*Controller*.ts'],
     outputDirectory: 'src',
     specVersion: 3,
     securityDefinitions: {
@@ -15,8 +24,12 @@ import { generateRoutes, generateSpec } from 'tsoa';
   });
 
   await generateRoutes({
-    basePath: 'todo',
+    // basePath: `/${envVars.SERVICE_NAME}`,
+    entryFile: 'src/app.ts',
+    noImplicitAdditionalProperties: 'throw-on-extras',
+    controllerPathGlobs: ['src/**/*Controller*.ts'],
     routesDir: 'src',
     authenticationModule: 'src/auth.ts',
+    noWriteIfUnchanged: true,
   });
 })();

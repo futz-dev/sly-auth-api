@@ -9,7 +9,7 @@
     "deploy": "yarn openapi && yarn serverless deploy",
     "serverless": "SLS_DEBUG=* serverless",
     "dotenv": "dotenv -e .scaffoldly/.env -c $NODE_ENV -- ngx-scripts env service_urls env_vars --parse-json --out src/env.ts",
-    "openapi": "yarn run tsoa spec-and-routes",
+    "openapi": "node tsoa.js",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },
   "module": "",
