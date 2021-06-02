@@ -19,6 +19,7 @@ import AccountsModel from 'src/models/AccountsModel';
 import moment, { Moment } from 'moment';
 import { TokenResponse } from 'src/interfaces/responses';
 import axios from 'axios';
+import envVars from '../../.scaffoldly/env-vars.json';
 
 const JWKS_SECRET_NAME = 'jwks';
 const DOMAIN = env.env_vars.SERVERLESS_API_DOMAIN.split('.').reverse().join('.');
@@ -56,9 +57,9 @@ export default class JwtService {
       ...cleanseObject(loginRow.detail.payload),
       id: loginRow.id,
       sk: loginRow.sk,
-      refreshUrl: `${ssl ? 'https' : 'http'}://${host}${path}/refresh`,
-      authorizeUrl: `${ssl ? 'https' : 'http'}://${host}${path}/authorize`,
-      certsUrl: `${ssl ? 'https' : 'http'}://${host}${path}/certs`,
+      refreshUrl: `${ssl ? 'https' : 'http'}://${host}/${envVars.SERVICE_NAME}/${path}refresh`,
+      authorizeUrl: `${ssl ? 'https' : 'http'}://${host}/${envVars.SERVICE_NAME}/${path}authorize`,
+      certsUrl: `${ssl ? 'https' : 'http'}://${host}/${envVars.SERVICE_NAME}/${path}certs`,
     };
 
     return {

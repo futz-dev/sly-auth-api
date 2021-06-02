@@ -77,7 +77,7 @@ export default class LoginService {
 
     // Tiny hack for consistency: lob off `/refresh` from the event path
     let { path } = request;
-    path = path.split('/').slice(0, -1).join('/');
+    path = path.replace('/refresh', '');
 
     refreshRow = await this.jwtService.createRefreshToken(
       loginRow.attrs,
