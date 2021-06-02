@@ -57,9 +57,9 @@ export default class JwtService {
       ...cleanseObject(loginRow.detail.payload),
       id: loginRow.id,
       sk: loginRow.sk,
-      refreshUrl: `${ssl ? 'https' : 'http'}://${host}/${envVars.SERVICE_NAME}/${path}refresh`,
-      authorizeUrl: `${ssl ? 'https' : 'http'}://${host}/${envVars.SERVICE_NAME}/${path}authorize`,
-      certsUrl: `${ssl ? 'https' : 'http'}://${host}/${envVars.SERVICE_NAME}/${path}certs`,
+      refreshUrl: `${ssl ? 'https' : 'http'}://${host}/${envVars.SERVICE_NAME}${path}/refresh`,
+      authorizeUrl: `${ssl ? 'https' : 'http'}://${host}/${envVars.SERVICE_NAME}${path}/authorize`,
+      certsUrl: `${ssl ? 'https' : 'http'}://${host}/${envVars.SERVICE_NAME}${path}/certs`,
     };
 
     return {
