@@ -1,17 +1,18 @@
+import { ErrorResponse, HttpRequest, HttpRequestWithUser } from '@scaffoldly/serverless-util';
 import {
+  Body,
   Controller,
   Get,
   Post,
-  Route,
-  Body,
   Request,
   Res,
-  TsoaResponse,
   Response,
+  Route,
   Security,
+  TsoaResponse,
 } from 'tsoa';
 import { env } from '../env';
-import { LoginRequest, AuthorizeRequest } from '../interfaces/requests';
+import { AuthorizeRequest, LoginRequest } from '../interfaces/requests';
 import {
   AuthorizeResponse,
   JWKSResponse,
@@ -19,13 +20,12 @@ import {
   ProviderResponse,
   TokenResponse,
 } from '../interfaces/responses';
-import { ErrorResponse, HttpRequest, HttpRequestWithUser } from '../serverless-util';
 import AccountService from '../services/AccountService';
 import JwtService from '../services/JwtService';
 import LoginService from '../services/LoginService';
 import ProviderService from '../services/ProviderService';
 
-@Route(`/auth/api/v1/jwt`)
+@Route(`/api/v1/jwt`)
 export class JwtControllerV1 extends Controller {
   envVars = env.env_vars;
 
@@ -69,7 +69,7 @@ export class JwtControllerV1 extends Controller {
   ): Promise<LoginDetailResponse> {
     const response: LoginDetailResponse = {
       payload: request.user,
-      providers: await this.accountService.getProviders('me', request.user),
+      providers: await this.loginService.providers('me', request.user),
     };
     return response;
   }

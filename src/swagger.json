@@ -465,7 +465,7 @@
 	},
 	"info": {
 		"title": "api",
-		"version": "1.6.1-23",
+		"version": "1.6.1-24",
 		"license": {
 			"name": "UNLICENSED"
 		},
@@ -473,7 +473,7 @@
 	},
 	"openapi": "3.0.0",
 	"paths": {
-		"/auth/api/v1/account/me": {
+		"/api/v1/account/me": {
 			"get": {
 				"operationId": "GetMyAccount",
 				"responses": {
@@ -516,7 +516,7 @@
 				"parameters": []
 			}
 		},
-		"/auth/api/v1/account/{id}": {
+		"/api/v1/account/{id}": {
 			"get": {
 				"operationId": "GetAccountById",
 				"responses": {
@@ -568,7 +568,7 @@
 				]
 			}
 		},
-		"/auth/api/v1/account": {
+		"/api/v1/account": {
 			"post": {
 				"operationId": "CreateAccount",
 				"responses": {
@@ -672,7 +672,7 @@
 				}
 			}
 		},
-		"/auth/api/v1/jwt": {
+		"/api/v1/jwt": {
 			"post": {
 				"operationId": "Login",
 				"responses": {
@@ -729,7 +729,7 @@
 				}
 			}
 		},
-		"/auth/api/v1/jwt/me": {
+		"/api/v1/jwt/me": {
 			"get": {
 				"operationId": "GetLoginDetail",
 				"responses": {
@@ -772,7 +772,7 @@
 				"parameters": []
 			}
 		},
-		"/auth/api/v1/jwt/refresh": {
+		"/api/v1/jwt/refresh": {
 			"post": {
 				"operationId": "Refresh",
 				"responses": {
@@ -829,7 +829,7 @@
 				"parameters": []
 			}
 		},
-		"/auth/api/v1/jwt/authorize": {
+		"/api/v1/jwt/authorize": {
 			"post": {
 				"operationId": "Authorize",
 				"responses": {
@@ -858,7 +858,7 @@
 				}
 			}
 		},
-		"/auth/api/v1/jwt/certs": {
+		"/api/v1/jwt/certs": {
 			"get": {
 				"operationId": "GetCerts",
 				"responses": {
@@ -877,7 +877,7 @@
 				"parameters": []
 			}
 		},
-		"/auth/api/v1/jwt/providers": {
+		"/api/v1/jwt/providers": {
 			"get": {
 				"operationId": "GetProviders",
 				"responses": {

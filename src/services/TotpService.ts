@@ -9,20 +9,20 @@ import TemplateService from './TemplateService';
 export default class TotpService {
   ses: AWS.SES;
 
-  accountsModel: AccountsModel;
+  totps: AccountsModel<TotpRow>;
 
   templateService: TemplateService;
 
   constructor() {
     this.ses = new AWS.SES();
-    this.accountsModel = new AccountsModel();
+    this.totps = new AccountsModel();
     this.templateService = new TemplateService();
   }
 
   sendTotp = async (id: string, email: string): Promise<VerificationMethod> => {
     console.log('Fetching TOTP configuration for id:', id);
 
-    let totp: TotpRow = await this.accountsModel.get({ id, sk: 'totp' });
+    let totp = await this.totps.model.get(id, 'totp');
 
     if (!totp) {
       console.log(`Generating OTP for ${id}`);
@@ -32,7 +32,7 @@ export default class TotpService {
       });
       // TODO: Encrypt secret/qr/url
       // TODO: Recovery Codes
-      totp = await this.accountsModel.create<TotpRow>(
+      totp = await this.totps.model.create(
         {
           id,
           sk: 'totp',
@@ -42,7 +42,7 @@ export default class TotpService {
       );
     }
 
-    const { verified, authenticator } = totp.detail;
+    const { verified, authenticator } = totp.attrs.detail;
     console.log(`OTP status for ${id}: verified: ${verified} authenticator: ${authenticator}`);
 
     if (!verified || !authenticator) {
@@ -50,7 +50,7 @@ export default class TotpService {
       // TODO: Prob should be a standalone email service
       console.log(`Sending OTP via email to ${email}`);
 
-      const { token } = twofactor.generateToken(totp.detail.secret) || {};
+      const { token } = twofactor.generateToken(totp.attrs.detail.secret) || {};
 
       const result = await this.ses
         .sendTemplatedEmail({
@@ -75,13 +75,13 @@ export default class TotpService {
 
   verifyTotp = async (id: string, email: string, code: string): Promise<boolean> => {
     console.log('Fetching TOTP configuration for id:', email);
-    const totp: TotpRow = await this.accountsModel.get({ id, sk: 'totp' });
+    const totp = await this.totps.model.get(id, 'totp');
 
     if (!totp) {
       throw new HttpError(403, 'TOTP is not configured');
     }
 
-    const { secret, authenticator } = totp.detail;
+    const { secret, authenticator } = totp.attrs.detail;
     if (!secret) {
       throw new HttpError(403, 'Missing OTP Secret');
     }
@@ -94,8 +94,8 @@ export default class TotpService {
     }
 
     console.log('Email/OTP has been successfully verified');
-    totp.detail.verified = true;
-    await this.accountsModel.update(totp);
+    totp.attrs.detail.verified = true;
+    await this.totps.model.update(totp);
 
     return true;
   };

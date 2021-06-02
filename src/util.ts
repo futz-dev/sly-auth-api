@@ -1,4 +1,4 @@
-import { CleansedObject } from './serverless-util';
+import { CleansedObject } from '@scaffoldly/serverless-util';
 
 export const cleanseObject = (obj: unknown): CleansedObject => {
   if (obj == null) {

@@ -1,4 +1,9 @@
-import { HttpError } from '@scaffoldly/serverless-util';
+import {
+  DecodedJwtPayload,
+  extractToken,
+  HttpError,
+  HttpRequest,
+} from '@scaffoldly/serverless-util';
 import * as Google from 'google-auth-library';
 import { env } from 'src/env';
 import { LoginDetail, VerificationResultBase } from 'src/interfaces/Login';
@@ -7,10 +12,10 @@ import { AuthorizeRequest, LoginRequest } from 'src/interfaces/requests';
 import AccountsModel from 'src/models/AccountsModel';
 import {
   AuthorizeResponse,
+  ProviderResponse,
   TokenResponseHeaders,
   TokenResponseWithHeaders,
 } from '../interfaces/responses';
-import { DecodedJwtPayload, HttpRequest, extractToken } from '../serverless-util';
 import JwtService from './JwtService';
 import TotpService from './TotpService';
 
@@ -19,12 +24,12 @@ export default class LoginService {
 
   totpService: TotpService;
 
-  accountsModel: AccountsModel;
+  logins: AccountsModel<LoginRow>;
 
   constructor() {
     this.jwtService = new JwtService();
     this.totpService = new TotpService();
-    this.accountsModel = new AccountsModel();
+    this.logins = new AccountsModel();
   }
 
   login = async (login: LoginRequest, request: HttpRequest): Promise<TokenResponseWithHeaders> => {
@@ -61,7 +66,7 @@ export default class LoginService {
     const { id, detail } = refreshRow;
     const { sk } = detail;
 
-    const loginRow: LoginRow = await this.accountsModel.get({ id, sk });
+    const loginRow = await this.logins.model.get(id, sk);
 
     if (!loginRow) {
       console.warn(`Unable to find existing login with ${id} ${sk}`);
@@ -75,11 +80,11 @@ export default class LoginService {
     path = path.split('/').slice(0, -1).join('/');
 
     refreshRow = await this.jwtService.createRefreshToken(
-      loginRow,
+      loginRow.attrs,
       request,
       refreshRow.detail.token,
     );
-    const tokenResponse = await this.jwtService.createToken(loginRow, request, path);
+    const tokenResponse = await this.jwtService.createToken(loginRow.attrs, request, path);
     const headers: TokenResponseHeaders = {
       'x-auth-refresh': 'true',
       'set-cookie': refreshRow.detail.header,
@@ -122,6 +127,27 @@ export default class LoginService {
     return response;
   };
 
+  async providers(id: string, user: DecodedJwtPayload): Promise<ProviderResponse> {
+    if (id !== user.id && id !== 'me') {
+      throw new HttpError(403, 'Forbidden');
+    }
+
+    const [result] = await this.logins.model
+      .query(user.id)
+      .where('sk')
+      .beginsWith('login_')
+      .exec()
+      .promise();
+
+    return result.Items.reduce(
+      (response, item) => {
+        response[item.attrs.detail.provider] = { enabled: true, name: item.attrs.sk };
+        return response;
+      },
+      { EMAIL: { enabled: false }, GOOGLE: { enabled: false } } as ProviderResponse,
+    );
+  }
+
   private verifyLogin = async (login: LoginRequest): Promise<LoginRow> => {
     const email = login.email.trim().toLowerCase();
 
@@ -157,7 +183,7 @@ export default class LoginService {
       throw new HttpError(400, 'Unknown provider');
     }
 
-    const loginRow: LoginRow = await this.accountsModel.create(
+    const loginRow = await this.logins.model.create(
       {
         id: loginDetail.id,
         sk: `login_${loginDetail.provider}_${loginDetail.id}`,
@@ -166,7 +192,7 @@ export default class LoginService {
       { overwrite: true },
     );
 
-    return loginRow;
+    return loginRow.attrs;
   };
 
   private verifyGoogleToken = async (token: string): Promise<VerificationResultBase> => {

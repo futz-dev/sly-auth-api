@@ -1,10 +1,17 @@
-import { GetSecret, SetSecret } from '@scaffoldly/serverless-util';
+import {
+  DecodedJwtPayload,
+  extractAuthorization,
+  extractToken,
+  GetSecret,
+  HttpRequest,
+  JwtPayload,
+  SetSecret,
+} from '@scaffoldly/serverless-util';
 import { env } from 'src/env';
 import { v4 as uuidv4 } from 'uuid';
 import { JWT, JWK, JWKECKey, JWKS } from 'jose';
 import { GeneratedKeys, Jwk } from 'src/interfaces/Jwt';
 import { LoginRow, RefreshRow } from 'src/interfaces/models';
-import { extractAuthorization, extractToken } from 'src/serverless-util';
 import { cleanseObject } from 'src/util';
 import Cookies from 'cookies';
 import { JWT_REFRESH_TOKEN_MAX_AGE, REFRESH_COOKIE_PREFIX } from 'src/constants';
@@ -12,7 +19,6 @@ import AccountsModel from 'src/models/AccountsModel';
 import moment, { Moment } from 'moment';
 import { TokenResponse } from 'src/interfaces/responses';
 import axios from 'axios';
-import { DecodedJwtPayload, HttpRequest, JwtPayload } from '../serverless-util';
 
 const JWKS_SECRET_NAME = 'jwks';
 const DOMAIN = env.env_vars.SERVERLESS_API_DOMAIN.split('.').reverse().join('.');
@@ -20,12 +26,12 @@ const DOMAIN = env.env_vars.SERVERLESS_API_DOMAIN.split('.').reverse().join('.')
 const jwksCache: { [url: string]: { keys: JWKS.KeyStore; expires: Moment } } = {};
 
 export default class JwtService {
-  accountsModel: AccountsModel;
+  refreshes: AccountsModel<RefreshRow>;
 
   domain: string;
 
   constructor() {
-    this.accountsModel = new AccountsModel();
+    this.refreshes = new AccountsModel();
     this.domain = DOMAIN;
   }
 
@@ -120,7 +126,7 @@ export default class JwtService {
       secure: true,
     });
 
-    const refreshRow: RefreshRow = await this.accountsModel.create(
+    const refreshRow = await this.refreshes.model.create(
       {
         id: loginRow.id,
         sk: `jwt_refresh_${loginRow.sk}`,
@@ -134,7 +140,7 @@ export default class JwtService {
       { overwrite: true },
     );
 
-    return refreshRow;
+    return refreshRow.attrs;
   };
 
   fetchRefreshRow = async (request: HttpRequest): Promise<RefreshRow | null> => {
@@ -162,10 +168,7 @@ export default class JwtService {
       return null;
     }
 
-    const refreshRow: RefreshRow = await this.accountsModel.get({
-      id: decoded.id,
-      sk: `jwt_refresh_${decoded.sk}`,
-    });
+    const refreshRow = await this.refreshes.model.get(decoded.id, `jwt_refresh_${decoded.sk}`);
 
     if (!refreshRow) {
       console.warn(`Unable to find refresh record for ${decoded.id} ${decoded.sk}`);
@@ -180,16 +183,16 @@ export default class JwtService {
     }
 
     // Compare sly_jrt and decoded.sk value with result from DB
-    if (refreshRow.detail.token !== cookie.value) {
+    if (refreshRow.attrs.detail.token !== cookie.value) {
       console.warn(
-        `Token mismatch. Expected ${refreshRow.detail.token}, got ${cookie.value} from cookie ${cookie.name}`,
+        `Token mismatch. Expected ${refreshRow.attrs.detail.token}, got ${cookie.value} from cookie ${cookie.name}`,
       );
       return null;
     }
 
     // TODO: Ensure social auth credentials are still good
 
-    return refreshRow;
+    return refreshRow.attrs;
   };
 
   verifyJwt = async (jwt: string): Promise<DecodedJwtPayload> => {

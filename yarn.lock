@@ -1546,19 +1546,35 @@
   resolved "https://registry.yarnpkg.com/@protobufjs/utf8/-/utf8-1.1.0.tgz#a777360b5b39a1a2e5106f8e858f2fd2d060c570"
   integrity sha1-p3c2C1s5oaLlEG+OhY8v0tBgxXA=
 
-"@scaffoldly/serverless-util@^2.0.25":
-  version "2.0.25"
-  resolved "https://registry.yarnpkg.com/@scaffoldly/serverless-util/-/serverless-util-2.0.25.tgz#692b5da7f78e18b27e218f429db73c5953671060"
-  integrity sha512-GLri0WbdUaRxB62NjOY1qaE5WqT2oK+GtKv550tMCG6B+Zj0T5QeOIce/6wGBq1k9/70338P1kqviwIcknhfbg==
+"@scaffoldly/dynamodb@^1.3.1", "dynamodb@npm:@scaffoldly/dynamodb@1.3.1":
+  version "1.3.1"
+  resolved "https://registry.yarnpkg.com/@scaffoldly/dynamodb/-/dynamodb-1.3.1.tgz#05dc5039a71a227bc76bffc959298291994f58d5"
+  integrity sha512-zx5D96oDiWsiaJpGNwrtEQhh+4k/+LPoZZAumhgTpMcp4H5Klsf6R4h2CbL+tMQo3ajsSmgs/QDZq2vuu66rSg==
   dependencies:
-    "@types/aws-lambda" "^8.10.72"
-    "@types/dynamodb" "^1.2.2"
+    async "^2.6.3"
+    aws-sdk "^2.756.0"
+    bunyan "npm:@scaffoldly/bunyan@^1.8.15"
+    joi "^17.2.1"
+    lodash "^4.17.20"
+    stream-to-promise "^2.2.0"
+    uuid "^7.0.3"
+
+"@scaffoldly/serverless-util@^3.0.5":
+  version "3.0.5"
+  resolved "https://registry.yarnpkg.com/@scaffoldly/serverless-util/-/serverless-util-3.0.5.tgz#6db673a2b18aaee8b6fe4c4f2163d6b922bc8723"
+  integrity sha512-wTl0X4HUMzp6lnLKW/HVDcdezREHMWumBFnMb6uW9lbb7rTe7kocnWAPdZHBPFQ7fSD8NSQ/yA7ewjJc1nWX9Q==
+  dependencies:
+    "@scaffoldly/dynamodb" "^1.3.1"
+    "@types/dynamodb" "^1.3.0"
     aws-sdk "^2.682.0"
     aws-xray-sdk "^3.2.0"
     axios "^0.21.1"
+    cors "^2.8.5"
     dynamodb "npm:@scaffoldly/dynamodb@1.3.1"
     jose "2"
     moment "^2.29.1"
+    morgan-body "^2.6.5"
+    tsoa "^3.8.0"
 
 "@serverless/cli@^1.5.2":
   version "1.5.2"
@@ -1991,10 +2007,10 @@
   dependencies:
     dotenv "*"
 
-"@types/dynamodb@^1.2.2":
-  version "1.2.2"
-  resolved "https://registry.yarnpkg.com/@types/dynamodb/-/dynamodb-1.2.2.tgz#f5f33310ede3e286edea39e95849654918045979"
-  integrity sha512-u6iZp3vKLGJ/g3nei6d6moK1XGvTvUmyodTTmvvB/6cua0WzdTpl5axupbms4y1rnjnH0pEgWe+xgpJgMY9Y2Q==
+"@types/dynamodb@^1.3.0":
+  version "1.3.0"
+  resolved "https://registry.yarnpkg.com/@types/dynamodb/-/dynamodb-1.3.0.tgz#50869cf6b35653f4dc34b4eca7212cf41f622a28"
+  integrity sha512-ZgRX1JXk/NGG7hXfa6s1iDLyrN9yLyVHjlXwBVfwL0rNvsDZsDop9aq1ipYkjZ7/2GGCfKk3qBYc4B4AP5Hd8Q==
   dependencies:
     "@types/bunyan" "*"
     joi "^17.3.0"
@@ -2081,11 +2097,6 @@
   version "4.0.1"
   resolved "https://registry.yarnpkg.com/@types/long/-/long-4.0.1.tgz#459c65fa1867dafe6a8f322c4c51695663cc55e9"
   integrity sha512-5tXH6Bx/kNGd3MgffdmP4dy2Z+G4eaXw0SE81Tq3BNadtnMR5/ySMzX4SLEzHJzSmPNn4HIdpQsBvXMUykr58w==
-
-"@types/mime-types@^2.1.0":
-  version "2.1.0"
-  resolved "https://registry.yarnpkg.com/@types/mime-types/-/mime-types-2.1.0.tgz#9ca52cda363f699c69466c2a6ccdaad913ea7a73"
-  integrity sha1-nKUs2jY/aZxpRmwqbM2q2RPqenM=
 
 "@types/mime@^1":
   version "1.3.2"
@@ -2206,14 +2217,6 @@
   version "2.0.0"
   resolved "https://registry.yarnpkg.com/@types/stack-utils/-/stack-utils-2.0.0.tgz#7036640b4e21cc2f259ae826ce843d277dad8cff"
   integrity sha512-RJJrrySY7A8havqpGObOB4W92QXKJo63/jFLLgpvOtsGUqbQZ9Sbgl35KMm1DjC6j7AvmmU2bIno+3IyEaemaw==
-
-"@types/swagger-ui-express@^4.1.2":
-  version "4.1.2"
-  resolved "https://registry.yarnpkg.com/@types/swagger-ui-express/-/swagger-ui-express-4.1.2.tgz#cfc884904a104c3193f46f423d04ee0416be1ef4"
-  integrity sha512-t9teFTU8dKe69rX9EwL6OM2hbVquYdFM+sQ0REny4RalPlxAm+zyP04B12j4c7qEuDS6CnlwICywqWStPA3v4g==
-  dependencies:
-    "@types/express" "*"
-    "@types/serve-static" "*"
 
 "@types/tough-cookie@*":
   version "4.0.0"
@@ -4958,19 +4961,6 @@ dynamodb-localhost@0.0.9:
     progress "^1.1.8"
     rimraf "^2.6.3"
     tar "^4.4.8"
-
-"dynamodb@npm:@scaffoldly/dynamodb@1.3.1":
-  version "1.3.1"
-  resolved "https://registry.yarnpkg.com/@scaffoldly/dynamodb/-/dynamodb-1.3.1.tgz#05dc5039a71a227bc76bffc959298291994f58d5"
-  integrity sha512-zx5D96oDiWsiaJpGNwrtEQhh+4k/+LPoZZAumhgTpMcp4H5Klsf6R4h2CbL+tMQo3ajsSmgs/QDZq2vuu66rSg==
-  dependencies:
-    async "^2.6.3"
-    aws-sdk "^2.756.0"
-    bunyan "npm:@scaffoldly/bunyan@^1.8.15"
-    joi "^17.2.1"
-    lodash "^4.17.20"
-    stream-to-promise "^2.2.0"
-    uuid "^7.0.3"
 
 ecc-jsbn@~0.1.1:
   version "0.1.2"
@@ -8930,7 +8920,7 @@ mime-types@^2.1.12, mime-types@~2.1.19:
   dependencies:
     mime-db "1.44.0"
 
-mime-types@^2.1.30, mime-types@~2.1.24:
+mime-types@~2.1.24:
   version "2.1.30"
   resolved "https://registry.yarnpkg.com/mime-types/-/mime-types-2.1.30.tgz#6e7be8b4c479825f85ed6326695db73f9305d62d"
   integrity sha512-crmjA4bLtR8m9qLpHvgxSChT+XoSlZi8J4n/aIdn3z92e/U47Z0V/yl+Wh9W046GgFVAmoNR/fmdbZYcSSIUeg==

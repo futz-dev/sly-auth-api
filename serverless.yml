@@ -42,10 +42,10 @@ functions:
           path: /
           method: options
       - http:
-          path: /{any+}
+          path: /{proxy+}
           method: any
       - http:
-          path: /{any+}
+          path: /{proxy+}
           method: options
 
 resources:

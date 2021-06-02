@@ -1,4 +1,4 @@
-import { DecodedJwtPayload, JwtPayload } from '../serverless-util';
+import { DecodedJwtPayload, JwtPayload } from '@scaffoldly/serverless-util';
 import { AccountDetail } from './Account';
 import { Jwk } from './Jwt';
 import { LoginDetail } from './Login';

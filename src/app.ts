@@ -1,15 +1,14 @@
+import {
+  corsHandler,
+  createApp,
+  errorHandler,
+  registerDocs,
+  registerVersion,
+} from '@scaffoldly/serverless-util';
 import express from 'express';
 import { readFileSync } from 'fs';
 import packageJson from 'package.json';
 import { RegisterRoutes } from './routes';
-
-import {
-  corsHandler,
-  errorHandler,
-  createApp,
-  registerDocs,
-  registerVersion,
-} from './serverless-util';
 
 import swaggerJson from './swagger.json';
 
@@ -24,7 +23,7 @@ app.use(errorHandler(packageJson.version));
 registerDocs(app, swaggerJson);
 registerVersion(app, packageJson.version);
 
-app.get('/auth/jwt.html', (_req: express.Request, res: express.Response) => {
+app.get('/jwt.html', (_req: express.Request, res: express.Response) => {
   const file = readFileSync('./public/jwt.html');
   res.type('html');
   res.send(file);
