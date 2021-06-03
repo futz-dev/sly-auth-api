@@ -2,7 +2,8 @@ name: Create SDKs
 on:
   workflow_dispatch:
   push:
-    tags: ['*']
+    tags:
+      - '*'
 strategy:
   matrix:
     client: # List of options: https://openapi-generator.tech/docs/generators/
