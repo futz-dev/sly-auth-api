@@ -1,0 +1,16 @@
+name: Create SDKs
+on:
+  push:
+    workflow_dispatch:
+    tags: ['*']
+strategy:
+  matrix:
+    client: # List of options: https://openapi-generator.tech/docs/generators/
+      - typescript-angular
+      - typescript-axios
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - run: npx @openapitools/openapi-generator-cli
