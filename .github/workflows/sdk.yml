@@ -1,14 +1,12 @@
 name: Create SDKs
 on:
   workflow_dispatch:
-  push:
-    tags:
-      - '*'
+
 jobs:
   openapi-generator:
     strategy:
       matrix:
-        client:
+        generator:
           # List of options: https://openapi-generator.tech/docs/generators/
           - typescript-angular
           - typescript-axios
