@@ -1,6 +1,8 @@
 name: Generate SDKs
 on:
   workflow_dispatch:
+env:
+  NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 jobs:
   openapi-generator:
     strategy:
@@ -10,17 +12,23 @@ jobs:
             typescript-angular
             -p modelPropertyNaming=PascalCase
             -p fileNaming=kebab-case
-            -p npmName=@${{ github.repository }}
+            -p npmName=@${{ github.repository }}-typescript-angular
             && cd openapi
             && ls -al
             && yarn
             && yarn build
+            && yarn publish
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '12.x'
+          registry-url: 'https://npm.pkg.github.com'
       - run: >-
           npx @openapitools/openapi-generator-cli
           generate
+          --git-repo-id ${{ github.repository }}
           -i src/swagger.json
           -o openapi
           -g ${{ matrix.generator-command }}
