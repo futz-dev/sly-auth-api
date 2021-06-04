@@ -18,7 +18,7 @@ jobs:
             && cat package.json
             && yarn
             && yarn build
-            && yarn publish dist
+            && yarn --verbose publish dist
     runs-on: ubuntu-latest
     permissions:
       contents: read
