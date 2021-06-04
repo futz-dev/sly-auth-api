@@ -1,21 +1,26 @@
-name: Create SDKs
+name: Generate SDKs
 on:
   workflow_dispatch:
-
 jobs:
   openapi-generator:
     strategy:
       matrix:
-        generator:
-          # List of options: https://openapi-generator.tech/docs/generators/
-          - typescript-angular
-          - typescript-axios
+        generator-command: # https://openapi-generator.tech/docs/generators/
+          - >
+            typescript-angular
+            -p modelPropertyNaming=PascalCase
+            -p fileNaming=kebab-case
+            -p npmName=@${{ github.repository }}
+            && cd openapi
+            && ls -al
+            && yarn
+            && yarn build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
       - run: >-
           npx @openapitools/openapi-generator-cli
-          generate -v
+          generate
           -i src/swagger.json
-          -g ${{ matrix.generator }}
-          -o /tmp/test/
+          -o openapi
+          -g ${{ matrix.generator-command }}

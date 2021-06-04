@@ -21,6 +21,18 @@ const packageJson = require('./package.json');
         bearerFormat: 'JWT',
       },
     },
+    // spec: {
+    //   servers: [
+    //     {
+    //       url: 'http://localhost:8080/api/v1',
+    //       description: 'Local development',
+    //     },
+    //     {
+    //       url: 'http://prod:8080/api/v1',
+    //       description: 'Prod development',
+    //     },
+    //   ],
+    // },
   });
 
   await generateRoutes({
