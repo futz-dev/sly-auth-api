@@ -12,7 +12,7 @@ jobs:
             typescript-angular
             -p modelPropertyNaming=PascalCase
             -p fileNaming=kebab-case
-            -p npmName=@${{ github.repository }}-typescript-angular
+            -p npmName=${{ github.repository }}-typescript-angular
             && cd openapi
             && ls -al
             && yarn
