@@ -15,7 +15,7 @@ jobs:
             -p npmName=@${{ github.repository }}-typescript-angular
             -p npmRepository=https://npm.pkg.github.com
             && cd openapi
-            && cat <<< $(jq --arg repository "https://github.com/${{ github.repository }}" '. + repository: $repository' package.json) > package.json
+            && cat <<< $(jq --arg repository "https://github.com/${{ github.repository }}" '. + {repository: $repository}' package.json) > package.json
             && cat package.json
             && yarn
             && yarn build
