@@ -14,7 +14,6 @@ jobs:
             -p fileNaming=kebab-case
             -p npmName=@${{ github.repository }}-typescript-angular
             -p npmRepository=npm.pkg.github.com
-            && cat .npmrc
             && cd openapi
             && cat package.json
             && yarn
