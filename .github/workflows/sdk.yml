@@ -1,4 +1,4 @@
-name: Generate SDKs
+name: Generate Client Libraries
 on:
   workflow_dispatch:
 env:
@@ -14,7 +14,7 @@ jobs:
             -p fileNaming=kebab-case
             -p npmName=${{ github.repository }}-typescript-angular
             && cd openapi
-            && ls -al
+            && cat package.json
             && yarn
             && yarn build
             && yarn publish
