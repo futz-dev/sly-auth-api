@@ -1,6 +1,6 @@
 import { DecodedJwtPayload, HttpError } from '@scaffoldly/serverless-util';
 import { AccountRow } from '../interfaces/models';
-import { AccountRequest } from '../interfaces/requests';
+import { AccountRequest, UpdateAccountRequest } from '../interfaces/requests';
 import { AccountResponse } from '../interfaces/responses';
 import AccountsModel from '../models/AccountsModel';
 
@@ -21,7 +21,10 @@ export default class AccountService {
     return accountRow.attrs as AccountResponse;
   }
 
-  async updateAccount(request: AccountRequest, user: DecodedJwtPayload): Promise<AccountResponse> {
+  async updateAccount(
+    request: UpdateAccountRequest,
+    user: DecodedJwtPayload,
+  ): Promise<AccountResponse> {
     let accountRow = await this.accounts.model.get(user.id, 'primary');
     if (!accountRow) {
       throw new HttpError(404, 'Not found');

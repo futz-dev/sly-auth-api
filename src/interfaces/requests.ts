@@ -29,3 +29,8 @@ export interface AccountRequest {
   email: string;
   company?: string;
 }
+
+export interface UpdateAccountRequest {
+  name: string;
+  company?: string;
+}

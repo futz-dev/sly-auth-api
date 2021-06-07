@@ -74,6 +74,15 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "UpdateAccountRequest": {
+        "dataType": "refObject",
+        "properties": {
+            "name": {"dataType":"string","required":true},
+            "company": {"dataType":"string"},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Provider": {
         "dataType": "refEnum",
         "enums": ["GOOGLE","EMAIL"],
@@ -283,7 +292,7 @@ export function RegisterRoutes(app: express.Router) {
             authenticateMiddleware([{"jwt":[]}]),
             function AccountControllerV1_updateAccount(request: any, response: any, next: any) {
             const args = {
-                    accountRequest: {"in":"body","name":"accountRequest","required":true,"ref":"AccountRequest"},
+                    updateAccountRequest: {"in":"body","name":"updateAccountRequest","required":true,"ref":"UpdateAccountRequest"},
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
             };
 

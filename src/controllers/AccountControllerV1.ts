@@ -12,7 +12,7 @@ import {
   Tags,
 } from 'tsoa';
 import { ErrorResponse, HttpRequestWithUser } from '@scaffoldly/serverless-util';
-import { AccountRequest } from '../interfaces/requests';
+import { AccountRequest, UpdateAccountRequest } from '../interfaces/requests';
 import { AccountResponse } from '../interfaces/responses';
 import AccountService from '../services/AccountService';
 
@@ -61,9 +61,9 @@ export class AccountControllerV1 extends Controller {
   @Response<ErrorResponse>('5XX')
   @Security('jwt')
   public async updateAccount(
-    @Body() accountRequest: AccountRequest,
+    @Body() updateAccountRequest: UpdateAccountRequest,
     @Request() request: HttpRequestWithUser,
   ): Promise<AccountResponse> {
-    return this.accountService.updateAccount(accountRequest, request.user);
+    return this.accountService.updateAccount(updateAccountRequest, request.user);
   }
 }
