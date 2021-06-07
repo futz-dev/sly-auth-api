@@ -1,5 +1,10 @@
+import { Provider } from './Provider';
+
+export type LoginRequestBase = {
+  provider: Provider;
+};
+
 export type GoogleLoginRequest = {
-  provider: 'GOOGLE';
   email: string;
   name?: string;
   id: string;
@@ -9,12 +14,11 @@ export type GoogleLoginRequest = {
 };
 
 export type EmailLoginRequest = {
-  provider: 'EMAIL';
   email: string;
   code?: string;
 };
 
-export type LoginRequest = EmailLoginRequest | GoogleLoginRequest;
+export type LoginRequest = LoginRequestBase & (EmailLoginRequest | GoogleLoginRequest);
 
 export interface AuthorizeRequest {
   token: string;

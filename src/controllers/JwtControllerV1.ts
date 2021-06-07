@@ -13,6 +13,7 @@ import {
   TsoaResponse,
 } from 'tsoa';
 import { env } from '../env';
+import { Provider } from '../interfaces/Provider';
 import { AuthorizeRequest, EmailLoginRequest, GoogleLoginRequest } from '../interfaces/requests';
 import {
   AuthorizeResponse,
@@ -57,7 +58,10 @@ export class JwtControllerV1 extends Controller {
     @Res()
     res: TsoaResponse<200, TokenResponse, { 'set-cookie'?: string }>,
   ): Promise<TokenResponse> {
-    const { tokenResponse, headers } = await this.loginService.login(login, request);
+    const { tokenResponse, headers } = await this.loginService.login(
+      { provider: Provider.Email, ...login },
+      request,
+    );
     const response = res(200, tokenResponse, headers);
     return response;
   }
@@ -72,7 +76,10 @@ export class JwtControllerV1 extends Controller {
     @Res()
     res: TsoaResponse<200, TokenResponse, { 'set-cookie'?: string }>,
   ): Promise<TokenResponse> {
-    const { tokenResponse, headers } = await this.loginService.login(login, request);
+    const { tokenResponse, headers } = await this.loginService.login(
+      { provider: Provider.Email, ...login },
+      request,
+    );
     const response = res(200, tokenResponse, headers);
     return response;
   }

@@ -8,7 +8,12 @@ import * as Google from 'google-auth-library';
 import { env } from 'src/env';
 import { LoginDetail, VerificationResultBase } from 'src/interfaces/Login';
 import { LoginRow } from 'src/interfaces/models';
-import { AuthorizeRequest, LoginRequest } from 'src/interfaces/requests';
+import {
+  AuthorizeRequest,
+  EmailLoginRequest,
+  GoogleLoginRequest,
+  LoginRequest,
+} from 'src/interfaces/requests';
 import AccountsModel from 'src/models/AccountsModel';
 import { Provider } from '../interfaces/Provider';
 import {
@@ -155,7 +160,7 @@ export default class LoginService {
 
     switch (login.provider) {
       case 'GOOGLE': {
-        const result = await this.verifyGoogleToken(login.idToken);
+        const result = await this.verifyGoogleToken((login as GoogleLoginRequest).idToken);
         loginDetail = {
           ...result,
           id,
@@ -165,7 +170,7 @@ export default class LoginService {
         break;
       }
       case 'EMAIL': {
-        const result = await this.verifyEmail(id, email, login.code);
+        const result = await this.verifyEmail(id, email, (login as EmailLoginRequest).code);
         loginDetail = {
           ...result,
           id,

@@ -111,12 +111,12 @@ const models: TsoaRoute.Models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "EmailLoginRequest": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"code":{"dataType":"string"},"email":{"dataType":"string","required":true},"provider":{"dataType":"enum","enums":["EMAIL"],"required":true}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"code":{"dataType":"string"},"email":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "GoogleLoginRequest": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"photoUrl":{"dataType":"string"},"authToken":{"dataType":"string","required":true},"idToken":{"dataType":"string","required":true},"id":{"dataType":"string","required":true},"name":{"dataType":"string"},"email":{"dataType":"string","required":true},"provider":{"dataType":"enum","enums":["GOOGLE"],"required":true}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"photoUrl":{"dataType":"string"},"authToken":{"dataType":"string","required":true},"idToken":{"dataType":"string","required":true},"id":{"dataType":"string","required":true},"name":{"dataType":"string"},"email":{"dataType":"string","required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "DecodedJwtPayload": {
