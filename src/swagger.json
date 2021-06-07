@@ -134,11 +134,11 @@
 				"additionalProperties": false
 			},
 			"Provider": {
-				"type": "string",
 				"enum": [
 					"GOOGLE",
 					"EMAIL"
-				]
+				],
+				"type": "string"
 			},
 			"JwtPayload": {
 				"properties": {
@@ -211,74 +211,62 @@
 			},
 			"EmailLoginRequest": {
 				"properties": {
+					"code": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
 					"provider": {
 						"type": "string",
 						"enum": [
 							"EMAIL"
 						],
 						"nullable": false
+					}
+				},
+				"required": [
+					"email",
+					"provider"
+				],
+				"type": "object"
+			},
+			"GoogleLoginRequest": {
+				"properties": {
+					"photoUrl": {
+						"type": "string"
+					},
+					"authToken": {
+						"type": "string"
+					},
+					"idToken": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
 					},
 					"email": {
 						"type": "string"
 					},
-					"code": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"provider",
-					"email"
-				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"GoogleLoginRequest": {
-				"properties": {
 					"provider": {
 						"type": "string",
 						"enum": [
 							"GOOGLE"
 						],
 						"nullable": false
-					},
-					"email": {
-						"type": "string"
-					},
-					"name": {
-						"type": "string"
-					},
-					"id": {
-						"type": "string"
-					},
-					"idToken": {
-						"type": "string"
-					},
-					"authToken": {
-						"type": "string"
-					},
-					"photoUrl": {
-						"type": "string"
 					}
 				},
 				"required": [
-					"provider",
-					"email",
-					"id",
+					"authToken",
 					"idToken",
-					"authToken"
+					"id",
+					"email",
+					"provider"
 				],
-				"type": "object",
-				"additionalProperties": false
-			},
-			"LoginRequest": {
-				"anyOf": [
-					{
-						"$ref": "#/components/schemas/EmailLoginRequest"
-					},
-					{
-						"$ref": "#/components/schemas/GoogleLoginRequest"
-					}
-				]
+				"type": "object"
 			},
 			"DecodedJwtPayload": {
 				"properties": {
@@ -465,7 +453,7 @@
 	},
 	"info": {
 		"title": "sly-auth-api",
-		"version": "1.6.1-56",
+		"version": "1.6.1-57",
 		"description": "To generate a JWT token, go to the <a href=\"https://sly-dev.futz.dev/auth/jwt.html\" target=\"_blank\">JWT Token Generator</a>"
 	},
 	"openapi": "3.0.0",
@@ -681,9 +669,9 @@
 				}
 			}
 		},
-		"/api/v1/jwt": {
+		"/api/v1/jwt/email": {
 			"post": {
-				"operationId": "Login",
+				"operationId": "EmailLogin",
 				"responses": {
 					"200": {
 						"description": "",
@@ -725,7 +713,7 @@
 					}
 				},
 				"tags": [
-					"JWT"
+					"Jwt"
 				],
 				"security": [],
 				"parameters": [],
@@ -734,7 +722,67 @@
 					"content": {
 						"application/json": {
 							"schema": {
-								"$ref": "#/components/schemas/LoginRequest"
+								"$ref": "#/components/schemas/EmailLoginRequest"
+							}
+						}
+					}
+				}
+			}
+		},
+		"/api/v1/jwt/google": {
+			"post": {
+				"operationId": "GoogleLogin",
+				"responses": {
+					"200": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/TokenResponse"
+								}
+							}
+						},
+						"headers": {
+							"set-cookie": {
+								"schema": {
+									"type": "string"
+								},
+								"required": false
+							}
+						}
+					},
+					"4XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					},
+					"5XX": {
+						"description": "",
+						"content": {
+							"application/json": {
+								"schema": {
+									"$ref": "#/components/schemas/ErrorResponse"
+								}
+							}
+						}
+					}
+				},
+				"tags": [
+					"Jwt"
+				],
+				"security": [],
+				"parameters": [],
+				"requestBody": {
+					"required": true,
+					"content": {
+						"application/json": {
+							"schema": {
+								"$ref": "#/components/schemas/GoogleLoginRequest"
 							}
 						}
 					}
@@ -777,7 +825,7 @@
 					}
 				},
 				"tags": [
-					"JWT"
+					"Jwt"
 				],
 				"security": [
 					{
@@ -801,12 +849,6 @@
 							}
 						},
 						"headers": {
-							"x-auth-refresh": {
-								"schema": {
-									"type": "string"
-								},
-								"required": false
-							},
 							"set-cookie": {
 								"schema": {
 									"type": "string"
@@ -837,7 +879,7 @@
 					}
 				},
 				"tags": [
-					"JWT"
+					"Jwt"
 				],
 				"security": [
 					{
@@ -863,7 +905,7 @@
 					}
 				},
 				"tags": [
-					"JWT"
+					"Jwt"
 				],
 				"security": [],
 				"parameters": [],
@@ -895,7 +937,7 @@
 					}
 				},
 				"tags": [
-					"JWT"
+					"Jwt"
 				],
 				"security": [],
 				"parameters": []
@@ -917,7 +959,7 @@
 					}
 				},
 				"tags": [
-					"JWT"
+					"Jwt"
 				],
 				"security": [],
 				"parameters": []

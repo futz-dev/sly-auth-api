@@ -75,8 +75,8 @@ const models: TsoaRoute.Models = {
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "Provider": {
-        "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["GOOGLE"]},{"dataType":"enum","enums":["EMAIL"]}],"validators":{}},
+        "dataType": "refEnum",
+        "enums": ["GOOGLE","EMAIL"],
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "JwtPayload": {
@@ -110,32 +110,13 @@ const models: TsoaRoute.Models = {
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "EmailLoginRequest": {
-        "dataType": "refObject",
-        "properties": {
-            "provider": {"dataType":"enum","enums":["EMAIL"],"required":true},
-            "email": {"dataType":"string","required":true},
-            "code": {"dataType":"string"},
-        },
-        "additionalProperties": false,
+        "dataType": "refAlias",
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"code":{"dataType":"string"},"email":{"dataType":"string","required":true},"provider":{"dataType":"enum","enums":["EMAIL"],"required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "GoogleLoginRequest": {
-        "dataType": "refObject",
-        "properties": {
-            "provider": {"dataType":"enum","enums":["GOOGLE"],"required":true},
-            "email": {"dataType":"string","required":true},
-            "name": {"dataType":"string"},
-            "id": {"dataType":"string","required":true},
-            "idToken": {"dataType":"string","required":true},
-            "authToken": {"dataType":"string","required":true},
-            "photoUrl": {"dataType":"string"},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "LoginRequest": {
         "dataType": "refAlias",
-        "type": {"dataType":"union","subSchemas":[{"ref":"EmailLoginRequest"},{"ref":"GoogleLoginRequest"}],"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"photoUrl":{"dataType":"string"},"authToken":{"dataType":"string","required":true},"idToken":{"dataType":"string","required":true},"id":{"dataType":"string","required":true},"name":{"dataType":"string"},"email":{"dataType":"string","required":true},"provider":{"dataType":"enum","enums":["GOOGLE"],"required":true}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "DecodedJwtPayload": {
@@ -322,10 +303,10 @@ export function RegisterRoutes(app: express.Router) {
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-        app.post('/api/v1/jwt',
-            function JwtControllerV1_login(request: any, response: any, next: any) {
+        app.post('/api/v1/jwt/email',
+            function JwtControllerV1_emailLogin(request: any, response: any, next: any) {
             const args = {
-                    login: {"in":"body","name":"login","required":true,"ref":"LoginRequest"},
+                    login: {"in":"body","name":"login","required":true,"ref":"EmailLoginRequest"},
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     res: {"in":"res","name":"200","required":true,"ref":"TokenResponse"},
             };
@@ -342,7 +323,31 @@ export function RegisterRoutes(app: express.Router) {
             const controller = new JwtControllerV1();
 
 
-            const promise = controller.login.apply(controller, validatedArgs as any);
+            const promise = controller.emailLogin.apply(controller, validatedArgs as any);
+            promiseHandler(controller, promise, response, undefined, next);
+        });
+        // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+        app.post('/api/v1/jwt/google',
+            function JwtControllerV1_googleLogin(request: any, response: any, next: any) {
+            const args = {
+                    login: {"in":"body","name":"login","required":true,"ref":"GoogleLoginRequest"},
+                    request: {"in":"request","name":"request","required":true,"dataType":"object"},
+                    res: {"in":"res","name":"200","required":true,"ref":"TokenResponse"},
+            };
+
+            // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+
+            let validatedArgs: any[] = [];
+            try {
+                validatedArgs = getValidatedArgs(args, request, response);
+            } catch (err) {
+                return next(err);
+            }
+
+            const controller = new JwtControllerV1();
+
+
+            const promise = controller.googleLogin.apply(controller, validatedArgs as any);
             promiseHandler(controller, promise, response, undefined, next);
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa

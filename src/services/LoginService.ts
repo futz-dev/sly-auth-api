@@ -10,6 +10,7 @@ import { LoginDetail, VerificationResultBase } from 'src/interfaces/Login';
 import { LoginRow } from 'src/interfaces/models';
 import { AuthorizeRequest, LoginRequest } from 'src/interfaces/requests';
 import AccountsModel from 'src/models/AccountsModel';
+import { Provider } from '../interfaces/Provider';
 import {
   AuthorizeResponse,
   ProviderResponse,
@@ -49,10 +50,6 @@ export default class LoginService {
       'set-cookie': refreshRow.detail.header,
     };
 
-    if (request.headers['x-auth-refresh']) {
-      headers['x-auth-refresh'] = request.headers['x-auth-refresh'] as string;
-    }
-
     return { tokenResponse: token, headers };
   };
 
@@ -86,7 +83,6 @@ export default class LoginService {
     );
     const tokenResponse = await this.jwtService.createToken(loginRow.attrs, request, path);
     const headers: TokenResponseHeaders = {
-      'x-auth-refresh': 'true',
       'set-cookie': refreshRow.detail.header,
     };
 
@@ -144,7 +140,10 @@ export default class LoginService {
         response[item.attrs.detail.provider] = { enabled: true, name: item.attrs.sk };
         return response;
       },
-      { EMAIL: { enabled: false }, GOOGLE: { enabled: false } } as ProviderResponse,
+      {
+        [Provider.Email]: { enabled: false },
+        [Provider.Google]: { enabled: false },
+      } as ProviderResponse,
     );
   }
 
@@ -160,7 +159,7 @@ export default class LoginService {
         loginDetail = {
           ...result,
           id,
-          provider: login.provider,
+          provider: Provider.Google,
           payload: login,
         };
         break;
@@ -170,7 +169,7 @@ export default class LoginService {
         loginDetail = {
           ...result,
           id,
-          provider: login.provider,
+          provider: Provider.Email,
           payload: { ...login, code: undefined }, // Remove code from the response
         };
         break;

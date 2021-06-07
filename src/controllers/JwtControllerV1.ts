@@ -13,7 +13,7 @@ import {
   TsoaResponse,
 } from 'tsoa';
 import { env } from '../env';
-import { AuthorizeRequest, LoginRequest } from '../interfaces/requests';
+import { AuthorizeRequest, EmailLoginRequest, GoogleLoginRequest } from '../interfaces/requests';
 import {
   AuthorizeResponse,
   JWKSResponse,
@@ -47,12 +47,27 @@ export class JwtControllerV1 extends Controller {
     this.accountService = new AccountService();
   }
 
-  @Post()
+  @Post('email')
   @Response<ErrorResponse>('4XX')
   @Response<ErrorResponse>('5XX')
   @Response<TokenResponse, { 'set-cookie'?: string }>(200)
-  public async login(
-    @Body() login: LoginRequest,
+  public async emailLogin(
+    @Body() login: EmailLoginRequest,
+    @Request() request: HttpRequest,
+    @Res()
+    res: TsoaResponse<200, TokenResponse, { 'set-cookie'?: string }>,
+  ): Promise<TokenResponse> {
+    const { tokenResponse, headers } = await this.loginService.login(login, request);
+    const response = res(200, tokenResponse, headers);
+    return response;
+  }
+
+  @Post('google')
+  @Response<ErrorResponse>('4XX')
+  @Response<ErrorResponse>('5XX')
+  @Response<TokenResponse, { 'set-cookie'?: string }>(200)
+  public async googleLogin(
+    @Body() login: GoogleLoginRequest,
     @Request() request: HttpRequest,
     @Res()
     res: TsoaResponse<200, TokenResponse, { 'set-cookie'?: string }>,
@@ -80,11 +95,11 @@ export class JwtControllerV1 extends Controller {
   @Security('jwt')
   @Response<ErrorResponse>('4XX')
   @Response<ErrorResponse>('5XX')
-  @Response<TokenResponse, { 'set-cookie'?: string; 'x-auth-refresh'?: string }>(200)
+  @Response<TokenResponse, { 'set-cookie'?: string }>(200)
   public async refresh(
     @Request() request: HttpRequest,
     @Res()
-    res: TsoaResponse<200, TokenResponse, { 'set-cookie'?: string; 'x-auth-refresh'?: string }>,
+    res: TsoaResponse<200, TokenResponse, { 'set-cookie'?: string }>,
   ): Promise<TokenResponse> {
     const { tokenResponse, headers } = await this.loginService.refresh(request);
     const response = res(200, tokenResponse, headers);

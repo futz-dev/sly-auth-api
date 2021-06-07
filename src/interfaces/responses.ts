@@ -3,7 +3,7 @@ import { AccountDetail } from './Account';
 import { Jwk } from './Jwt';
 import { LoginDetail } from './Login';
 import { AccountRow } from './models';
-import { Provider, ProviderDetail } from './Provider';
+import { ProviderDetail, Provider } from './Provider';
 
 export interface JWKSResponse {
   keys: Jwk[];
@@ -22,7 +22,7 @@ export interface LoginDetailResponse {
   providers: ProviderResponse;
 }
 
-export type Header = 'set-cookie' | 'x-auth-refresh';
+export type Header = 'set-cookie';
 
 export type TokenResponseHeaders = { [header in Header]?: string };
 

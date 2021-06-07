@@ -1,4 +1,7 @@
-export type Provider = 'GOOGLE' | 'EMAIL';
+export enum Provider {
+  Google = 'GOOGLE',
+  Email = 'EMAIL',
+}
 
 export interface ProviderDetail {
   enabled: boolean;

@@ -14,7 +14,7 @@ import swaggerJson from './swagger.json';
 
 const app = createApp();
 
-app.use(corsHandler({ headers: ['x-auth-refresh'] }));
+app.use(corsHandler());
 
 RegisterRoutes(app);
 

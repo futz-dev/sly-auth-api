@@ -61,7 +61,6 @@
         dataType: "json",
         headers: {
           'Authorization': `Bearer ${$('#token').val()}`,
-          'X-Auth-Refresh': 'true'
         }
       })
         .done((response) => {
