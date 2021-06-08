@@ -41,17 +41,10 @@ export default class JwtService {
     return keys.publicKey.jwk;
   };
 
-  createEmptyToken = (
-    loginRow: LoginRow,
-    request: HttpRequest,
-    customPath: string,
-  ): TokenResponse => {
+  createEmptyToken = (loginRow: LoginRow, request: HttpRequest, path: string): TokenResponse => {
     const { headers } = request;
-    let { path } = customPath ? { path: customPath } : request;
     const { host } = headers;
     const ssl = headers['x-forwarded-proto'] === 'https';
-
-    path = path.replace(/\/refresh$/gim, '');
 
     const obj: JwtPayload = {
       ...cleanseObject(loginRow.detail.payload),
@@ -88,9 +81,9 @@ export default class JwtService {
   createToken = async (
     loginRow: LoginRow,
     request: HttpRequest,
-    customPath: string,
+    path: string,
   ): Promise<TokenResponse> => {
-    const response = this.createEmptyToken(loginRow, request, customPath);
+    const response = this.createEmptyToken(loginRow, request, path);
 
     const keys = await this.getOrCreateKeys();
     const key = JWK.asKey(keys.privateKey.jwk as JWKECKey);
