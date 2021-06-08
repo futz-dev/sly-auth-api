@@ -146,12 +146,12 @@ export default class LoginService {
 
     return result.Items.reduce(
       (response, item) => {
-        response[item.attrs.detail.provider] = { enabled: true, name: item.attrs.sk };
+        response[item.attrs.detail.provider] = { enabled: true };
         return response;
       },
       {
-        [Provider.Email]: { enabled: false },
-        [Provider.Google]: { enabled: false },
+        [Provider.Email]: { enabled: false, name: 'Email' },
+        [Provider.Google]: { enabled: false, name: 'Google' },
       } as ProviderResponse,
     );
   }
