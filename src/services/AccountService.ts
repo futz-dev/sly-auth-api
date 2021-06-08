@@ -31,7 +31,7 @@ export default class AccountService {
     }
 
     accountRow = await this.accounts.model.update({
-      ...accountRow,
+      ...accountRow.attrs,
       detail: { ...accountRow.attrs.detail, ...request },
     });
 
