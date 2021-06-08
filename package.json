@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "1.6.1-69",
+  "version": "1.6.1-70",
   "license": "UNLICENSED",
   "scripts": {
     "prepare": "yarn serverless dynamodb install",
