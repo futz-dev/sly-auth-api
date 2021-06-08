@@ -44,7 +44,7 @@ export default class JwtService {
   createEmptyToken = (
     loginRow: LoginRow,
     request: HttpRequest,
-    customPath?: string,
+    customPath: string,
   ): TokenResponse => {
     const { headers } = request;
     let { path } = customPath ? { path: customPath } : request;
@@ -88,7 +88,7 @@ export default class JwtService {
   createToken = async (
     loginRow: LoginRow,
     request: HttpRequest,
-    customPath?: string,
+    customPath: string,
   ): Promise<TokenResponse> => {
     const response = this.createEmptyToken(loginRow, request, customPath);
 

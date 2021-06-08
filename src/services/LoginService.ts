@@ -41,15 +41,19 @@ export default class LoginService {
   login = async (login: LoginRequest, request: HttpRequest): Promise<TokenResponseWithHeaders> => {
     const loginRow = await this.verifyLogin(login);
 
+    // Lob off last '/.+' from the path so refresh/authorize URLs are correct
+    let { path } = request;
+    path = path.replace(/.+(\/.+)$/gm, '');
+
     if (!loginRow.detail.verified) {
       return {
-        tokenResponse: this.jwtService.createEmptyToken(loginRow, request),
+        tokenResponse: this.jwtService.createEmptyToken(loginRow, request, path),
         headers: {},
       };
     }
 
     const refreshRow = await this.jwtService.createRefreshToken(loginRow, request);
-    const token = await this.jwtService.createToken(loginRow, request);
+    const token = await this.jwtService.createToken(loginRow, request, path);
 
     const headers: TokenResponseHeaders = {
       'set-cookie': refreshRow.detail.header,
@@ -77,9 +81,9 @@ export default class LoginService {
 
     console.log(`Generating new tokens for ${id} ${sk}`);
 
-    // Tiny hack for consistency: lob off `/refresh` from the event path
+    // Lob off last '/.+' from the path so refresh/authorize URLs are correct
     let { path } = request;
-    path = path.replace('/refresh', '');
+    path = path.replace(/.+(\/.+)$/gm, '');
 
     refreshRow = await this.jwtService.createRefreshToken(
       loginRow.attrs,
