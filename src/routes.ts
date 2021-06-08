@@ -110,6 +110,9 @@ const models: TsoaRoute.Models = {
         "properties": {
             "verified": {"dataType":"boolean","required":true},
             "verificationMethod": {"ref":"VerificationMethod","required":true},
+            "email": {"dataType":"string","required":true},
+            "name": {"dataType":"string"},
+            "photoUrl": {"dataType":"string"},
             "id": {"dataType":"string","required":true},
             "provider": {"ref":"Provider","required":true},
             "payload": {"ref":"JwtPayload","required":true},

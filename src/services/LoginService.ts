@@ -223,13 +223,23 @@ export default class LoginService {
       throw new HttpError(500, 'Verification payload was not set');
     }
 
-    const { sub } = payload;
+    // eslint-disable-next-line @typescript-eslint/naming-convention
+    const { sub, email, email_verified, picture } = payload;
 
     if (!sub) {
       throw new HttpError(500, 'Verification sub was not set');
     }
 
-    return { verified: true, verificationMethod: 'NONE' };
+    if (!email) {
+      throw new HttpError(400, 'Email scope not authorized');
+    }
+
+    return {
+      verified: email_verified || false,
+      verificationMethod: email_verified ? 'NONE' : 'EMAIL',
+      email,
+      photoUrl: picture,
+    };
   };
 
   private verifyEmail = async (
@@ -239,10 +249,10 @@ export default class LoginService {
   ): Promise<VerificationResultBase> => {
     if (code) {
       const verified = await this.totpService.verifyTotp(id, email, code);
-      return { verified, verificationMethod: 'EMAIL' };
+      return { verified, verificationMethod: 'EMAIL', email };
     }
 
     const verificationMethod = await this.totpService.sendTotp(id, email);
-    return { verified: false, verificationMethod };
+    return { verified: false, verificationMethod, email };
   };
 }
