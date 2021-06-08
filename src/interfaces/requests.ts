@@ -31,6 +31,6 @@ export interface AccountRequest {
 }
 
 export interface UpdateAccountRequest {
-  name: string;
+  name?: string;
   company?: string;
 }
