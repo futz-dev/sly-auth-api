@@ -146,7 +146,10 @@ export default class LoginService {
 
     return result.Items.reduce(
       (response, item) => {
-        response[item.attrs.detail.provider] = { enabled: true };
+        response[item.attrs.detail.provider] = {
+          ...response[item.attrs.detail.provider],
+          enabled: true,
+        };
         return response;
       },
       {
