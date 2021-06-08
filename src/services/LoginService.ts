@@ -43,7 +43,7 @@ export default class LoginService {
 
     // Lob off last '/.+' from the path so refresh/authorize URLs are correct
     let { path } = request;
-    path = path.replace(/.+(\/.+)$/gm, '');
+    path = path.replace(/(.+)(\/.+)$/gm, '$1');
 
     if (!loginRow.detail.verified) {
       return {
@@ -83,7 +83,7 @@ export default class LoginService {
 
     // Lob off last '/.+' from the path so refresh/authorize URLs are correct
     let { path } = request;
-    path = path.replace(/.+(\/.+)$/gm, '');
+    path = path.replace(/(.+)(\/.+)$/gm, '$1');
 
     refreshRow = await this.jwtService.createRefreshToken(
       loginRow.attrs,
