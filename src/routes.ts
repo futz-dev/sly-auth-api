@@ -77,7 +77,7 @@ const models: TsoaRoute.Models = {
     "UpdateAccountRequest": {
         "dataType": "refObject",
         "properties": {
-            "name": {"dataType":"string","required":true},
+            "name": {"dataType":"string"},
             "company": {"dataType":"string"},
         },
         "additionalProperties": false,
