@@ -3,13 +3,13 @@
   "version": "1.8.0",
   "license": "UNLICENSED",
   "scripts": {
-    "prepare": "yarn serverless dynamodb install",
-    "postinstall": "yarn openapi && yarn dotenv",
+    "prepare": "yarn dotenv && yarn openapi && yarn dynamodb",
     "start": "yarn serverless offline start",
     "deploy": "yarn openapi && yarn serverless deploy",
     "serverless": "SLS_DEBUG=* serverless",
     "dotenv": "dotenv -e .scaffoldly/.env -c $NODE_ENV -- ngx-scripts env service_urls env_vars --parse-json --out src/env.ts",
     "openapi": "node tsoa.js",
+    "dynamodb": "yarn serverless dynamodb install",
     "lint": "eslint '*/**/*.{js,ts,tsx}' --quiet --fix"
   },
   "module": "",

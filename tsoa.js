@@ -1,7 +1,12 @@
 /* eslint-disable @typescript-eslint/no-var-requires */
 const { generateRoutes, generateSpec } = require('tsoa');
-const envVars = require('./.scaffoldly/env-vars.json');
+const fs = require('fs');
 const packageJson = require('./package.json');
+
+const { NODE_ENV } = process.env;
+const envVars = NODE_ENV
+  ? JSON.parse(fs.readFileSync(fs.openSync(`.scaffoldly/${NODE_ENV}/env-vars.json`)))
+  : JSON.parse(fs.readFileSync(fs.openSync(`.scaffoldly/env-vars.json`)));
 
 (async () => {
   await generateSpec({
@@ -21,6 +26,7 @@ const packageJson = require('./package.json');
         bearerFormat: 'JWT',
       },
     },
+    // TODO: All stages in the spec file?
     // spec: {
     //   servers: [
     //     {

@@ -19,7 +19,6 @@ import AccountsModel from 'src/models/AccountsModel';
 import moment, { Moment } from 'moment';
 import { TokenResponse } from 'src/interfaces/responses';
 import axios from 'axios';
-import envVars from '../../.scaffoldly/env-vars.json';
 
 const JWKS_SECRET_NAME = 'jwks';
 const DOMAIN = env.env_vars.SERVERLESS_API_DOMAIN.split('.').reverse().join('.');
@@ -27,6 +26,8 @@ const DOMAIN = env.env_vars.SERVERLESS_API_DOMAIN.split('.').reverse().join('.')
 const jwksCache: { [url: string]: { keys: JWKS.KeyStore; expires: Moment } } = {};
 
 export default class JwtService {
+  envVars = env.env_vars;
+
   refreshes: AccountsModel<RefreshRow>;
 
   domain: string;
@@ -50,9 +51,11 @@ export default class JwtService {
       ...cleanseObject(loginRow.detail.payload),
       id: loginRow.id,
       sk: loginRow.sk,
-      refreshUrl: `${ssl ? 'https' : 'http'}://${host}/${envVars.SERVICE_NAME}${path}/refresh`,
-      authorizeUrl: `${ssl ? 'https' : 'http'}://${host}/${envVars.SERVICE_NAME}${path}/authorize`,
-      certsUrl: `${ssl ? 'https' : 'http'}://${host}/${envVars.SERVICE_NAME}${path}/certs`,
+      refreshUrl: `${ssl ? 'https' : 'http'}://${host}/${this.envVars.SERVICE_NAME}${path}/refresh`,
+      authorizeUrl: `${ssl ? 'https' : 'http'}://${host}/${
+        this.envVars.SERVICE_NAME
+      }${path}/authorize`,
+      certsUrl: `${ssl ? 'https' : 'http'}://${host}/${this.envVars.SERVICE_NAME}${path}/certs`,
     };
 
     return {
