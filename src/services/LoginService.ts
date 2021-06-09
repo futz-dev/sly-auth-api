@@ -147,11 +147,15 @@ export default class LoginService {
       .promise();
 
     const initialResponse = {
-      [Provider.Email]: { enabled: false, name: 'Email', clientId: this.envVars.MAIL_DOMAIN },
+      [Provider.Email]: {
+        enabled: false,
+        name: 'Email',
+        clientId: this.envVars.MAIL_DOMAIN || undefined,
+      },
       [Provider.Google]: {
         enabled: false,
         name: 'Google',
-        clientId: this.envVars.GOOGLE_CLIENT_ID,
+        clientId: this.envVars.GOOGLE_CLIENT_ID || undefined,
       },
     } as ProviderResponse;
 

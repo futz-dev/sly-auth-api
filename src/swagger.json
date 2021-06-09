@@ -423,7 +423,7 @@
 	},
 	"info": {
 		"title": "sly-auth-api",
-		"version": "1.9.1",
+		"version": "1.9.2",
 		"description": "To generate a JWT token, go to the <a href=\"https://sly-dev.futz.dev/auth/jwt.html\" target=\"_blank\">JWT Token Generator</a>"
 	},
 	"openapi": "3.0.0",
