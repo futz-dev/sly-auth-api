@@ -18,7 +18,10 @@ export default class AccountService {
       detail: request,
     });
 
-    return accountRow.attrs as AccountResponse;
+    return {
+      id: accountRow.attrs.id,
+      ...accountRow.attrs.detail,
+    };
   }
 
   async updateAccount(
@@ -27,7 +30,7 @@ export default class AccountService {
   ): Promise<AccountResponse> {
     let accountRow = await this.accounts.model.get(user.id, 'primary');
     if (!accountRow) {
-      throw new HttpError(404, 'Not found');
+      throw new HttpError(404, 'Not Found');
     }
 
     accountRow = await this.accounts.model.update({
@@ -35,25 +38,31 @@ export default class AccountService {
       detail: { ...accountRow.attrs.detail, ...request },
     });
 
-    return accountRow.attrs as AccountResponse;
+    return {
+      id: accountRow.attrs.id,
+      ...accountRow.attrs.detail,
+    };
   }
 
   async getAccount(user: DecodedJwtPayload): Promise<AccountResponse> {
     const accountRow = await this.accounts.model.get(user.id, 'primary');
     if (!accountRow) {
-      throw new HttpError(404, 'Not found');
+      throw new HttpError(404, 'Not Found');
     }
 
-    return accountRow.attrs as AccountResponse;
+    return {
+      id: accountRow.attrs.id,
+      ...accountRow.attrs.detail,
+    };
   }
 
   async getAccountById(id: string, user: DecodedJwtPayload): Promise<AccountResponse> {
     if (id !== user.id && id !== 'me') {
-      throw new HttpError(403, 'Forbidden');
+      throw new HttpError(501, 'Not Implemented');
     }
 
-    const accountRow: AccountRow = await this.getAccount(user);
+    const account = await this.getAccount(user);
 
-    return accountRow as AccountResponse;
+    return account;
   }
 }

@@ -12,32 +12,13 @@ import * as express from 'express';
 // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
 
 const models: TsoaRoute.Models = {
-    "AccountDetail": {
+    "AccountResponse": {
         "dataType": "refObject",
         "properties": {
             "name": {"dataType":"string","required":true},
             "email": {"dataType":"string","required":true},
             "company": {"dataType":"string"},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "AccountsRow_AccountDetail_": {
-        "dataType": "refObject",
-        "properties": {
             "id": {"dataType":"string","required":true},
-            "sk": {"dataType":"string","required":true},
-            "detail": {"ref":"AccountDetail","required":true},
-        },
-        "additionalProperties": false,
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "AccountResponse": {
-        "dataType": "refObject",
-        "properties": {
-            "id": {"dataType":"string","required":true},
-            "sk": {"dataType":"string","required":true},
-            "detail": {"ref":"AccountDetail","required":true},
         },
         "additionalProperties": false,
     },

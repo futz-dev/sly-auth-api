@@ -2,7 +2,6 @@ import { DecodedJwtPayload, JwtPayload } from '@scaffoldly/serverless-util';
 import { AccountDetail } from './Account';
 import { Jwk } from './Jwt';
 import { LoginDetail } from './Login';
-import { AccountRow } from './models';
 import { ProviderDetail, Provider } from './Provider';
 
 export interface JWKSResponse {
@@ -38,8 +37,6 @@ export interface AuthorizeResponse {
   detail?: string;
 }
 
-export interface AccountResponse extends AccountRow {
+export interface AccountResponse extends AccountDetail {
   id: string;
-  sk: string;
-  detail: AccountDetail;
 }
