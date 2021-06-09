@@ -26,6 +26,8 @@ import JwtService from './JwtService';
 import TotpService from './TotpService';
 
 export default class LoginService {
+  envVars = env.env_vars;
+
   jwtService: JwtService;
 
   totpService: TotpService;
@@ -144,19 +146,22 @@ export default class LoginService {
       .exec()
       .promise();
 
-    return result.Items.reduce(
-      (response, item) => {
-        response[item.attrs.detail.provider] = {
-          ...response[item.attrs.detail.provider],
-          enabled: true,
-        };
-        return response;
+    const initialResponse = {
+      [Provider.Email]: { enabled: false, name: 'Email', clientId: this.envVars.MAIL_DOMAIN },
+      [Provider.Google]: {
+        enabled: false,
+        name: 'Google',
+        clientId: this.envVars.GOOGLE_CLIENT_ID,
       },
-      {
-        [Provider.Email]: { enabled: false, name: 'Email' },
-        [Provider.Google]: { enabled: false, name: 'Google' },
-      } as ProviderResponse,
-    );
+    } as ProviderResponse;
+
+    return result.Items.reduce((response, item) => {
+      response[item.attrs.detail.provider] = {
+        ...response[item.attrs.detail.provider],
+        enabled: true,
+      };
+      return response;
+    }, initialResponse);
   }
 
   private verifyLogin = async (login: LoginRequest): Promise<LoginRow> => {
