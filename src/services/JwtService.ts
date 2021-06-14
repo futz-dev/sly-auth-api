@@ -1,4 +1,5 @@
 import {
+  cleanseObject,
   DecodedJwtPayload,
   extractAuthorization,
   extractToken,
@@ -7,18 +8,18 @@ import {
   JwtPayload,
   SetSecret,
 } from '@scaffoldly/serverless-util';
-import { env } from 'src/env';
 import { v4 as uuidv4 } from 'uuid';
 import { JWT, JWK, JWKECKey, JWKS } from 'jose';
-import { GeneratedKeys, Jwk } from 'src/interfaces/Jwt';
-import { LoginRow, RefreshRow } from 'src/interfaces/models';
-import { cleanseObject } from 'src/util';
 import Cookies from 'cookies';
-import { JWT_REFRESH_TOKEN_MAX_AGE, REFRESH_COOKIE_PREFIX } from 'src/constants';
-import AccountsModel from 'src/models/AccountsModel';
 import moment, { Moment } from 'moment';
-import { TokenResponse } from 'src/interfaces/responses';
+
 import axios from 'axios';
+import { TokenResponse } from '../interfaces/responses';
+import { env } from '../env';
+import AccountsModel from '../models/AccountsModel';
+import { LoginRow, RefreshRow } from '../interfaces/models';
+import { GeneratedKeys, Jwk } from '../interfaces/Jwt';
+import { JWT_REFRESH_TOKEN_MAX_AGE, REFRESH_COOKIE_PREFIX } from '../constants';
 
 const JWKS_SECRET_NAME = 'jwks';
 const DOMAIN = env.env_vars.SERVERLESS_API_DOMAIN.split('.').reverse().join('.');

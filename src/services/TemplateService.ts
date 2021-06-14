@@ -1,7 +1,7 @@
 import { STAGE, AWS } from '@scaffoldly/serverless-util';
 
-import { templates } from 'src/templates';
 import _ from 'lodash';
+import { templates } from '../templates';
 
 export default class TemplateService {
   ses: AWS.SES;

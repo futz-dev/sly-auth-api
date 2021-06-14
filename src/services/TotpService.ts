@@ -1,9 +1,10 @@
 import { HttpError, AWS } from '@scaffoldly/serverless-util';
 import * as twofactor from 'node-2fa';
-import { TotpRow } from 'src/interfaces/models';
-import AccountsModel from 'src/models/AccountsModel';
-import { VerificationMethod } from 'src/interfaces/Totp';
-import { env } from 'src/env';
+import { env } from '../env';
+import { TotpRow } from '../interfaces/models';
+import { VerificationMethod } from '../interfaces/Totp';
+import AccountsModel from '../models/AccountsModel';
+
 import TemplateService from './TemplateService';
 
 export default class TotpService {

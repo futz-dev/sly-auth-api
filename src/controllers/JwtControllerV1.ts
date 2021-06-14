@@ -30,8 +30,6 @@ import ProviderService from '../services/ProviderService';
 @Route(`/api/v1/jwt`)
 @Tags('Jwt')
 export class JwtControllerV1 extends Controller {
-  envVars = env.env_vars;
-
   loginService: LoginService;
 
   jwtService: JwtService;
@@ -126,14 +124,15 @@ export class JwtControllerV1 extends Controller {
   }
 
   @Get('providers')
+  // eslint-disable-next-line class-methods-use-this
   public getProviders(): ProviderResponse {
     // TODO: Move the ProviderDetail generation into ProviderService
     const response: ProviderResponse = {
-      GOOGLE: this.envVars.GOOGLE_CLIENT_ID
-        ? { name: 'Google', clientId: this.envVars.GOOGLE_CLIENT_ID, enabled: true }
+      GOOGLE: env.env_vars.GOOGLE_CLIENT_ID
+        ? { name: 'Google', clientId: env.env_vars.GOOGLE_CLIENT_ID, enabled: true }
         : { enabled: false },
-      EMAIL: this.envVars.MAIL_DOMAIN
-        ? { name: 'Email', clientId: this.envVars.MAIL_DOMAIN, enabled: true }
+      EMAIL: env.env_vars.MAIL_DOMAIN
+        ? { name: 'Email', clientId: env.env_vars.MAIL_DOMAIN, enabled: true }
         : { enabled: false },
     };
 

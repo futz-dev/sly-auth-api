@@ -5,29 +5,28 @@ import {
   HttpRequest,
 } from '@scaffoldly/serverless-util';
 import * as Google from 'google-auth-library';
-import { env } from 'src/env';
-import { LoginDetail, VerificationResultBase } from 'src/interfaces/Login';
-import { LoginRow } from 'src/interfaces/models';
+import { env } from '../env';
+import { LoginDetail, VerificationResultBase } from '../interfaces/Login';
+import { LoginRow } from '../interfaces/models';
+
+import { Provider } from '../interfaces/Provider';
 import {
   AuthorizeRequest,
   EmailLoginRequest,
   GoogleLoginRequest,
   LoginRequest,
-} from 'src/interfaces/requests';
-import AccountsModel from 'src/models/AccountsModel';
-import { Provider } from '../interfaces/Provider';
+} from '../interfaces/requests';
 import {
   AuthorizeResponse,
   ProviderResponse,
   TokenResponseHeaders,
   TokenResponseWithHeaders,
 } from '../interfaces/responses';
+import AccountsModel from '../models/AccountsModel';
 import JwtService from './JwtService';
 import TotpService from './TotpService';
 
 export default class LoginService {
-  envVars = env.env_vars;
-
   jwtService: JwtService;
 
   totpService: TotpService;
@@ -150,12 +149,12 @@ export default class LoginService {
       [Provider.Email]: {
         enabled: false,
         name: 'Email',
-        clientId: this.envVars.MAIL_DOMAIN || undefined,
+        clientId: env.env_vars.MAIL_DOMAIN || undefined,
       },
       [Provider.Google]: {
         enabled: false,
         name: 'Google',
-        clientId: this.envVars.GOOGLE_CLIENT_ID || undefined,
+        clientId: env.env_vars.GOOGLE_CLIENT_ID || undefined,
       },
     } as ProviderResponse;
 
