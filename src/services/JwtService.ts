@@ -1,7 +1,6 @@
 import {
   cleanseObject,
   DecodedJwtPayload,
-  extractAuthorization,
   extractToken,
   GetSecret,
   HttpRequest,
@@ -141,9 +140,10 @@ export default class JwtService {
     return refreshRow.attrs;
   };
 
-  fetchRefreshRow = async (request: HttpRequest): Promise<RefreshRow | null> => {
-    const authorization = extractAuthorization(request);
-
+  fetchRefreshRow = async (
+    authorization: string,
+    request: HttpRequest,
+  ): Promise<RefreshRow | null> => {
     if (!authorization) {
       console.warn('Missing authorization');
       return null;

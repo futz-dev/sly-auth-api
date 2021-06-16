@@ -368,9 +368,9 @@ export function RegisterRoutes(app: express.Router) {
         });
         // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
         app.post('/api/v1/jwt/refresh',
-            authenticateMiddleware([{"jwt":[]}]),
             function JwtControllerV1_refresh(request: any, response: any, next: any) {
             const args = {
+                    authorization: {"in":"header","name":"authorization","required":true,"dataType":"string"},
                     request: {"in":"request","name":"request","required":true,"dataType":"object"},
                     res: {"in":"res","name":"200","required":true,"ref":"TokenResponse"},
             };

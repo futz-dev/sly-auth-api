@@ -63,8 +63,11 @@ export default class LoginService {
     return { tokenResponse: token, headers };
   };
 
-  refresh = async (request: HttpRequest): Promise<TokenResponseWithHeaders> => {
-    let refreshRow = await this.jwtService.fetchRefreshRow(request);
+  refresh = async (
+    authorization: string,
+    request: HttpRequest,
+  ): Promise<TokenResponseWithHeaders> => {
+    let refreshRow = await this.jwtService.fetchRefreshRow(authorization, request);
     if (!refreshRow) {
       console.warn(`Unable to find refresh record`);
       throw new HttpError(403, 'Unable to find/match refresh record');

@@ -3,6 +3,7 @@ import {
   Body,
   Controller,
   Get,
+  Header,
   Post,
   Request,
   Res,
@@ -97,16 +98,16 @@ export class JwtControllerV1 extends Controller {
   }
 
   @Post('refresh')
-  @Security('jwt')
   @Response<ErrorResponse>('4XX')
   @Response<ErrorResponse>('5XX')
   @Response<TokenResponse, { 'set-cookie'?: string }>(200)
   public async refresh(
+    @Header() authorization: string,
     @Request() request: HttpRequest,
     @Res()
     res: TsoaResponse<200, TokenResponse, { 'set-cookie'?: string }>,
   ): Promise<TokenResponse> {
-    const { tokenResponse, headers } = await this.loginService.refresh(request);
+    const { tokenResponse, headers } = await this.loginService.refresh(authorization, request);
     const response = res(200, tokenResponse, headers);
     return response;
   }
