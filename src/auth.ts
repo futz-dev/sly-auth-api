@@ -1,3 +1,6 @@
 import { authorize } from '@scaffoldly/serverless-util';
+import { env } from './env';
 
-export const expressAuthentication = authorize;
+const DOMAIN = env.env_vars.SERVERLESS_API_DOMAIN;
+
+export const expressAuthentication = authorize(DOMAIN);
