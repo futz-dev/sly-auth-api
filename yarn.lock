@@ -1569,10 +1569,10 @@
     stream-to-promise "^2.2.0"
     uuid "^7.0.3"
 
-"@scaffoldly/serverless-util@^3.0.29":
-  version "3.0.29"
-  resolved "https://registry.yarnpkg.com/@scaffoldly/serverless-util/-/serverless-util-3.0.29.tgz#2918574c0a3d13a8fa65adaf105b1ead7b6f56c7"
-  integrity sha512-aWLasq0vb22pRp25hnuSOwWe7iMsKp8qeld+O89Anq58LIBXrKl9ZxbSYAqkhuui58/iPyF8mfqlIh9XzifTXg==
+"@scaffoldly/serverless-util@^3.0.30":
+  version "3.0.30"
+  resolved "https://registry.yarnpkg.com/@scaffoldly/serverless-util/-/serverless-util-3.0.30.tgz#c8509ba4a44f529bb9eca8ec22c806e53ad48140"
+  integrity sha512-uqxb0Wxee1DBEO8qXafi6OckhtOlxviOOCax+jPTS2pu2Tbip/KdJI5a/ozvhla1NQWra+nzdI6g6aagmS/ZCg==
   dependencies:
     "@scaffoldly/dynamodb" "^1.3.1"
     "@types/aws-lambda" "^8.10.72"
