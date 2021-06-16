@@ -186,7 +186,8 @@ export default class JwtService {
       return null;
     }
 
-    const sk = `jwt_refresh_${decoded.sk}_${decoded.iat}`;
+    const sk = `jwt_refresh_${decoded.sk}_${decoded.sessionId}`;
+
     const refreshRow = await this.refreshes.model.get(decoded.id, sk);
 
     if (!refreshRow) {
