@@ -23,7 +23,7 @@ import { GeneratedKeys, Jwk } from '../interfaces/Jwt';
 import { JWT_REFRESH_TOKEN_MAX_AGE, REFRESH_COOKIE_PREFIX } from '../constants';
 
 const JWKS_SECRET_NAME = 'jwks';
-const DOMAIN = env.env_vars.SERVERLESS_API_DOMAIN.split('.').reverse().join('.');
+const DOMAIN = env.env_vars.SERVERLESS_API_DOMAIN;
 
 const jwksCache: { [url: string]: { keys: JWKS.KeyStore; expires: Moment } } = {};
 
