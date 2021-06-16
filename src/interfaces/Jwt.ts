@@ -21,4 +21,5 @@ export interface RefreshDetail {
   token: string;
   expires: number;
   header: string;
+  sessionId: string;
 }

@@ -15,6 +15,7 @@ import Cookies from 'cookies';
 import moment, { Moment } from 'moment';
 
 import axios from 'axios';
+import { ulid } from 'ulid';
 import { TokenResponse } from '../interfaces/responses';
 import { env } from '../env';
 import AccountsModel from '../models/AccountsModel';
@@ -52,7 +53,12 @@ export default class JwtService {
     return keys.publicKey.jwk;
   };
 
-  createEmptyToken = (loginRow: LoginRow, request: HttpRequest, path: string): TokenResponse => {
+  createEmptyToken = (
+    loginRow: LoginRow,
+    request: HttpRequest,
+    path: string,
+    sessionId = ulid(),
+  ): TokenResponse => {
     const { headers } = request;
     const { host } = headers;
     const ssl = headers['x-forwarded-proto'] === 'https';
@@ -66,6 +72,7 @@ export default class JwtService {
         this.envVars.SERVICE_NAME
       }${path}/authorize`,
       certsUrl: `${ssl ? 'https' : 'http'}://${host}/${this.envVars.SERVICE_NAME}${path}/certs`,
+      sessionId,
     };
 
     return {
@@ -95,8 +102,9 @@ export default class JwtService {
     loginRow: LoginRow,
     request: HttpRequest,
     path: string,
+    sessionId = ulid(),
   ): Promise<TokenResponse> => {
-    const response = this.createEmptyToken(loginRow, request, path);
+    const response = this.createEmptyToken(loginRow, request, path, sessionId);
 
     const keys = await this.getOrCreateKeys();
     const key = JWK.asKey(keys.privateKey.jwk as JWKECKey);
@@ -118,6 +126,7 @@ export default class JwtService {
   createRefreshToken = async (
     loginRow: LoginRow,
     request: HttpRequest,
+    sessionId: string,
     token = uuidv4(),
   ): Promise<RefreshRow> => {
     const { headers } = request;
@@ -136,12 +145,13 @@ export default class JwtService {
     const refreshRow = await this.refreshes.model.create(
       {
         id: loginRow.id,
-        sk: `jwt_refresh_${loginRow.sk}`,
+        sk: `jwt_refresh_${loginRow.sk}_${sessionId}`,
         detail: {
           sk: loginRow.sk,
           token,
           expires: moment().add(JWT_REFRESH_TOKEN_MAX_AGE, 'millisecond').unix(),
           header: cookie.toHeader(),
+          sessionId,
         },
       },
       { overwrite: true },
@@ -176,10 +186,11 @@ export default class JwtService {
       return null;
     }
 
-    const refreshRow = await this.refreshes.model.get(decoded.id, `jwt_refresh_${decoded.sk}`);
+    const sk = `jwt_refresh_${decoded.sk}_${decoded.iat}`;
+    const refreshRow = await this.refreshes.model.get(decoded.id, sk);
 
     if (!refreshRow) {
-      console.warn(`Unable to find refresh record for ${decoded.id} ${decoded.sk}`);
+      console.warn(`Unable to find refresh record for id: ${decoded.id} sk: ${sk}`);
       return null;
     }
 

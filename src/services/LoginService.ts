@@ -53,8 +53,12 @@ export default class LoginService {
       };
     }
 
-    const refreshRow = await this.jwtService.createRefreshToken(loginRow, request);
     const token = await this.jwtService.createToken(loginRow, request, path);
+    const refreshRow = await this.jwtService.createRefreshToken(
+      loginRow,
+      request,
+      token.payload.sessionId,
+    );
 
     const headers: TokenResponseHeaders = {
       'set-cookie': refreshRow.detail.header,
@@ -89,12 +93,18 @@ export default class LoginService {
     let { path } = request;
     path = path.replace(/(.+)(\/.+)$/gm, '$1');
 
+    const tokenResponse = await this.jwtService.createToken(
+      loginRow.attrs,
+      request,
+      path,
+      refreshRow.detail.sessionId,
+    );
     refreshRow = await this.jwtService.createRefreshToken(
       loginRow.attrs,
       request,
+      refreshRow.detail.sessionId,
       refreshRow.detail.token,
     );
-    const tokenResponse = await this.jwtService.createToken(loginRow.attrs, request, path);
     const headers: TokenResponseHeaders = {
       'set-cookie': refreshRow.detail.header,
     };
