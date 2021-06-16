@@ -29,7 +29,6 @@ const models: TsoaRoute.Models = {
             "method": {"dataType":"string","required":true},
             "path": {"dataType":"string","required":true},
             "version": {"dataType":"string","required":true},
-            "source": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
     },

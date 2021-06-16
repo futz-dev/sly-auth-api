@@ -39,16 +39,12 @@
 					},
 					"version": {
 						"type": "string"
-					},
-					"source": {
-						"type": "string"
 					}
 				},
 				"required": [
 					"method",
 					"path",
-					"version",
-					"source"
+					"version"
 				],
 				"type": "object",
 				"additionalProperties": false

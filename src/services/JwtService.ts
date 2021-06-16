@@ -2,10 +2,12 @@ import {
   cleanseObject,
   DecodedJwtPayload,
   extractToken,
+  generateAudience,
   GetSecret,
   HttpRequest,
   JwtPayload,
   SetSecret,
+  verifyAudience,
 } from '@scaffoldly/serverless-util';
 import { v4 as uuidv4 } from 'uuid';
 import { JWT, JWK, JWKECKey, JWKS } from 'jose';
@@ -36,6 +38,14 @@ export default class JwtService {
     this.refreshes = new AccountsModel();
     this.domain = DOMAIN;
   }
+
+  generateAudience = (id: string): string => {
+    return generateAudience(this.domain, id);
+  };
+
+  verifyAudience = (aud: string): boolean => {
+    return verifyAudience(this.domain, aud);
+  };
 
   getPublicKey = async (): Promise<Jwk> => {
     const keys = await this.getOrCreateKeys();
@@ -289,33 +299,6 @@ export default class JwtService {
       },
     };
   };
-
-  private verifyAudience = (audience: string): boolean => {
-    if (!audience) {
-      console.warn('Missing audience');
-      return false;
-    }
-
-    const parts = audience.split(':');
-    if (parts.length < 3) {
-      console.warn('Unable to parse audience');
-      return false;
-    }
-
-    const [, , domain] = parts;
-    if (!domain) {
-      console.warn('Unable to find domain in audience');
-    }
-
-    if (domain === this.domain) {
-      return true;
-    }
-
-    console.warn(`Domain mismatch. Got ${domain}, expected ${this.domain}`);
-    return false;
-  };
-
-  public generateAudience = (id: string): string => `urn:auth:${this.domain}:${id}`;
 
   private extractRefreshCookie = (request: HttpRequest, sk: string) => {
     const refreshCookie = {
