@@ -1,1 +1,1 @@
-{"auth":{"base_url":"https://sly.futz.dev/auth","repo_name":"sly-auth-api","service_name":"auth"},"example":{"base_url":"https://sly.futz.dev/example","repo_name":"example-sls-rest-api","service_name":"example"}}
+{"auth":{"base_url":"https://sly.futz.dev/auth","repo_name":"sly-auth-api","service_name":"auth"},"example":{"base_url":"https://sly.futz.dev/example","repo_name":"example-sls-rest-api","service_name":"example"},"example3":{"base_url":"https://sly.futz.dev/example3","repo_name":"example3-sls-rest-api","service_name":"example3"}}
