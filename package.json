@@ -1,6 +1,6 @@
 {
   "name": "api",
-  "version": "1.11.1-1",
+  "version": "1.11.1-2",
   "license": "UNLICENSED",
   "scripts": {
     "prepare": "yarn dotenv && yarn types && yarn tsoa && yarn dynamodb && yarn openapi && yarn build",
