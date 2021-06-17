@@ -15,11 +15,3 @@ export interface GeneratedKeys {
   publicKey: PemJwk;
   privateKey: PemJwk;
 }
-
-export interface RefreshDetail {
-  sk: string;
-  token: string;
-  expires: number;
-  header: string;
-  sessionId: string;
-}

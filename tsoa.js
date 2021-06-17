@@ -9,6 +9,7 @@ const envVars = NODE_ENV
   : JSON.parse(fs.readFileSync(fs.openSync(`.scaffoldly/env-vars.json`)));
 
 (async () => {
+  console.log('Generating spec...');
   await generateSpec({
     basePath: `/${envVars.SERVICE_NAME}`,
     name: envVars.APPLICATION_NAME,
@@ -26,23 +27,10 @@ const envVars = NODE_ENV
         bearerFormat: 'JWT',
       },
     },
-    // TODO: All stages in the spec file?
-    // spec: {
-    //   servers: [
-    //     {
-    //       url: 'http://localhost:8080/api/v1',
-    //       description: 'Local development',
-    //     },
-    //     {
-    //       url: 'http://prod:8080/api/v1',
-    //       description: 'Prod development',
-    //     },
-    //   ],
-    // },
   });
 
+  console.log('Generating routes...');
   await generateRoutes({
-    // basePath: `/${envVars.SERVICE_NAME}`,
     entryFile: 'src/app.ts',
     noImplicitAdditionalProperties: 'throw-on-extras',
     controllerPathGlobs: ['src/**/*Controller*.ts'],

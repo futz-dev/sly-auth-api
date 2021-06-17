@@ -50,11 +50,11 @@ functions:
 
 resources:
   Resources:
-    Accounts:
+    Table:
       Type: AWS::DynamoDB::Table
       DeletionPolicy: Retain
       Properties:
-        TableName: ${opt:stage, "local"}-${self:service}-accounts
+        TableName: ${opt:stage, "local"}-${self:service}
         KeySchema:
           - AttributeName: id
             KeyType: HASH

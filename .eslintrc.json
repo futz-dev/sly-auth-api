@@ -19,5 +19,11 @@
     "@typescript-eslint/no-explicit-any": "off",
     "no-console": "off"
   },
-  "ignorePatterns": ["src/env.ts", "src/routes.ts"] // Auto-generated files
+  "ignorePatterns": [
+    // Auto-generated files
+    "src/env.ts",
+    "src/routes.ts",
+    "src/models/interfaces/**/*.ts",
+    "src/services/openapi/**/*.ts"
+  ]
 }

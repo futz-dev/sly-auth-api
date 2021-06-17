@@ -5,9 +5,13 @@
   },
   "filewatcher.commands": [
     {
-      "match": "\\.ts*",
-      "isAsync": true,
+      "match": "src/(controllers|interfaces|models/interfaces|services)/(.*).ts",
       "cmd": "cd ${workspaceRoot} && yarn openapi",
+      "event": "onFileChange"
+    },
+    {
+      "match": "src/models/schemas/(.*).ts",
+      "cmd": "cd ${workspaceRoot} && yarn types && yarn openapi",
       "event": "onFileChange"
     }
   ],

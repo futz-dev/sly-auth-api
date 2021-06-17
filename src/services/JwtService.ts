@@ -1,5 +1,4 @@
 import {
-  cleanseObject,
   DecodedJwtPayload,
   extractToken,
   generateAudience,
@@ -13,15 +12,14 @@ import { v4 as uuidv4 } from 'uuid';
 import { JWT, JWK, JWKECKey, JWKS } from 'jose';
 import Cookies from 'cookies';
 import moment, { Moment } from 'moment';
-
 import axios from 'axios';
 import { ulid } from 'ulid';
 import { TokenResponse } from '../interfaces/responses';
 import { env } from '../env';
-import AccountsModel from '../models/AccountsModel';
-import { LoginRow, RefreshRow } from '../interfaces/models';
 import { GeneratedKeys, Jwk } from '../interfaces/Jwt';
 import { JWT_REFRESH_TOKEN_MAX_AGE, REFRESH_COOKIE_PREFIX } from '../constants';
+import { RefreshModel } from '../models/RefreshModel';
+import { Login, Refresh } from '../models/interfaces';
 
 const JWKS_SECRET_NAME = 'jwks';
 const DOMAIN = env.env_vars.SERVERLESS_API_DOMAIN;
@@ -31,12 +29,12 @@ const jwksCache: { [url: string]: { keys: JWKS.KeyStore; expires: Moment } } = {
 export default class JwtService {
   envVars = env.env_vars;
 
-  refreshes: AccountsModel<RefreshRow>;
+  refreshModel: RefreshModel;
 
   domain: string;
 
   constructor() {
-    this.refreshes = new AccountsModel();
+    this.refreshModel = new RefreshModel();
     this.domain = DOMAIN;
   }
 
@@ -54,7 +52,7 @@ export default class JwtService {
   };
 
   createEmptyToken = (
-    loginRow: LoginRow,
+    login: Login,
     request: HttpRequest,
     path: string,
     sessionId = ulid(),
@@ -64,9 +62,9 @@ export default class JwtService {
     const ssl = headers['x-forwarded-proto'] === 'https';
 
     const obj: JwtPayload = {
-      ...cleanseObject(loginRow.detail.payload),
-      id: loginRow.id,
-      sk: loginRow.sk,
+      ...login.detail.request,
+      id: login.id,
+      sk: login.sk,
       refreshUrl: `${ssl ? 'https' : 'http'}://${host}/${this.envVars.SERVICE_NAME}${path}/refresh`,
       authorizeUrl: `${ssl ? 'https' : 'http'}://${host}/${
         this.envVars.SERVICE_NAME
@@ -76,7 +74,7 @@ export default class JwtService {
     };
 
     return {
-      ...loginRow.detail,
+      ...login.detail,
       payload: obj,
       token: null,
     };
@@ -99,22 +97,22 @@ export default class JwtService {
   };
 
   createToken = async (
-    loginRow: LoginRow,
+    login: Login,
     request: HttpRequest,
     path: string,
     sessionId = ulid(),
   ): Promise<TokenResponse> => {
-    const response = this.createEmptyToken(loginRow, request, path, sessionId);
+    const response = this.createEmptyToken(login, request, path, sessionId);
 
     const keys = await this.getOrCreateKeys();
     const key = JWK.asKey(keys.privateKey.jwk as JWKECKey);
     const token = JWT.sign(response.payload, key, {
-      audience: this.generateAudience(loginRow.id),
+      audience: this.generateAudience(login.id),
       expiresIn: '60 minute',
       header: {
         typ: 'JWT',
       },
-      subject: loginRow.id,
+      subject: login.id,
       issuer: response.payload.certsUrl,
     });
 
@@ -124,15 +122,15 @@ export default class JwtService {
   };
 
   createRefreshToken = async (
-    loginRow: LoginRow,
+    login: Login,
     request: HttpRequest,
     sessionId: string,
     token = uuidv4(),
-  ): Promise<RefreshRow> => {
+  ): Promise<Refresh> => {
     const { headers } = request;
     const { Host } = headers;
 
-    const cookie = new Cookies.Cookie(`${REFRESH_COOKIE_PREFIX}${loginRow.sk}`, token, {
+    const cookie = new Cookies.Cookie(`${REFRESH_COOKIE_PREFIX}${login.sk}`, token, {
       domain: Host as string,
       maxAge: parseInt(JWT_REFRESH_TOKEN_MAX_AGE, 10),
       overwrite: true,
@@ -142,12 +140,12 @@ export default class JwtService {
       secure: true,
     });
 
-    const refreshRow = await this.refreshes.model.create(
+    const refreshRow = await this.refreshModel.model.create(
       {
-        id: loginRow.id,
-        sk: `jwt_refresh_${loginRow.sk}_${sessionId}`,
+        id: login.id,
+        sk: `jwt_refresh_${login.sk}_${sessionId}`,
         detail: {
-          sk: loginRow.sk,
+          sk: login.sk,
           token,
           expires: moment().add(JWT_REFRESH_TOKEN_MAX_AGE, 'millisecond').unix(),
           header: cookie.toHeader(),
@@ -163,7 +161,7 @@ export default class JwtService {
   fetchRefreshRow = async (
     authorization: string,
     request: HttpRequest,
-  ): Promise<RefreshRow | null> => {
+  ): Promise<Refresh | null> => {
     if (!authorization) {
       console.warn('Missing authorization');
       return null;
@@ -188,7 +186,7 @@ export default class JwtService {
 
     const sk = `jwt_refresh_${decoded.sk}_${decoded.sessionId}`;
 
-    const refreshRow = await this.refreshes.model.get(decoded.id, sk);
+    const refreshRow = await this.refreshModel.model.get(decoded.id, sk);
 
     if (!refreshRow) {
       console.warn(`Unable to find refresh record for id: ${decoded.id} sk: ${sk}`);

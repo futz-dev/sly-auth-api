@@ -1,18 +1,17 @@
 import { DecodedJwtPayload, HttpError } from '@scaffoldly/serverless-util';
-import { AccountRow } from '../interfaces/models';
 import { AccountRequest, UpdateAccountRequest } from '../interfaces/requests';
 import { AccountResponse } from '../interfaces/responses';
-import AccountsModel from '../models/AccountsModel';
+import { AccountModel } from '../models/AccountModel';
 
 export default class AccountService {
-  accounts: AccountsModel<AccountRow>;
+  accountModel: AccountModel;
 
   constructor() {
-    this.accounts = new AccountsModel();
+    this.accountModel = new AccountModel();
   }
 
   async createAccount(request: AccountRequest, user: DecodedJwtPayload): Promise<AccountResponse> {
-    const accountRow = await this.accounts.model.create({
+    const accountRow = await this.accountModel.model.create({
       id: user.id,
       sk: 'primary',
       detail: request,
@@ -28,12 +27,12 @@ export default class AccountService {
     request: UpdateAccountRequest,
     user: DecodedJwtPayload,
   ): Promise<AccountResponse> {
-    let accountRow = await this.accounts.model.get(user.id, 'primary');
+    let accountRow = await this.accountModel.model.get(user.id, 'primary');
     if (!accountRow) {
       throw new HttpError(404, 'Not Found');
     }
 
-    accountRow = await this.accounts.model.update({
+    accountRow = await this.accountModel.model.update({
       ...accountRow.attrs,
       detail: { ...accountRow.attrs.detail, ...request },
     });
@@ -45,7 +44,7 @@ export default class AccountService {
   }
 
   async getAccount(user: DecodedJwtPayload): Promise<AccountResponse> {
-    const accountRow = await this.accounts.model.get(user.id, 'primary');
+    const accountRow = await this.accountModel.model.get(user.id, 'primary');
     if (!accountRow) {
       throw new HttpError(404, 'Not Found');
     }

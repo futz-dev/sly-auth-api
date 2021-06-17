@@ -1,8 +1,7 @@
 import { DecodedJwtPayload, JwtPayload } from '@scaffoldly/serverless-util';
-import { AccountDetail } from './Account';
+import { AccountDetail, LoginDetail, Provider } from '../models/interfaces';
 import { Jwk } from './Jwt';
-import { LoginDetail } from './Login';
-import { ProviderDetail, Provider } from './Provider';
+import { ProviderDetail } from './Provider';
 
 export interface JWKSResponse {
   keys: Jwk[];
@@ -12,8 +11,9 @@ export type ProviderResponse = {
   [provider in Provider]: ProviderDetail;
 };
 
-export interface TokenResponse extends LoginDetail<JwtPayload> {
+export interface TokenResponse extends LoginDetail {
   token: string | null;
+  payload: JwtPayload;
 }
 
 export interface LoginDetailResponse {

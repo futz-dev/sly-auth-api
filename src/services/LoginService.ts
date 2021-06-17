@@ -6,10 +6,6 @@ import {
 } from '@scaffoldly/serverless-util';
 import * as Google from 'google-auth-library';
 import { env } from '../env';
-import { LoginDetail, VerificationResultBase } from '../interfaces/Login';
-import { LoginRow } from '../interfaces/models';
-
-import { Provider } from '../interfaces/Provider';
 import {
   AuthorizeRequest,
   EmailLoginRequest,
@@ -22,21 +18,30 @@ import {
   TokenResponseHeaders,
   TokenResponseWithHeaders,
 } from '../interfaces/responses';
-import AccountsModel from '../models/AccountsModel';
+import { Login, LoginDetail, VerificationMethod } from '../models/interfaces';
+import { LoginModel } from '../models/LoginModel';
 import JwtService from './JwtService';
 import TotpService from './TotpService';
+
+interface VerificationResult {
+  verified: boolean;
+  verificationMethod: VerificationMethod;
+  email: string;
+  name?: string;
+  photoUrl?: string;
+}
 
 export default class LoginService {
   jwtService: JwtService;
 
   totpService: TotpService;
 
-  logins: AccountsModel<LoginRow>;
+  loginModel: LoginModel;
 
   constructor() {
     this.jwtService = new JwtService();
     this.totpService = new TotpService();
-    this.logins = new AccountsModel();
+    this.loginModel = new LoginModel();
   }
 
   login = async (login: LoginRequest, request: HttpRequest): Promise<TokenResponseWithHeaders> => {
@@ -80,7 +85,7 @@ export default class LoginService {
     const { id, detail } = refreshRow;
     const { sk } = detail;
 
-    const loginRow = await this.logins.model.get(id, sk);
+    const loginRow = await this.loginModel.model.get(id, sk);
 
     if (!loginRow) {
       console.warn(`Unable to find existing login with ${id} ${sk}`);
@@ -151,7 +156,7 @@ export default class LoginService {
       throw new HttpError(403, 'Forbidden');
     }
 
-    const [result] = await this.logins.model
+    const [result] = await this.loginModel.model
       .query(user.id)
       .where('sk')
       .beginsWith('login_')
@@ -159,12 +164,12 @@ export default class LoginService {
       .promise();
 
     const initialResponse = {
-      [Provider.Email]: {
+      EMAIL: {
         enabled: false,
         name: 'Email',
         clientId: env.env_vars.MAIL_DOMAIN || undefined,
       },
-      [Provider.Google]: {
+      GOOGLE: {
         enabled: false,
         name: 'Google',
         clientId: env.env_vars.GOOGLE_CLIENT_ID || undefined,
@@ -180,10 +185,10 @@ export default class LoginService {
     }, initialResponse);
   }
 
-  private verifyLogin = async (login: LoginRequest): Promise<LoginRow> => {
+  private verifyLogin = async (login: LoginRequest): Promise<Login> => {
     const email = login.email.trim().toLowerCase();
 
-    let loginDetail: LoginDetail<LoginRequest> | undefined;
+    let loginDetail: LoginDetail | undefined;
     const id = this.jwtService.generateAudience(email);
 
     switch (login.provider) {
@@ -192,8 +197,8 @@ export default class LoginService {
         loginDetail = {
           ...result,
           id,
-          provider: Provider.Google,
-          payload: login,
+          provider: 'GOOGLE',
+          request: login,
         };
         break;
       }
@@ -202,8 +207,8 @@ export default class LoginService {
         loginDetail = {
           ...result,
           id,
-          provider: Provider.Email,
-          payload: { ...login, code: undefined }, // Remove code from the response
+          provider: 'EMAIL',
+          request: login,
         };
         break;
       }
@@ -215,7 +220,7 @@ export default class LoginService {
       throw new HttpError(400, 'Unknown provider');
     }
 
-    const loginRow = await this.logins.model.create(
+    const loginRow = await this.loginModel.model.create(
       {
         id: loginDetail.id,
         sk: `login_${loginDetail.provider}_${loginDetail.id}`,
@@ -227,7 +232,7 @@ export default class LoginService {
     return loginRow.attrs;
   };
 
-  private verifyGoogleToken = async (token: string): Promise<VerificationResultBase> => {
+  private verifyGoogleToken = async (token: string): Promise<VerificationResult> => {
     const client = new Google.OAuth2Client({ clientId: env.env_vars.GOOGLE_CLIENT_ID });
 
     let result: Google.LoginTicket;
@@ -270,7 +275,7 @@ export default class LoginService {
     id: string,
     email: string,
     code?: string,
-  ): Promise<VerificationResultBase> => {
+  ): Promise<VerificationResult> => {
     if (code) {
       const verified = await this.totpService.verifyTotp(id, email, code);
       return { verified, verificationMethod: 'EMAIL', email };

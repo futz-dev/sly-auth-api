@@ -15,9 +15,9 @@ const models: TsoaRoute.Models = {
     "AccountResponse": {
         "dataType": "refObject",
         "properties": {
-            "name": {"dataType":"string","required":true},
-            "email": {"dataType":"string","required":true},
             "company": {"dataType":"string"},
+            "email": {"dataType":"string","required":true},
+            "name": {"dataType":"string","required":true},
             "id": {"dataType":"string","required":true},
         },
         "additionalProperties": false,
@@ -63,11 +63,6 @@ const models: TsoaRoute.Models = {
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
-    "Provider": {
-        "dataType": "refEnum",
-        "enums": ["GOOGLE","EMAIL"],
-    },
-    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "JwtPayload": {
         "dataType": "refObject",
         "properties": {
@@ -76,6 +71,36 @@ const models: TsoaRoute.Models = {
             "refreshUrl": {"dataType":"string","required":true},
             "authorizeUrl": {"dataType":"string","required":true},
             "certsUrl": {"dataType":"string","required":true},
+            "sessionId": {"dataType":"string","required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "Provider": {
+        "dataType": "refAlias",
+        "type": {"dataType":"union","subSchemas":[{"dataType":"enum","enums":["EMAIL"]},{"dataType":"enum","enums":["GOOGLE"]}],"validators":{}},
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "EmailLogin": {
+        "dataType": "refObject",
+        "properties": {
+            "code": {"dataType":"string"},
+            "email": {"dataType":"string","required":true},
+            "provider": {"dataType":"enum","enums":["EMAIL"],"required":true},
+        },
+        "additionalProperties": false,
+    },
+    // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
+    "GoogleLogin": {
+        "dataType": "refObject",
+        "properties": {
+            "authToken": {"dataType":"string","required":true},
+            "email": {"dataType":"string","required":true},
+            "id": {"dataType":"string","required":true},
+            "idToken": {"dataType":"string","required":true},
+            "name": {"dataType":"string"},
+            "photoUrl": {"dataType":"string"},
+            "provider": {"dataType":"enum","enums":["GOOGLE"],"required":true},
         },
         "additionalProperties": false,
     },
@@ -88,27 +113,33 @@ const models: TsoaRoute.Models = {
     "TokenResponse": {
         "dataType": "refObject",
         "properties": {
-            "verified": {"dataType":"boolean","required":true},
-            "verificationMethod": {"ref":"VerificationMethod","required":true},
             "email": {"dataType":"string","required":true},
+            "id": {"dataType":"string","required":true},
             "name": {"dataType":"string"},
             "photoUrl": {"dataType":"string"},
-            "id": {"dataType":"string","required":true},
-            "provider": {"ref":"Provider","required":true},
-            "payload": {"ref":"JwtPayload","required":true},
+            "provider": {"dataType":"union","subSchemas":[{"ref":"Provider"},{"dataType":"enum","enums":["EMAIL"]},{"dataType":"enum","enums":["GOOGLE"]}],"required":true},
+            "request": {"dataType":"union","subSchemas":[{"ref":"EmailLogin"},{"ref":"GoogleLogin"}],"required":true},
+            "verificationMethod": {"dataType":"union","subSchemas":[{"ref":"VerificationMethod"},{"dataType":"enum","enums":["EMAIL"]},{"dataType":"enum","enums":["AUTHENTICATOR"]},{"dataType":"enum","enums":["NONE"]}],"required":true},
+            "verified": {"dataType":"boolean","required":true},
             "token": {"dataType":"union","subSchemas":[{"dataType":"string"},{"dataType":"enum","enums":[null]}],"required":true},
+            "payload": {"ref":"JwtPayload","required":true},
         },
         "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "EmailLoginRequest": {
-        "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"code":{"dataType":"string"},"email":{"dataType":"string","required":true}},"validators":{}},
+        "dataType": "refObject",
+        "properties": {
+            "code": {"dataType":"string"},
+            "email": {"dataType":"string","required":true},
+            "provider": {"dataType":"enum","enums":["EMAIL"],"required":true},
+        },
+        "additionalProperties": false,
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "GoogleLoginRequest": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"photoUrl":{"dataType":"string"},"authToken":{"dataType":"string","required":true},"idToken":{"dataType":"string","required":true},"id":{"dataType":"string","required":true},"name":{"dataType":"string"},"email":{"dataType":"string","required":true}},"validators":{}},
+        "type": {"ref":"GoogleLogin","validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "DecodedJwtPayload": {
@@ -119,6 +150,7 @@ const models: TsoaRoute.Models = {
             "refreshUrl": {"dataType":"string","required":true},
             "authorizeUrl": {"dataType":"string","required":true},
             "certsUrl": {"dataType":"string","required":true},
+            "sessionId": {"dataType":"string","required":true},
             "sub": {"dataType":"string","required":true},
             "aud": {"dataType":"string","required":true},
             "iss": {"dataType":"string","required":true},
@@ -140,7 +172,7 @@ const models: TsoaRoute.Models = {
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "ProviderResponse": {
         "dataType": "refAlias",
-        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"GOOGLE":{"ref":"ProviderDetail"},"EMAIL":{"ref":"ProviderDetail"}},"validators":{}},
+        "type": {"dataType":"nestedObjectLiteral","nestedProperties":{"EMAIL":{"ref":"ProviderDetail"},"GOOGLE":{"ref":"ProviderDetail"}},"validators":{}},
     },
     // WARNING: This file was auto-generated with tsoa. Please do not modify it. Re-run tsoa to re-generate this file: https://github.com/lukeautry/tsoa
     "LoginDetailResponse": {

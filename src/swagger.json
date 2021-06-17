@@ -8,13 +8,13 @@
 		"schemas": {
 			"AccountResponse": {
 				"properties": {
-					"name": {
+					"company": {
 						"type": "string"
 					},
 					"email": {
 						"type": "string"
 					},
-					"company": {
+					"name": {
 						"type": "string"
 					},
 					"id": {
@@ -22,8 +22,8 @@
 					}
 				},
 				"required": [
-					"name",
 					"email",
+					"name",
 					"id"
 				],
 				"type": "object",
@@ -105,13 +105,6 @@
 				"type": "object",
 				"additionalProperties": false
 			},
-			"Provider": {
-				"enum": [
-					"GOOGLE",
-					"EMAIL"
-				],
-				"type": "string"
-			},
 			"JwtPayload": {
 				"properties": {
 					"id": {
@@ -128,6 +121,9 @@
 					},
 					"certsUrl": {
 						"type": "string"
+					},
+					"sessionId": {
+						"type": "string"
 					}
 				},
 				"required": [
@@ -135,7 +131,76 @@
 					"sk",
 					"refreshUrl",
 					"authorizeUrl",
-					"certsUrl"
+					"certsUrl",
+					"sessionId"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"Provider": {
+				"type": "string",
+				"enum": [
+					"EMAIL",
+					"GOOGLE"
+				]
+			},
+			"EmailLogin": {
+				"properties": {
+					"code": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"provider": {
+						"type": "string",
+						"enum": [
+							"EMAIL"
+						],
+						"nullable": false
+					}
+				},
+				"required": [
+					"email",
+					"provider"
+				],
+				"type": "object",
+				"additionalProperties": false
+			},
+			"GoogleLogin": {
+				"properties": {
+					"authToken": {
+						"type": "string"
+					},
+					"email": {
+						"type": "string"
+					},
+					"id": {
+						"type": "string"
+					},
+					"idToken": {
+						"type": "string"
+					},
+					"name": {
+						"type": "string"
+					},
+					"photoUrl": {
+						"type": "string"
+					},
+					"provider": {
+						"type": "string",
+						"enum": [
+							"GOOGLE"
+						],
+						"nullable": false
+					}
+				},
+				"required": [
+					"authToken",
+					"email",
+					"id",
+					"idToken",
+					"provider"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -150,13 +215,10 @@
 			},
 			"TokenResponse": {
 				"properties": {
-					"verified": {
-						"type": "boolean"
-					},
-					"verificationMethod": {
-						"$ref": "#/components/schemas/VerificationMethod"
-					},
 					"email": {
+						"type": "string"
+					},
+					"id": {
 						"type": "string"
 					},
 					"name": {
@@ -165,28 +227,65 @@
 					"photoUrl": {
 						"type": "string"
 					},
-					"id": {
-						"type": "string"
-					},
 					"provider": {
-						"$ref": "#/components/schemas/Provider"
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/Provider"
+							},
+							{
+								"type": "string",
+								"enum": [
+									"EMAIL",
+									"GOOGLE"
+								]
+							}
+						]
 					},
-					"payload": {
-						"$ref": "#/components/schemas/JwtPayload"
+					"request": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/EmailLogin"
+							},
+							{
+								"$ref": "#/components/schemas/GoogleLogin"
+							}
+						]
+					},
+					"verificationMethod": {
+						"anyOf": [
+							{
+								"$ref": "#/components/schemas/VerificationMethod"
+							},
+							{
+								"type": "string",
+								"enum": [
+									"EMAIL",
+									"AUTHENTICATOR",
+									"NONE"
+								]
+							}
+						]
+					},
+					"verified": {
+						"type": "boolean"
 					},
 					"token": {
 						"type": "string",
 						"nullable": true
+					},
+					"payload": {
+						"$ref": "#/components/schemas/JwtPayload"
 					}
 				},
 				"required": [
-					"verified",
-					"verificationMethod",
 					"email",
 					"id",
 					"provider",
-					"payload",
-					"token"
+					"request",
+					"verificationMethod",
+					"verified",
+					"token",
+					"payload"
 				],
 				"type": "object",
 				"additionalProperties": false
@@ -198,41 +297,24 @@
 					},
 					"email": {
 						"type": "string"
+					},
+					"provider": {
+						"type": "string",
+						"enum": [
+							"EMAIL"
+						],
+						"nullable": false
 					}
 				},
 				"required": [
-					"email"
+					"email",
+					"provider"
 				],
-				"type": "object"
+				"type": "object",
+				"additionalProperties": false
 			},
 			"GoogleLoginRequest": {
-				"properties": {
-					"photoUrl": {
-						"type": "string"
-					},
-					"authToken": {
-						"type": "string"
-					},
-					"idToken": {
-						"type": "string"
-					},
-					"id": {
-						"type": "string"
-					},
-					"name": {
-						"type": "string"
-					},
-					"email": {
-						"type": "string"
-					}
-				},
-				"required": [
-					"authToken",
-					"idToken",
-					"id",
-					"email"
-				],
-				"type": "object"
+				"$ref": "#/components/schemas/GoogleLogin"
 			},
 			"DecodedJwtPayload": {
 				"properties": {
@@ -249,6 +331,9 @@
 						"type": "string"
 					},
 					"certsUrl": {
+						"type": "string"
+					},
+					"sessionId": {
 						"type": "string"
 					},
 					"sub": {
@@ -275,6 +360,7 @@
 					"refreshUrl",
 					"authorizeUrl",
 					"certsUrl",
+					"sessionId",
 					"sub",
 					"aud",
 					"iss",
@@ -304,10 +390,10 @@
 			},
 			"ProviderResponse": {
 				"properties": {
-					"GOOGLE": {
+					"EMAIL": {
 						"$ref": "#/components/schemas/ProviderDetail"
 					},
-					"EMAIL": {
+					"GOOGLE": {
 						"$ref": "#/components/schemas/ProviderDetail"
 					}
 				},
@@ -419,7 +505,7 @@
 	},
 	"info": {
 		"title": "sly-auth-api",
-		"version": "1.9.4-4",
+		"version": "1.9.4-5",
 		"description": "To generate a JWT token, go to the <a href=\"https://sly-dev.futz.dev/auth/jwt.html\" target=\"_blank\">JWT Token Generator</a>"
 	},
 	"openapi": "3.0.0",

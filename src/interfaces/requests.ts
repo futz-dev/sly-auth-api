@@ -1,24 +1,12 @@
-import { Provider } from './Provider';
+import { EmailLogin, GoogleLogin } from '../models/interfaces';
 
-export type LoginRequestBase = {
-  provider: Provider;
-};
+export type GoogleLoginRequest = GoogleLogin;
 
-export type GoogleLoginRequest = {
-  email: string;
-  name?: string;
-  id: string;
-  idToken: string;
-  authToken: string;
-  photoUrl?: string;
-};
-
-export type EmailLoginRequest = {
-  email: string;
+export interface EmailLoginRequest extends EmailLogin {
   code?: string;
-};
+}
 
-export type LoginRequest = LoginRequestBase & (EmailLoginRequest | GoogleLoginRequest);
+export type LoginRequest = EmailLoginRequest | GoogleLoginRequest;
 
 export interface AuthorizeRequest {
   token: string;
