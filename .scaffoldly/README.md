@@ -37,15 +37,6 @@ For more info: https://docs.scaffold.ly/infrastructure/configuration-files
     "base_url": "https://sly-dev.futz.dev/example"
     "repo_name": "example-sls-rest-api"
     "service_name": "example"
-"example3":
-  "live":
-    "base_url": "https://sly.futz.dev/example3"
-    "repo_name": "example3-sls-rest-api"
-    "service_name": "example3"
-  "nonlive":
-    "base_url": "https://sly-dev.futz.dev/example3"
-    "repo_name": "example3-sls-rest-api"
-    "service_name": "example3"
 
 ```
 
