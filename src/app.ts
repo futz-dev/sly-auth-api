@@ -2,7 +2,7 @@ import {
   corsHandler,
   createApp,
   errorHandler,
-  registerDocs,
+  // registerDocs,
   registerVersion,
 } from '@scaffoldly/serverless-util';
 import express from 'express';
