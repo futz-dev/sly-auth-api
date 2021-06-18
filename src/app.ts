@@ -10,7 +10,7 @@ import { readFileSync } from 'fs';
 import packageJson from 'package.json';
 import { RegisterRoutes } from './routes';
 
-import swaggerJson from './swagger.json';
+// import swaggerJson from './swagger.json';
 
 const app = createApp();
 
@@ -20,7 +20,7 @@ RegisterRoutes(app);
 
 app.use(errorHandler(packageJson.version));
 
-registerDocs(app, swaggerJson);
+// registerDocs(app, swaggerJson);
 registerVersion(app, packageJson.version);
 
 app.get('/jwt.html', (_req: express.Request, res: express.Response) => {

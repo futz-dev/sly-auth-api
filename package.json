@@ -18,7 +18,7 @@
   "module": "",
   "devDependencies": {
     "@ngx-rocket/scripts": "^5.1.0",
-    "@scaffoldly/openapi-generator": "^1.0.11",
+    "@scaffoldly/openapi-generator": "^1.0.12",
     "@types/aws-lambda": "^8.10.72",
     "@types/body-parser": "^1.19.0",
     "@types/cookies": "^0.7.6",
