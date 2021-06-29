@@ -3,7 +3,7 @@
   "version": "1.13.0",
   "license": "UNLICENSED",
   "scripts": {
-    "prepare": "yarn dotenv && yarn types && yarn tsoa && yarn dynamodb && yarn openapi && yarn build",
+    "prepare": "yarn dotenv && yarn openapi && yarn types && yarn tsoa && yarn dynamodb && yarn build",
     "build": "tsc",
     "start": "serverless offline start",
     "deploy": "serverless deploy",
