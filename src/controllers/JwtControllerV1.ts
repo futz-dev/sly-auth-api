@@ -129,10 +129,10 @@ export class JwtControllerV1 extends Controller {
     // TODO: Move the ProviderDetail generation into ProviderService
     const response: ProviderResponse = {
       GOOGLE: env.GOOGLE_CLIENT_ID
-        ? { name: 'Google', clientId: env.env_vars.GOOGLE_CLIENT_ID, enabled: true }
+        ? { name: 'Google', clientId: env.GOOGLE_CLIENT_ID, enabled: true }
         : { enabled: false },
       EMAIL: env.MAIL_DOMAIN
-        ? { name: 'Email', clientId: env.env_vars.MAIL_DOMAIN, enabled: true }
+        ? { name: 'Email', clientId: env.MAIL_DOMAIN, enabled: true }
         : { enabled: false },
     };
 
