@@ -17,7 +17,11 @@ import { ulid } from 'ulid';
 import { TokenResponse } from '../interfaces/responses';
 import { env } from '../env';
 import { GeneratedKeys, Jwk } from '../interfaces/Jwt';
-import { JWT_REFRESH_TOKEN_MAX_AGE, JWT_TOKEN_MAX_AGE, REFRESH_COOKIE_PREFIX } from '../constants';
+import {
+  JWT_REFRESH_TOKEN_EXPIRATION_SEC,
+  JWT_TOKEN_EXPIRATION_SEC,
+  REFRESH_COOKIE_PREFIX,
+} from '../constants';
 import { RefreshModel } from '../models/RefreshModel';
 import { Login, Refresh } from '../models/interfaces';
 
@@ -104,7 +108,7 @@ export default class JwtService {
     const key = JWK.asKey(keys.privateKey.jwk as JWKECKey);
     const token = JWT.sign(response.payload, key, {
       audience: this.generateAudience(login.id),
-      expiresIn: `${JWT_TOKEN_MAX_AGE}s`,
+      expiresIn: `${JWT_TOKEN_EXPIRATION_SEC}s`,
       header: {
         typ: 'JWT',
       },
@@ -128,7 +132,7 @@ export default class JwtService {
 
     const cookie = new Cookies.Cookie(`${REFRESH_COOKIE_PREFIX}${login.sk}`, token, {
       domain: Host as string,
-      maxAge: parseInt(JWT_REFRESH_TOKEN_MAX_AGE, 10),
+      maxAge: parseInt(JWT_REFRESH_TOKEN_EXPIRATION_SEC, 10) * 1000,
       overwrite: true,
       path: '/',
       httpOnly: true,
@@ -143,7 +147,7 @@ export default class JwtService {
         detail: {
           sk: login.sk,
           token,
-          expires: moment().add(JWT_REFRESH_TOKEN_MAX_AGE, 'seconds').unix(),
+          expires: moment().add(JWT_REFRESH_TOKEN_EXPIRATION_SEC, 'seconds').unix(),
           header: cookie.toHeader(),
           sessionId,
         },
