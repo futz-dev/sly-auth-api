@@ -195,15 +195,15 @@ export default class JwtService {
 
     // Parse cookie from event header
     const cookie = this.extractRefreshCookie(request, decoded.sk);
-    if (!cookie.value) {
+    if (!cookie.values.length) {
       console.warn(`Unable to find cookie with name ${cookie.name}`);
       return null;
     }
 
     // Compare sly_jrt and decoded.sk value with result from DB
-    if (refreshRow.attrs.detail.token !== cookie.value) {
+    if (!cookie.values.includes(refreshRow.attrs.detail.token)) {
       console.warn(
-        `Token mismatch. Expected ${refreshRow.attrs.detail.token}, got ${cookie.value} from cookie ${cookie.name}`,
+        `Token mismatch. Expected ${refreshRow.attrs.detail.token}, got ${cookie.values} from cookie ${cookie.name}`,
       );
       return null;
     }
@@ -313,7 +313,7 @@ export default class JwtService {
   private extractRefreshCookie = (request: HttpRequest, sk: string) => {
     const refreshCookie = {
       name: `${REFRESH_COOKIE_PREFIX}${sk}`,
-      value: null as string | null,
+      values: [] as string[],
     };
 
     if (!request) {
@@ -340,10 +340,6 @@ export default class JwtService {
     }
 
     return cookies.reduce((acc, item) => {
-      if (acc.value) {
-        return acc;
-      }
-
       const [name, value] = item.trim().split('=');
       if (!name || !value) {
         console.warn(`Missing name or value in ${item}`);
@@ -351,7 +347,7 @@ export default class JwtService {
       }
 
       if (name === acc.name) {
-        acc.value = value;
+        acc.values.push(value);
       }
 
       return acc;
