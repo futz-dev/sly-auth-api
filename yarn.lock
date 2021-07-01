@@ -1562,10 +1562,10 @@
     uri-js "^4.4.1"
     yargs "^17.0.1"
 
-"@scaffoldly/serverless-util@^3.0.33":
-  version "3.0.33"
-  resolved "https://registry.yarnpkg.com/@scaffoldly/serverless-util/-/serverless-util-3.0.33.tgz#4e5c61217ad41d1ac0e8df85fcd51e7b187f20f9"
-  integrity sha512-orvbPi+m/rw0jIJG3X/ESRFVHxiI2aqeINDcfwABSdmI2+u8tXKXfTVSj6+5RYHiVnXjJ7chBtFfhmBRqrLs2A==
+"@scaffoldly/serverless-util@^3.0.34":
+  version "3.0.34"
+  resolved "https://registry.yarnpkg.com/@scaffoldly/serverless-util/-/serverless-util-3.0.34.tgz#149bf9aa2b0dd2a5060b07cb91bfe6c0fadc9d22"
+  integrity sha512-RTUr2aepx2Kkmc0Mxq4EmLQdWqRwjQKh/RfbNphFMn6h/4H07GyHuj7rokosWEOEZKTjWqnEQF+sjJE8PoULSQ==
   dependencies:
     "@scaffoldly/dynamodb" "^1.3.1"
     "@types/aws-lambda" "^8.10.72"
