@@ -106,6 +106,9 @@ export class JwtControllerV1 extends Controller {
     @Res()
     res: TsoaResponse<200, TokenResponse, { 'set-cookie'?: string }>,
   ): Promise<TokenResponse> {
+    console.log('!!! header get set-cookie', JSON.stringify(request.header('set-cookie')));
+    console.log('!!! headers', JSON.stringify(request.headers));
+    console.log('!!! raw headers', JSON.stringify(request.rawHeaders));
     const { tokenResponse, headers } = await this.loginService.refresh(authorization, request);
     const response = res(200, tokenResponse, headers);
     return response;
